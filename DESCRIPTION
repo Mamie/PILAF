@@ -1,0 +1,14 @@
+Package: PILAF
+Type: Package
+Title: Phylodynamics InfLuenzA Forecast
+Version: 0.1.0
+Author: Meng Wang, Julia Palacios
+Maintainer: Meng Wang <szmamie@live.com>
+Description: Influenza count forecast using genetic data
+License: MIT license
+Encoding: UTF-8
+LazyData: true
+Imports:
+  INLA,
+  phylodyn
+RoxygenNote: 6.1.0.9000

@@ -76,10 +76,10 @@ SimulateCoalCounts = function(grid, samp.times, samp.num, traj) {
 #' Simulate flu sampling, coalescence and ILI counts given effective population
 #' size trajectory and number of expected samples.
 #'
-#' @param lim A numeric tuple of start and end times
-#' @param flu.Ne A function of time (for flu effective popluation size)
-#' @param flu.sampNum A numeric scalar of expected number of flu samples in lim
-#' @param ILI.sampNum A numeric scalar of expected number of sampling events
+#' @param lim A numeric tuple of start and end times.
+#' @param flu.Ne A function of time (for flu effective popluation size).
+#' @param flu.sampNum A numeric scalar of expected number of flu samples in lim.
+#' @param ILI.sampNum A numeric scalar of expected number of sampling events.
 #' in lim
 #' @return A list containing coalescent, sampling and ILI counts
 #' @export
@@ -92,8 +92,56 @@ SimulateILISampCoalCounts = function(lim, flu.Ne, flu.sampNum, ILI.sampNum) {
   ILI.sampTimes = PILAF::PoissonTimeSampling(flu.Ne, ILI.c, lim)
   ILI.nsamp = rep(1, length(ILI.sampTimes))
 
+  grid = seq(lim[1] - 0.5, lim[2] + 0.5, by=1)
   coal.counts = PILAF::SimulateCoalCounts(grid, flu.sampTimes, flu.nsamp, flu.Ne)
   samp.counts = phylodyn:::samp_stats(grid, flu.sampTimes, flu.nsamp)
   ILI.counts = phylodyn:::samp_stats(grid, ILI.sampTimes, ILI.nsamp)
   return(list(coal=coal.counts, samp=samp.counts, ILI=ILI.counts))
+}
+
+#' Simulate ILI, Sampling, and Coalescent counts N Times
+#'
+#' Simulate ILI, sampling and coalescent event counts for n Times
+#'
+#' @param n Number of simulations.
+#' @param lim A numeric tuple of start and end times.
+#' @param flu.Ne A function of time (for flu effective popluation size).
+#' @param flu.sampNum A numeric scalar of expected number of flu samples in lim.
+#' @param ILI.sampNum A numeric scalar of expected number of sampling events.
+#' @export
+SimulateILISampCoalCountsN = function(n, lim, flu.Ne, flu.sampNum, ILI.sampNum, seed=1) {
+  set.seed(seed)
+  sim.all = c()
+  p <- dplyr::progress_estimated(n)
+  for (i in seq(n)) {
+    sim = SimulateILISampCoalCounts(lim, flu.Ne, flu.sampNum, ILI.sampNum)
+    sim = data.frame(time=sim$coal$time, coal=sim$coal$event,
+                     samp=sim$samp$count, ILI=sim$ILI$count,
+                     coal.E=sim$coal$E, samp.E=sim$samp$E,
+                     ILI.E=sim$ILI$E, iter=i)
+    sim.all = rbind(sim.all, sim)
+    p$pause(0.1)$tick()$print()
+  }
+  return(sim.all)
+}
+
+#' Plot Simulations
+#'
+#' Plot simulated counts.
+#'
+#' @param sim A data frame from PILAF::SimulateILISampCoalCountsN
+#' @export
+#' @import ggplot2
+#' @import magrittr
+PlotSimulations = function(sim) {
+  sim = with(sim,
+       data.frame(time = time, coalescent=coal, sampling=samp,ILI=ILI,iter=iter))
+  sim = tidyr::gather(sim, type, counts, -c(time, iter))
+  ggplot(data=sim) +
+    geom_line(aes(x=time, y=counts, group=iter, color=iter, alpha=0.4), size=0.1) +
+    facet_wrap(~type, scales='free', ncol=1) +
+    theme_classic() +
+    theme(axis.ticks.x=element_blank(),
+          legend.position='none',
+          strip.background=element_blank())
 }

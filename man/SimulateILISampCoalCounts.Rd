@@ -7,13 +7,13 @@
 SimulateILISampCoalCounts(lim, flu.Ne, flu.sampNum, ILI.sampNum)
 }
 \arguments{
-\item{lim}{A numeric tuple of start and end times}
+\item{lim}{A numeric tuple of start and end times.}
 
-\item{flu.Ne}{A function of time (for flu effective popluation size)}
+\item{flu.Ne}{A function of time (for flu effective popluation size).}
 
-\item{flu.sampNum}{A numeric scalar of expected number of flu samples in lim}
+\item{flu.sampNum}{A numeric scalar of expected number of flu samples in lim.}
 
-\item{ILI.sampNum}{A numeric scalar of expected number of sampling events
+\item{ILI.sampNum}{A numeric scalar of expected number of sampling events.
 in lim}
 }
 \value{

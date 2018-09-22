@@ -1,0 +1,22 @@
+---
+title: "Simulating ILI count trajectories"
+author: "Meng Wang"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simulating ILI count trajectories}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+Simulate 100 ILI trajectories and corresponding flu sampling and coalescent counts.
+
+```{r message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
+n = 100
+lim = c(0, 51)
+flu.Ne = PILAF:::YearlyLogisticTraj
+flu.sampNum = 300
+ILI.sampNum = 1000
+res = PILAF::SimulateILISampCoalCountsN(n, lim, flu.Ne, flu.sampNum, ILI.sampNum)
+PILAF::PlotSimulations(res)
+```

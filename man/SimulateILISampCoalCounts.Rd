@@ -4,7 +4,7 @@
 \alias{SimulateILISampCoalCounts}
 \title{Simulate ILI, Sampling, and Coalescent counts}
 \usage{
-SimulateILISampCoalCounts(lim, flu.Ne, flu.sampNum, ILI.sampNum)
+SimulateILISampCoalCounts(lim, flu.Ne, flu.sampNum, ILI.sampNum, i = 1)
 }
 \arguments{
 \item{lim}{A numeric tuple of start and end times.}
@@ -13,7 +13,9 @@ SimulateILISampCoalCounts(lim, flu.Ne, flu.sampNum, ILI.sampNum)
 
 \item{flu.sampNum}{A numeric scalar of expected number of flu samples in lim.}
 
-\item{ILI.sampNum}{A numeric scalar of expected number of sampling events.
+\item{ILI.sampNum}{A numeric scalar of expected number of sampling events.}
+
+\item{i}{An optional numeric scalar indicating iteration of simulation
 in lim}
 }
 \value{

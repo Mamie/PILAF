@@ -55,3 +55,34 @@ plot.PILAF = function(x) {
           legend.position='none',
           strip.background=element_blank())
 }
+
+#' Generic function for forecast
+#' @export
+forecast = function(x, ...) {
+  UseMethod('forecast', x)
+}
+
+#' Forecast a PILAF Object.
+#'
+#' Forecast a PILAF object using one of the three methods: count only, joint
+#' modeling of count and coalescent events, joint modeling of count, coalescent
+#' and sampling envets.
+#'
+#' @param x A PILAF object.
+#' @param time.forecast A numeric vector of timepoints to forecast.
+#' @param formula An optional character scalar of formula (debugging).
+#' @export
+forecast.PILAF = function(x, time.forecast, method='count', formula='NULL') {
+  if (!method %in% c('count', 'joint', 'ps')) {
+    warnings('Forecast method not recognized. Use default="count"')
+    method = 'count'
+  }
+  x.forecast = rbind(x, data.frame(time=time.forecast,
+                                   coal=NA, samp=NA, ILI=NA,
+                                   coal.E=1, samp.E=1, ILI.E=1))
+  forecast = eval(paste0('forecast.PILAF.', method, '(x.forecast, formula=)', formula))
+  return(forecast)
+}
+
+forecast.PILAF.count = function(x) {
+}

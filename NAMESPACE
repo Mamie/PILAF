@@ -3,6 +3,7 @@
 S3method(forecast,PILAF)
 S3method(forecast,PILAF.count)
 S3method(plot,PILAF)
+S3method(plot,forecast)
 export(ComputePropCnst)
 export(PILAF)
 export(PoissonTimeSampling)

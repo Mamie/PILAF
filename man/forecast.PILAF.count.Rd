@@ -4,7 +4,7 @@
 \alias{forecast.PILAF.count}
 \title{Forecast using Only Count}
 \usage{
-\method{forecast}{PILAF.count}(x)
+\method{forecast}{PILAF.count}(x, formula)
 }
 \arguments{
 \item{x}{A PILAF object with NA for values to forecast.}

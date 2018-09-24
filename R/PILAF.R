@@ -79,14 +79,26 @@ forecast.PILAF = function(x, time.forecast, method='count', formula='NULL') {
     warnings('Forecast method not recognized. Use default="count"')
     method = 'count'
   }
-  x.forecast = rbind(x, data.frame(time=time.forecast,
-                                   coal=NA, samp=NA, ILI=NA,
-                                   coal.E=1, samp.E=1, ILI.E=1,
-                                   iter=x$iter[1]))
-  forecast.inla = eval(parse(text=paste0('forecast.PILAF.', method, '(x.forecast, formula=', formula, ')')))
-  forecast = forecast.inla$summary.fitted.values[-seq(1, nrow(x)),]
-  forecast = cbind(time=time.forecast, forecast)
-  return(forecast)
+  iter.ids = unique(x$iter)
+  forecast.all = c()
+  for (iter.id in iter.ids) {
+    p = dplyr::progress_estimated(n)
+    x.iter = dplyr::filter(x, iter==iter.id)
+    x.forecast = rbind(x.iter, data.frame(time=time.forecast,
+                                     coal=NA, samp=NA, ILI=NA,
+                                     coal.E=1, samp.E=1, ILI.E=1,
+                                     iter=x.iter$iter[1]))
+    forecast.inla = eval(parse(text=paste0('forecast.PILAF.', method, '(x.forecast, formula=',
+                                           formula, ')')))
+    forecast = forecast.inla$summary.fitted.values[-seq(1, nrow(x.iter)),]
+    forecast = cbind(time=time.forecast, forecast)
+    forecast$iter = iter.id
+    forecast.all = rbind(forecast.all, forecast)
+    p$pause(0.1)$tick()$print()
+  }
+
+  class(forecast.all) = c("forecast", class(forecast.all))
+  return(forecast.all)
 }
 
 #' Forecast using Only Count
@@ -97,12 +109,41 @@ forecast.PILAF = function(x, time.forecast, method='count', formula='NULL') {
 forecast.PILAF.count = function(x, formula) {
   link = rep(1, nrow(x))
   if(is.null(formula)) {
-    formula = as.formula('ILI ~ -1 + f(time, model="ar", order=2)')
+    formula = as.formula('ILI ~ -1 + f(time, model="ar", order=3)')
   }
   forecast = INLA::inla(formula,
                      family="poisson", data=x,
                      control.predictor=list(compute=T, link=link),
                      E=x$ILI.E)
-  class(forecast) = c("forecast", class(forecast))
   return(forecast)
+}
+
+#' Plot the Forecast Results
+#'
+#' Plot the forecasting results
+#'
+#' @param forecast A forecast object.
+#' @param x A PILAF object.
+#' @param truth An optional PILAF object that shows the truth.
+#' @return A ggplot object for the forecasting results.
+#' @export
+plot.forecast = function(x, pilaf, truth=NULL) {
+  x = with(x, data.frame(time=time, mean=mean, quant0.025=`0.025quant`,
+                         quant0.975=`0.975quant`, iter=iter))
+  x$type='ILI'
+  pilaf = with(pilaf,
+           data.frame(time=time, coalescent=coal, sampling=samp, ILI=ILI,
+                      iter=iter))
+  pilaf = tidyr::gather(pilaf, type, counts, -c(time, iter))
+  p = ggplot(data=pilaf) +
+    geom_line(aes(x=time, y=counts, group=iter, color=iter), alpha=0.4, size=0.1) +
+    geom_line(data=x, aes(x=time, y=mean, group=iter, color=iter), alpha=0.4, size=0.1) +
+    geom_ribbon(data=x, aes(x=time, ymin=quant0.025, ymax=quant0.975, group=iter), alpha=0.1) +
+    geom_vline(aes(xintercept=min(x$time), linetype='dashed'), alpha=0.3) +
+    facet_wrap(~type, scales='free_y', ncol=1) +
+    theme_classic() +
+    theme(axis.ticks.x=element_blank(),
+          legend.position='none',
+          strip.background=element_blank())
+  return(p)
 }

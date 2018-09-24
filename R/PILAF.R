@@ -81,6 +81,7 @@ forecast.PILAF = function(x, time.forecast, method='count', formula='NULL') {
   }
   iter.ids = unique(x$iter)
   forecast.all = c()
+  n = length(iter.ids)
   for (iter.id in iter.ids) {
     p = dplyr::progress_estimated(n)
     x.iter = dplyr::filter(x, iter==iter.id)
@@ -138,12 +139,17 @@ plot.forecast = function(x, pilaf, truth=NULL) {
   p = ggplot(data=pilaf) +
     geom_line(aes(x=time, y=counts, group=iter, color=iter), alpha=0.4, size=0.1) +
     geom_line(data=x, aes(x=time, y=mean, group=iter, color=iter), alpha=0.4, size=0.1) +
-    geom_ribbon(data=x, aes(x=time, ymin=quant0.025, ymax=quant0.975, group=iter), alpha=0.1) +
-    geom_vline(aes(xintercept=min(x$time), linetype='dashed'), alpha=0.3) +
+    geom_ribbon(data=x, aes(x=time, ymin=quant0.025, ymax=quant0.975, group=iter), alpha=0.01) +
+    geom_vline(aes(xintercept=min(x$time), linetype='dotted'), alpha=0.1) +
     facet_wrap(~type, scales='free_y', ncol=1) +
     theme_classic() +
     theme(axis.ticks.x=element_blank(),
           legend.position='none',
           strip.background=element_blank())
   return(p)
+}
+
+
+evaluate.forecast = function(x, pilaf, truth=NULL) {
+
 }

@@ -121,13 +121,13 @@ SimulateILISampCoalCounts = function(lim, flu.Ne, flu.sampNum, ILI.sampNum, i=1)
   grid.forward = seq(min(lim) - 0.5, max(lim) + 0.5, by=1)
   lim.backward = PILAF:::AsBackwardTime(lim)
   grid.backward = seq(min(lim.backward$time) - 0.5, max(lim.backward$time) + 0.5, by=1)
-  coal = PILAF::SimulateCoalCounts(grid.backward, flu.sampTimes, flu.nsamp, flu.Ne)
-  samp = phylodyn:::samp_stats(grid.backward, flu.sampTimes, flu.nsamp)
+  flu.sampTimes.backward = PILAF:::AsBackwardTime(flu.sampTimes)
+  coal = PILAF::SimulateCoalCounts(grid.backward, sort(flu.sampTimes.backward$time), flu.nsamp, flu.Ne)
+  samp = phylodyn:::samp_stats(grid.forward, flu.sampTimes, flu.nsamp)
   ILI = phylodyn:::samp_stats(grid.forward, ILI.sampTimes, ILI.nsamp)
-  time.forward = PILAF:::AsForwardTime(coal$time, lim.backward$last.time)
-  pilaf = PILAF::PILAF(time=time.forward, coal=coal$event,
-                     samp=samp$count, ILI=rev(ILI$count),
-                     coal.E=coal$E, samp.E=samp$E,
+  pilaf = PILAF::PILAF(time=ILI$time, coal=rev(coal$event),
+                     samp=samp$count, ILI=ILI$count,
+                     coal.E=rev(coal$E), samp.E=samp$E,
                      ILI.E=ILI$E, iter=i)
   return(pilaf)
 }

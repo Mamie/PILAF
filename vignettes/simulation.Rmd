@@ -1,5 +1,5 @@
 ---
-title: "Simulating ILI count trajectories"
+title: "Simulate and forecast ILI count trajectories"
 author: "Meng Wang"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -9,14 +9,26 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-Simulate 100 ILI trajectories and corresponding flu sampling and coalescent counts.
+Simulate 10 ILI trajectories and corresponding flu sampling and coalescent counts.
 
-```{r message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
-n = 100
-lim = c(0, 51)
+```{r generate-data, message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
+library(PILAF)
+n = 10
+lim = c(0, 100)
 flu.Ne = PILAF:::YearlyLogisticTraj
-flu.sampNum = 30
-ILI.sampNum = 50
-res = PILAF::SimulateILISampCoalCountsN(n, lim, flu.Ne, flu.sampNum, ILI.sampNum)
-plot(res)
+flu.sampNum = 100
+ILI.sampNum = 1000
+sim.data = PILAF::SimulateILISampCoalCountsN(n, lim, flu.Ne, flu.sampNum, ILI.sampNum)
+plot(sim.data)
+```
+
+Forecast the trajectories. 
+
+```{r forecasting, message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
+train.time = seq(0, 90)
+test.time = seq(91, 100)
+sim.train = sim.data[sim.data$time %in% train.time,]
+sim.test = sim.data[!sim.data$time %in% train.time,]
+sim.fitted = forecast(sim.train, test.time)
+plot(sim.fitted, sim.train)
 ```

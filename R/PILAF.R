@@ -18,8 +18,10 @@ PILAF = function(time, coal, samp, ILI, coal.E, samp.E, ILI.E, iter) {
                      samp=samp,
                      ILI=ILI,
                      coal.E=coal.E,
+                     samp.E=samp.E,
                      ILI.E=ILI.E,
                      iter=iter)
+  pilaf = dplyr::arrange(pilaf, iter, time)
   class(pilaf) = c("PILAF", class(pilaf))
   return(pilaf)
 }
@@ -79,10 +81,28 @@ forecast.PILAF = function(x, time.forecast, method='count', formula='NULL') {
   }
   x.forecast = rbind(x, data.frame(time=time.forecast,
                                    coal=NA, samp=NA, ILI=NA,
-                                   coal.E=1, samp.E=1, ILI.E=1))
-  forecast = eval(paste0('forecast.PILAF.', method, '(x.forecast, formula=)', formula))
+                                   coal.E=1, samp.E=1, ILI.E=1,
+                                   iter=x$iter[1]))
+  forecast.inla = eval(parse(text=paste0('forecast.PILAF.', method, '(x.forecast, formula=', formula, ')')))
+  forecast = forecast.inla$summary.fitted.values[-seq(1, nrow(x)),]
+  forecast = cbind(time=time.forecast, forecast)
   return(forecast)
 }
 
-forecast.PILAF.count = function(x) {
+#' Forecast using Only Count
+#'
+#' @param x A PILAF object with NA for values to forecast.
+#' @return A PILAF object with forecasted ILI counts and 95 % BCI
+#' @export
+forecast.PILAF.count = function(x, formula) {
+  link = rep(1, nrow(x))
+  if(is.null(formula)) {
+    formula = as.formula('ILI ~ -1 + f(time, model="ar", order=2)')
+  }
+  forecast = INLA::inla(formula,
+                     family="poisson", data=x,
+                     control.predictor=list(compute=T, link=link),
+                     E=x$ILI.E)
+  class(forecast) = c("forecast", class(forecast))
+  return(forecast)
 }

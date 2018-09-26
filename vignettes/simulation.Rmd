@@ -9,12 +9,16 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
+```{r, echo=FALSE}
+knitr::opts_chunk$set(collapse=TRUE, comment="#>")
+```
+
 Simulate 10 ILI trajectories and corresponding flu sampling and coalescent counts.
 
-```{r generate-data, message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
+```{r generate-data, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
 library(PILAF)
 n = 10
-lim = c(0, 100)
+lim = c(-10, 100)
 flu.Ne = PILAF:::YearlyLogisticTraj
 flu.sampNum = 100
 ILI.sampNum = 1000
@@ -24,11 +28,31 @@ plot(sim.data)
 
 Forecast the trajectories. 
 
-```{r forecasting, message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
-train.time = seq(0, 90)
-test.time = seq(91, 100)
+```{r forecasting, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
+train.time = seq(0, 100)
+test.time = seq(-10, -1)
 sim.train = sim.data[sim.data$time %in% train.time,]
 sim.test = sim.data[!sim.data$time %in% train.time,]
 sim.fitted = forecast(sim.train, test.time)
-plot(sim.fitted, sim.train)
+plot(sim.fitted, sim.train, truth=sim.test)
+```
+
+Evaluate the mean relative deviation and mean relative width between forecast and true trajectory for the 10 trajectories.
+
+
+```{r results="asis"}
+sim.res = dplyr::arrange(evaluate(sim.fitted, sim.test), desc(time))
+pander::pandoc.table(sim.res)
+```
+
+## Forecast combining the count and joint
+
+```{r}
+sim.fitted = forecast(sim.train, test.time, method='joint')
+plot(sim.fitted, sim.train, truth=sim.test)
+```
+
+```{r}
+sim.res = dplyr::arrange(evaluate(sim.fitted, sim.test), desc(time))
+pander::pandoc.table(sim.res)
 ```

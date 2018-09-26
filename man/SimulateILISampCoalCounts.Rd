@@ -4,10 +4,11 @@
 \alias{SimulateILISampCoalCounts}
 \title{Simulate ILI, Sampling, and Coalescent counts}
 \usage{
-SimulateILISampCoalCounts(lim, flu.Ne, flu.sampNum, ILI.sampNum, i = 1)
+SimulateILISampCoalCounts(lim, flu.Ne, flu.sampNum, ILI.sampNum,
+  init.samp = 1, i = 1)
 }
 \arguments{
-\item{lim}{A numeric tuple of start and end times.}
+\item{lim}{A numeric tuple of start (present) and end (past) times.}
 
 \item{flu.Ne}{A function of time (for flu effective popluation size).}
 
@@ -23,5 +24,6 @@ A list containing coalescent, sampling and ILI counts
 }
 \description{
 Simulate flu sampling, coalescence and ILI counts given effective population
-size trajectory and number of expected samples.
+size trajectory and number of expected samples. Time is defined using present
+as 0.
 }

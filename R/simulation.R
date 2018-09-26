@@ -10,8 +10,8 @@
 #' @seealso PILAF::ComputePropCnst
 PoissonTimeSampling = function(traj, c, lim) {
   upperbound = 1.1 * max(c * traj(seq(lim[1], lim[2], by=1)))
-  time = 0
-  times = 0
+  time = lim[1]
+  times = lim[1]
   while (time < lim[2]) {
     y = rexp(1, upperbound)
     if (runif(1) < c * traj(time + y)/upperbound) {
@@ -99,9 +99,10 @@ AsForwardTime = function(time, last.time) {
 #' Simulate ILI, Sampling, and Coalescent counts
 #'
 #' Simulate flu sampling, coalescence and ILI counts given effective population
-#' size trajectory and number of expected samples.
+#' size trajectory and number of expected samples. Time is defined using present
+#' as 0.
 #'
-#' @param lim A numeric tuple of start and end times.
+#' @param lim A numeric tuple of start (present) and end (past) times.
 #' @param flu.Ne A function of time (for flu effective popluation size).
 #' @param flu.sampNum A numeric scalar of expected number of flu samples in lim.
 #' @param ILI.sampNum A numeric scalar of expected number of sampling events.
@@ -109,26 +110,27 @@ AsForwardTime = function(time, last.time) {
 #' in lim
 #' @return A list containing coalescent, sampling and ILI counts
 #' @export
-SimulateILISampCoalCounts = function(lim, flu.Ne, flu.sampNum, ILI.sampNum, i=1) {
+SimulateILISampCoalCounts = function(lim, flu.Ne, flu.sampNum, ILI.sampNum,
+                                     init.samp=1, i=1) {
   flu.c = PILAF::ComputePropCnst(flu.sampNum, flu.Ne, lim)
   flu.sampTimes = PILAF::PoissonTimeSampling(flu.Ne, flu.c, lim)
   flu.nsamp = rep(1, length(flu.sampTimes))
+  flu.nsamp[1] = init.samp
 
   ILI.c = PILAF:::ComputePropCnst(ILI.sampNum, flu.Ne, lim)
   ILI.sampTimes = PILAF::PoissonTimeSampling(flu.Ne, ILI.c, lim)
   ILI.nsamp = rep(1, length(ILI.sampTimes))
+  ILI.nsamp[1] = init.samp
 
-  grid.forward = seq(min(lim) - 0.5, max(lim) + 0.5, by=1)
-  lim.backward = PILAF:::AsBackwardTime(lim)
-  grid.backward = seq(min(lim.backward$time) - 0.5, max(lim.backward$time) + 0.5, by=1)
-  flu.sampTimes.backward = PILAF:::AsBackwardTime(flu.sampTimes)
-  coal = PILAF::SimulateCoalCounts(grid.backward, sort(flu.sampTimes.backward$time), flu.nsamp, flu.Ne)
-  samp = phylodyn:::samp_stats(grid.forward, flu.sampTimes, flu.nsamp)
-  ILI = phylodyn:::samp_stats(grid.forward, ILI.sampTimes, ILI.nsamp)
-  pilaf = PILAF::PILAF(time=ILI$time, coal=rev(coal$event),
+  grid = seq(min(lim) - 0.5, max(lim) + 0.5, by=1)
+  coal = PILAF::SimulateCoalCounts(grid, flu.sampTimes, flu.nsamp, flu.Ne)
+  samp = phylodyn:::samp_stats(grid, flu.sampTimes, flu.nsamp)
+  ILI = phylodyn:::samp_stats(grid, ILI.sampTimes, ILI.nsamp)
+  pilaf = PILAF::PILAF(time=ILI$time, coal=coal$event,
                      samp=samp$count, ILI=ILI$count,
-                     coal.E=rev(coal$E), samp.E=samp$E,
+                     coal.E=coal$E, samp.E=samp$E,
                      ILI.E=ILI$E, iter=i)
+
   return(pilaf)
 }
 

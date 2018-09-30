@@ -19,7 +19,7 @@ Simulate 10 ILI trajectories and corresponding flu sampling and coalescent count
 
 ```{r generate-data, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
 library(PILAF)
-n = 50
+n = 10
 lim = c(-10, 100)
 flu.Ne = function(...) phylodyn::logistic_traj(..., period = 52, offset = 26)
 flu.sampNum = 100
@@ -35,9 +35,9 @@ train.time = seq(0, 100) # given 101 weeks before and including present
 test.time = seq(-10, -1) # predict 10 weeks ahead
 sim.train = sim.data[sim.data$time %in% train.time,]
 sim.test = sim.data[!sim.data$time %in% train.time,]
-# count_fit = forecast(sim.train, test.time)
+count_fit = forecast(sim.train, test.time)
 # save(count_fit, file='../../data/sandbox_RData/count_fit.RData')
-load('../../data/sandbox_RData/count_fit.RData')
+# load('../../data/sandbox_RData/count_fit.RData')
 plot(count_fit, sim.train, truth=sim.test)
 ```
 
@@ -56,9 +56,9 @@ evaluate(count_fit, sim.test)
 ## Forecast combining the count and joint
 
 ```{r fig.height=5, fig.width=6, message=FALSE, warning=FALSE}
-# joint_fit = forecast(sim.train, test.time, method='joint')
+joint_fit = forecast(sim.train, test.time, method='joint')
 # save(joint_fit, file='../../data/sandbox_RData/joint_fit.RData')
-load('../../data/sandbox_RData/joint_fit.RData')
+# load('../../data/sandbox_RData/joint_fit.RData')
 plot(joint_fit, sim.train, truth=sim.test)
 ```
 
@@ -70,14 +70,14 @@ pander::pandoc.table(joint_res[rev(1:nrow(count_res)),])
 Looking at pattern of absolute error and width. It doesn't differ a lot from the count only model. 
 
 ```{r joint-plot-fit}
-evaluate(joint_fit, sim.test)
+PILAF::evaluate(joint_fit, sim.test)
 ```
 
 
 Let's compare the performance of the two models side by side:
 
 ```{r comparison}
-PILAF::ComparePerformance(count_fit, joint_fit, sim.test, method = c('count', 'joint'))
+PILAF::compare(count_fit, joint_fit, sim.test, method = c('count', 'joint'))
 ```
 
 Under AR(2) model, joint isn't any better compared to count only in terms of MAE and MW. 

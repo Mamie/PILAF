@@ -80,28 +80,28 @@ forecast.PILAF = function(x, time.forecast, method='count', formula='NULL') {
     method = 'count'
   }
   iter.ids = unique(x$iter)
-  forecast.all = c()
+  forecast.all = Forecast()
   n = length(iter.ids)
   p = dplyr::progress_estimated(n)
   for (iter.id in iter.ids) {
     x.iter = dplyr::filter(x, iter==iter.id)
     x.forecast = rbind(data.frame(time=time.forecast,
-                                     coal=NA, samp=NA, ILI=NA,
-                                     coal.E=1, samp.E=1, ILI.E=1,
-                                     iter=x.iter$iter[1]), x.iter)
+                                  coal=NA, samp=NA, ILI=NA,
+                                  coal.E=1, samp.E=1, ILI.E=1,
+                                  iter=x.iter$iter[1]), x.iter)
     x.forecast = x.forecast[order(x.forecast[,'iter'], x.forecast[,'time']),]
     invisible({
       forecast.inla = eval(parse(text=paste0('forecast.PILAF.', method, '(x.forecast, formula=',
-                                           formula, ')')))
+                                             formula, ')')))
     })
     forecast = forecast.inla$summary.fitted.values[1:length(time.forecast),]
-    forecast = cbind(time=time.forecast, forecast)
-    forecast$iter = iter.id
+    forecast = Forecast(time = time.forecast, mean = forecast$mean,
+                        quant0.025 = forecast$`0.025quant`,
+                        quant0.975 = forecast$`0.975quant`,
+                        iter = iter.id)
     forecast.all = rbind(forecast.all, forecast)
     p$pause(0.1)$tick()$print()
   }
-
-  class(forecast.all) = c("forecast", class(forecast.all))
   return(forecast.all)
 }
 
@@ -116,8 +116,8 @@ forecast.PILAF.count = function(x, formula=NULL) {
     formula = as.formula('ILI ~ -1 + f(time, model="ar", order=2)')
   }
   forecast = INLA::inla(formula, family="poisson", data=x,
-                     control.predictor=list(compute=T, link=link),
-                     E=x$ILI.E)
+                        control.predictor=list(compute=T, link=link),
+                        E=x$ILI.E)
   return(forecast)
 }
 
@@ -148,138 +148,4 @@ forecast.PILAF.joint = function(x, formula=NULL) {
                         control.predictor=list(compute=T, link=link),
                         E=X$E)
   return(forecast)
-}
-
-#' Plot the Forecast Results
-#'
-#' Plot the forecasting results
-#'
-#' @param forecast A forecast object.
-#' @param x A PILAF object.
-#' @param truth An optional PILAF object that shows the truth.
-#' @return A ggplot object for the forecasting results.
-#' @export
-plot.forecast = function(x, pilaf, truth=NULL) {
-  x = with(x, data.frame(time=time, mean=mean, quant0.025=`0.025quant`,
-                         quant0.975=`0.975quant`, iter=iter))
-  x$type='ILI'
-  pilaf = with(pilaf,
-           data.frame(time=time, coalescent=coal, sampling=samp, ILI=ILI,
-                      iter=iter))
-  pilaf = tidyr::gather(pilaf, type, counts, -c(time, iter))
-  p = ggplot(data=pilaf) +
-    geom_line(aes(x=time, y=counts, group=iter, color=iter), alpha=0.8, size=0.1) +
-    geom_line(data=x, aes(x=time, y=mean, group=iter, color=iter), alpha=0.8, size=0.1) +
-    geom_ribbon(data=x, aes(x=time, ymin=quant0.025, ymax=quant0.975, group=iter), alpha=0.01) +
-    geom_vline(aes(xintercept=max(x$time), linetype='dotted'), alpha=0.1) +
-    facet_wrap(~type, scales='free_y', ncol=1) +
-    xlab('time to present') +
-    theme_classic() +
-    theme(axis.ticks.x=element_blank(),
-          legend.position='none',
-          strip.background=element_blank())
-  if(!is.null(truth)) {
-    truth$type = 'ILI'
-    p = p +
-      geom_line(data=truth, aes(x=time, y=ILI, group=iter, color=iter),
-                                linetype='dotdash', alpha=0.3, size=0.3)
-  }
-  return(p)
-}
-
-
-#' Generic function for evaluation
-#' @export
-evaluate = function(x, ...) {
-  UseMethod('evaluate', x)
-}
-
-#' Summarize the Forecast
-#'
-#' Summarize the forecast by pointwise mean absolute error and mean relative
-#' width.
-#' @param x A forecast object.
-#' @param truth A data frame containing time, true ILI.
-#' @return A data frame containing the absolute error of forecast.
-#' @export
-#' @import dplyr
-summary.forecast = function(x, truth) {
-  merged = dplyr::left_join(x, truth, by=c('time', 'iter')) %>%
-    dplyr::group_by(time) %>%
-    dplyr::summarize(MAE = mean(abs(mean - ILI), na.rm=T),
-                     MW = mean(`0.975quant` - `0.025quant`, na.rm=T))
-
-  return(merged)
-}
-
-
-#' Evaluate the Forecast
-#'
-#' Evaluate the forecast by pointwise absolute error and BCI
-#' width. Return a plot of AE and width.
-#' @param x A forecast object.
-#' @param truth A data frame containing time, true ILI.
-#' @return A ggplot object
-#' @export
-#' @import dplyr
-evaluate.forecast = function(x, truth) {
-  merged = computeAEW(x, truth)
-  merged_AE = merged %>%
-    dplyr::select(time, `absolute error`)
-  merged_W = merged %>%
-    dplyr::select(time, `width`)
-  AE = summarySE(merged_AE, 'absolute error', 'time')
-  AE$type = 'absolute error'
-  W = summarySE(merged_W, 'width', 'time')
-  W$type = 'width'
-
-  rbind(AE, W) %>%
-    dplyr::ungroup() %>%
-    ggplot(data=., aes(x = time, y = mean)) +
-      geom_line(size=0.3, alpha=0.8) +
-      geom_errorbar(aes(ymin = mean - SE, ymax = mean + SE), size = 0.3, alpha = 0.8, width = 0.3) +
-      facet_wrap(~type, scale='free_y') +
-      theme_classic() +
-      theme(strip.background = element_blank(), axis.title.y = element_blank()) +
-      xlab('time') +
-      scale_x_reverse()
-}
-
-summarySE = function(data, measure_var, group_var) {
-  data %>%
-    dplyr::group_by_(.dots = group_var) %>%
-    dplyr::mutate(n = dplyr::n()) %>%
-    dplyr::mutate_(.dots = setNames(paste0('mean(`', measure_var, '`)'), 'mean')) %>%
-    dplyr::mutate_(.dots = setNames(paste0('sd(`', measure_var, '`)'), 'sd')) %>%
-    dplyr::select(-dplyr::matches(measure_var)) %>%
-    dplyr::distinct() %>%
-    dplyr::mutate(SE = sd/sqrt(n))
-}
-
-#' Compare performance of two models by AE and W
-#'
-#' @param x, y A data frame returned by forecast function
-#' @return A ggplot object comparing the AE and W between the two methods
-#' @export
-ComparePerformance = function(x, y, truth, method = c(1, 2)) {
-  x = computeAEW(x, truth)
-  x$method = method[1]
-  y = computeAEW(y, truth)
-  y$method = method[2]
-  rbind(x, y) %>%
-    tidyr::gather(type, value, -c(time, method)) %>%
-    ggplot(data = .) +
-      geom_violin(aes(x = factor(time, levels=rev(unique(time))), y = value,
-                      color = method)) +
-      facet_wrap(~type, ncol=1, scale = 'free_y') +
-      theme_classic() +
-      theme(strip.background = element_blank(), axis.title.y = element_blank()) +
-      xlab('time')
-}
-
-computeAEW = function(x, truth) {
-  x %>%
-    dplyr::left_join(truth, by = c("time", "iter")) %>%
-    dplyr::mutate(`absolute error` = abs(mean - ILI), `width` = `0.975quant` - `0.025quant`) %>%
-    dplyr::select(time, `absolute error`, `width`)
 }

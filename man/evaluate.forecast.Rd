@@ -12,9 +12,9 @@
 \item{truth}{A data frame containing time, true ILI.}
 }
 \value{
-A data frame containing the absolute error of forecast.
+A ggplot object
 }
 \description{
-Evaluate the forecast by pointwise mean absolute error and mean relative
-width.
+Evaluate the forecast by pointwise absolute error and BCI
+width. Return a plot of AE and width.
 }

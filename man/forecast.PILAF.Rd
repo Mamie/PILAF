@@ -10,7 +10,7 @@
 \arguments{
 \item{x}{A PILAF object.}
 
-\item{time.forecast}{A numeric vector of timepoints to forecast.}
+\item{time.forecast}{A negative numeric vector of timepoints to forecast.}
 
 \item{formula}{An optional character scalar of formula (debugging).}
 }

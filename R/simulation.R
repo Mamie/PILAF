@@ -22,15 +22,6 @@ PoissonTimeSampling = function(traj, c, lim) {
   return(times)
 }
 
-#' A Logistic Trajectory with Period 52
-#'
-#' A logistic trajectory (based on `phylodyn::logistic_traj`) with period 52.
-#'
-#' @inheritParams phylodyn::logistic_traj
-YearlyLogisticTraj = function(...) {
-  phylodyn::logistic_traj(..., period=52)
-}
-
 #' Compute Proportionality Constant
 #'
 #' Compute proportionality constant to produce a correct expected number of

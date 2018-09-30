@@ -113,10 +113,9 @@ forecast.PILAF = function(x, time.forecast, method='count', formula='NULL') {
 forecast.PILAF.count = function(x, formula=NULL) {
   link = rep(1, nrow(x))
   if(is.null(formula)) {
-    formula = as.formula('ILI ~ -1 + f(time, model="ar", order=3)')
+    formula = as.formula('ILI ~ -1 + f(time, model="ar", order=2)')
   }
-  forecast = INLA::inla(formula,
-                     family="poisson", data=x,
+  forecast = INLA::inla(formula, family="poisson", data=x,
                      control.predictor=list(compute=T, link=link),
                      E=x$ILI.E)
   return(forecast)
@@ -141,7 +140,7 @@ forecast.PILAF.joint = function(x, formula=NULL) {
   Y[(1:n)+n, 1] = x$coal
   X = list(time=time, time2=time, beta0=beta0, w0=w0, w=w, Y=Y)
   if(is.null(formula)) {
-    formula = as.formula(paste0("Y ~ -1 + beta0 + f(time, w0, model='ar', order=3) +",
+    formula = as.formula(paste0("Y ~ -1 + beta0 + f(time, w0, model='ar', order=2) +",
                                 "f(time2, w, copy='time', fixed=F)"))
   }
   forecast = INLA::inla(formula,
@@ -195,19 +194,92 @@ evaluate = function(x, ...) {
   UseMethod('evaluate', x)
 }
 
-#' Evaluate the Forecast
+#' Summarize the Forecast
 #'
-#' Evaluate the forecast by pointwise mean absolute error and mean relative
+#' Summarize the forecast by pointwise mean absolute error and mean relative
 #' width.
 #' @param x A forecast object.
 #' @param truth A data frame containing time, true ILI.
 #' @return A data frame containing the absolute error of forecast.
 #' @export
 #' @import dplyr
-evaluate.forecast = function(x, truth) {
+summary.forecast = function(x, truth) {
   merged = dplyr::left_join(x, truth, by=c('time', 'iter')) %>%
     dplyr::group_by(time) %>%
     dplyr::summarize(MAE = mean(abs(mean - ILI), na.rm=T),
                      MW = mean(`0.975quant` - `0.025quant`, na.rm=T))
+
   return(merged)
+}
+
+
+#' Evaluate the Forecast
+#'
+#' Evaluate the forecast by pointwise absolute error and BCI
+#' width. Return a plot of AE and width.
+#' @param x A forecast object.
+#' @param truth A data frame containing time, true ILI.
+#' @return A ggplot object
+#' @export
+#' @import dplyr
+evaluate.forecast = function(x, truth) {
+  merged = computeAEW(x, truth)
+  merged_AE = merged %>%
+    dplyr::select(time, `absolute error`)
+  merged_W = merged %>%
+    dplyr::select(time, `width`)
+  AE = summarySE(merged_AE, 'absolute error', 'time')
+  AE$type = 'absolute error'
+  W = summarySE(merged_W, 'width', 'time')
+  W$type = 'width'
+
+  rbind(AE, W) %>%
+    dplyr::ungroup() %>%
+    ggplot(data=., aes(x = time, y = mean)) +
+      geom_line(size=0.3, alpha=0.8) +
+      geom_errorbar(aes(ymin = mean - SE, ymax = mean + SE), size = 0.3, alpha = 0.8, width = 0.3) +
+      facet_wrap(~type, scale='free_y') +
+      theme_classic() +
+      theme(strip.background = element_blank(), axis.title.y = element_blank()) +
+      xlab('time') +
+      scale_x_reverse()
+}
+
+summarySE = function(data, measure_var, group_var) {
+  data %>%
+    dplyr::group_by_(.dots = group_var) %>%
+    dplyr::mutate(n = dplyr::n()) %>%
+    dplyr::mutate_(.dots = setNames(paste0('mean(`', measure_var, '`)'), 'mean')) %>%
+    dplyr::mutate_(.dots = setNames(paste0('sd(`', measure_var, '`)'), 'sd')) %>%
+    dplyr::select(-dplyr::matches(measure_var)) %>%
+    dplyr::distinct() %>%
+    dplyr::mutate(SE = sd/sqrt(n))
+}
+
+#' Compare performance of two models by AE and W
+#'
+#' @param x, y A data frame returned by forecast function
+#' @return A ggplot object comparing the AE and W between the two methods
+#' @export
+ComparePerformance = function(x, y, truth, method = c(1, 2)) {
+  x = computeAEW(x, truth)
+  x$method = method[1]
+  y = computeAEW(y, truth)
+  y$method = method[2]
+  rbind(x, y) %>%
+    tidyr::gather(type, value, -c(time, method)) %>%
+    ggplot(data = .) +
+      geom_violin(aes(x = factor(time, levels=rev(unique(time))), y = value,
+                      color = method)) +
+      facet_wrap(~type, ncol=1, scale = 'free_y') +
+      theme_classic() +
+      theme(strip.background = element_blank(), axis.title.y = element_blank()) +
+      xlab('time')
+}
+
+computeAEW = function(x, truth) {
+  x %>%
+    dplyr::left_join(truth, by = c("time", "iter")) %>%
+    dplyr::mutate(`absolute error` = abs(mean - ILI), `width` = `0.975quant` - `0.025quant`) %>%
+    dplyr::select(time, `absolute error`, `width`)
 }

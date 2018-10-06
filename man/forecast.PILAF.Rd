@@ -4,13 +4,15 @@
 \alias{forecast.PILAF}
 \title{Forecast a PILAF Object.}
 \usage{
-\method{forecast}{PILAF}(x, time.forecast, method = "count",
-  formula = "NULL")
+\method{forecast}{PILAF}(x, time.forecast, week.forecast,
+  method = "count", formula = "NULL", return_model = F)
 }
 \arguments{
 \item{x}{A PILAF object.}
 
 \item{time.forecast}{A negative numeric vector of timepoints to forecast.}
+
+\item{week.forecast}{A numeric vector of week corresponding to timepoints to forecast.}
 
 \item{formula}{An optional character scalar of formula (debugging).}
 }

@@ -86,6 +86,10 @@ AsForwardTime = function(time, last.time) {
   return(forward.time)
 }
 
+Convert2Week <- function(time) {
+  ifelse(time %% 52 == 0, 52, time %% 52)
+}
+
 
 #' Simulate ILI, Sampling, and Coalescent counts
 #'
@@ -117,7 +121,7 @@ SimulateILISampCoalCounts = function(lim, flu.Ne, flu.sampNum, ILI.sampNum,
   coal = PILAF::SimulateCoalCounts(grid, flu.sampTimes, flu.nsamp, flu.Ne)
   samp = phylodyn:::samp_stats(grid, flu.sampTimes, flu.nsamp)
   ILI = phylodyn:::samp_stats(grid, ILI.sampTimes, ILI.nsamp)
-  pilaf = PILAF::PILAF(time=ILI$time, coal=coal$event,
+  pilaf = PILAF::PILAF(time=ILI$time, week=Convert2Week(ILI$time), coal=coal$event,
                      samp=samp$count, ILI=ILI$count,
                      coal.E=coal$E, samp.E=samp$E,
                      ILI.E=ILI$E, iter=i)

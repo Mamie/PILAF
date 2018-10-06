@@ -11,6 +11,8 @@ vignette: >
 
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(collapse=TRUE, comment="#>")
+library(ggplot2)
+library(dplyr)
 ```
 
 ## AR(2) model on time vs joint AR(2) model on time and coalescent time
@@ -35,22 +37,22 @@ train.time = seq(0, 100) # given 101 weeks before and including present
 test.time = seq(-10, -1) # predict 10 weeks ahead
 sim.train = sim.data[sim.data$time %in% train.time,]
 sim.test = sim.data[!sim.data$time %in% train.time,]
-count_fit = forecast(sim.train, test.time)
+count_fit = forecast(sim.train, test.time, return_model = T)
 # save(count_fit, file='../../data/sandbox_RData/count_fit.RData')
 # load('../../data/sandbox_RData/count_fit.RData')
-plot(count_fit, sim.train, truth=sim.test)
+plot(count_fit$forecast, sim.train, truth=sim.test)
 ```
 
 Evaluate the mean relative deviation and mean relative width between forecast and true trajectory for the 10 trajectories.
 
 
 ```{r results="asis"}
-count_res = summary(count_fit, sim.test)
+count_res = summary(count_fit$forecast, sim.test)
 pander::pandoc.table(count_res[rev(1:nrow(count_res)),])
 ```
 
 ```{r plot-fit}
-evaluate(count_fit, sim.test)
+evaluate(count_fit$forecast, sim.test)
 ```
 
 ## Forecast combining the count and joint
@@ -59,7 +61,7 @@ evaluate(count_fit, sim.test)
 joint_fit = forecast(sim.train, test.time, method='joint')
 # save(joint_fit, file='../../data/sandbox_RData/joint_fit.RData')
 # load('../../data/sandbox_RData/joint_fit.RData')
-plot(joint_fit, sim.train, truth=sim.test)
+plot(joint_fit$forecast, sim.train, truth=sim.test)
 ```
 
 ```{r, results="asis"}
@@ -82,3 +84,58 @@ PILAF::compare(count_fit, joint_fit, sim.test, method = c('count', 'joint'))
 
 Under AR(2) model, joint isn't any better compared to count only in terms of MAE and MW. 
 
+
+## How does the model work?
+
+The purpose of this section is to evaluate the count-only model. It was observed that count-only model works reasonably well in forecasting. We want to evaluate the parameter estimate to see why the model works. In addition, from the residual plot, there is a pattern in absolute error changes. We add different components to see which one reduces this pattern. 
+
+The first thing to do is to simulate the trajectories. The forecast function now has an option `return_model` that returns a list of INLA models. Let's extract the model information. The model is `ILI ~ -1 + f(time, model="ar", order=2)`. No fixed effect and random effect are available for individual data point. Blue line is the simulated ILI counts, black lines is `exp(f_t)` and yellow dots are the fitted values for the first iteration. 
+
+```{r INLA-models}
+PlotCountModel <- function(models, sim.data, i = 1) {
+  model <- models[[i]]
+  qplot(model$summary.random$time$ID, exp(model$summary.random$time$`0.5quant`), geom='line') + xlab('time') +
+  ylab('exp(f_t)') + theme_classic() +
+  geom_line(data = sim.data[sim.data$iter == i,], aes(x = time, y = ILI), color = 'steelblue', size = 0.5) +
+  geom_point(aes(x = model$summary.random$time$ID, y = model$summary.fitted.values$`0.5quant`), color = 'orange', size = 0.1)
+}
+PlotCountModel(count_fit$models, sim.data, i = 1)
+```
+
+Here are the three hyperparameters for the AR2 process, the white noise, coefficients to two previous observations. 
+
+```{r}
+model_example$summary.hyperpar
+```
+
+Let's test it for one iteration using AR3 and see how the hyperparameter changes. Using AR3 seems overfit the model.
+
+```{r}
+formula <- 'ILI ~ -1 + f(time, model = "ar", order = 5)'
+count_fit_ar5 = forecast(sim.train, test.time, formula = formula, return_model = T)
+PlotCountModel(count_fit_ar5$models, sim.data, i = 1)
+```
+
+```{r}
+count_fit_ar5$models[[1]]$summary.hyperpar
+```
+
+What about `AR1`? `AR1` also doesn't seem to smooth. 
+
+```{r}
+formula <- 'ILI ~ -1 + f(time, model = "ar", order = 1)'
+count_fit_ar1 = forecast(sim.train, test.time, formula = formula, return_model = T)
+PlotCountModel(count_fit_ar1$models, sim.data, i = 1)
+```
+
+```{r}
+count_fit_ar1$models[[1]]$summary.hyperpar
+```
+
+By inspection, `AR1` is just predicting the same value at all times. `AR(2)` seems to be a good choice and further analysis doesn't change the forecast too much. (Note when using exp(linear predictor), the linear predictor should be based on median instead of mean). 
+
+## How would adding a seasonality change the forecast?
+
+```{r}
+formula <- 'ILI ~ -1 + f(time, model = "ar", order = 3) + week'
+```

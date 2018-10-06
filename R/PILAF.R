@@ -3,6 +3,7 @@
 #' Constructor method to create an object from PILAF class
 #'
 #' @param time A numeric vector of time.
+#' @param week A numeric vector of week.
 #' @param coal A numeric vector of coalescent event counts.
 #' @param samp A numeric vector of sampling event counts.
 #' @param ILI A numeric vector ILI counts.
@@ -12,15 +13,16 @@
 #' @param iter A numeric vector to indicate group of trajectories.
 #' @return A PILAF object.
 #' @export
-PILAF = function(time, coal, samp, ILI, coal.E, samp.E, ILI.E, iter) {
-  pilaf = data.frame(time=time,
-                     coal=coal,
-                     samp=samp,
-                     ILI=ILI,
-                     coal.E=coal.E,
-                     samp.E=samp.E,
-                     ILI.E=ILI.E,
-                     iter=iter)
+PILAF <- function(time, week, coal, samp, ILI, coal.E, samp.E, ILI.E, iter) {
+  pilaf <- data.frame(time = time,
+                     week = week,
+                     coal = coal,
+                     samp = samp,
+                     ILI = ILI,
+                     coal.E = coal.E,
+                     samp.E = samp.E,
+                     ILI.E = ILI.E,
+                     iter = iter)
   pilaf = dplyr::arrange(pilaf, iter, time)
   class(pilaf) = c("PILAF", class(pilaf))
   return(pilaf)
@@ -72,9 +74,11 @@ forecast = function(x, ...) {
 #'
 #' @param x A PILAF object.
 #' @param time.forecast A negative numeric vector of timepoints to forecast.
+#' @param week.forecast A numeric vector of week corresponding to timepoints to forecast.
 #' @param formula An optional character scalar of formula (debugging).
 #' @export
-forecast.PILAF = function(x, time.forecast, method='count', formula='NULL') {
+forecast.PILAF = function(x, time.forecast, week.forecast, method='count', formula='NULL',
+                          return_model = F) {
   if (!method %in% c('count', 'joint', 'ps')) {
     warnings('Forecast method not recognized. Use default="count"')
     method = 'count'
@@ -83,9 +87,11 @@ forecast.PILAF = function(x, time.forecast, method='count', formula='NULL') {
   forecast.all = Forecast()
   n = length(iter.ids)
   p = dplyr::progress_estimated(n)
+  models = list()
   for (iter.id in iter.ids) {
     x.iter = dplyr::filter(x, iter==iter.id)
     x.forecast = rbind(data.frame(time=time.forecast,
+                                  week=week.forecast,
                                   coal=NA, samp=NA, ILI=NA,
                                   coal.E=1, samp.E=1, ILI.E=1,
                                   iter=x.iter$iter[1]), x.iter)
@@ -94,15 +100,18 @@ forecast.PILAF = function(x, time.forecast, method='count', formula='NULL') {
       forecast.inla = eval(parse(text=paste0('forecast.PILAF.', method, '(x.forecast, formula=',
                                              formula, ')')))
     })
+    if (return_model) models[[iter.id]] = forecast.inla
     forecast = forecast.inla$summary.fitted.values[1:length(time.forecast),]
-    forecast = Forecast(time = time.forecast, mean = forecast$mean,
+    forecast = Forecast(time = time.forecast,
+                        week = week.forecast,
+                        mean = forecast$mean,
                         quant0.025 = forecast$`0.025quant`,
                         quant0.975 = forecast$`0.975quant`,
                         iter = iter.id)
     forecast.all = rbind(forecast.all, forecast)
     p$pause(0.1)$tick()$print()
   }
-  return(forecast.all)
+  return(list(forecast = forecast.all, models = models))
 }
 
 #' Forecast using Only Count

@@ -4,10 +4,12 @@
 \alias{PILAF}
 \title{Constructor to PILAF object}
 \usage{
-PILAF(time, coal, samp, ILI, coal.E, samp.E, ILI.E, iter)
+PILAF(time, week, coal, samp, ILI, coal.E, samp.E, ILI.E, iter)
 }
 \arguments{
 \item{time}{A numeric vector of time.}
+
+\item{week}{A numeric vector of week.}
 
 \item{coal}{A numeric vector of coalescent event counts.}
 

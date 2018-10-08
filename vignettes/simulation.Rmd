@@ -89,15 +89,17 @@ Under AR(2) model, joint isn't any better compared to count only in terms of MAE
 
 The purpose of this section is to evaluate the count-only model. It was observed that count-only model works reasonably well in forecasting. We want to evaluate the parameter estimate to see why the model works. In addition, from the residual plot, there is a pattern in absolute error changes. We add different components to see which one reduces this pattern. 
 
-The first thing to do is to simulate the trajectories. The forecast function now has an option `return_model` that returns a list of INLA models. Let's extract the model information. The model is `ILI ~ -1 + f(time, model="ar", order=2)`. No fixed effect and random effect are available for individual data point. Blue line is the simulated ILI counts, black lines is `exp(f_t)` and yellow dots are the fitted values for the first iteration. 
+The first thing to do is to simulate the trajectories. The forecast function now has an option `return_model` that returns a list of INLA models. Let's extract the model information. The model is `ILI ~ -1 + f(time, model="ar", order=2)`. No fixed effect and random effect are available for individual data point. Blue line is the simulated ILI counts, the orange lines are the fitted values for the first iteration.
 
 ```{r INLA-models}
 PlotCountModel <- function(models, sim.data, i = 1) {
   model <- models[[i]]
-  qplot(model$summary.random$time$ID, exp(model$summary.random$time$`0.5quant`), geom='line') + xlab('time') +
+  data <- sim.data[sim.data$iter == i,]
+  p <- ggplot() + xlab('time') +
   ylab('exp(f_t)') + theme_classic() +
-  geom_line(data = sim.data[sim.data$iter == i,], aes(x = time, y = ILI), color = 'steelblue', size = 0.5) +
-  geom_point(aes(x = model$summary.random$time$ID, y = model$summary.fitted.values$`0.5quant`), color = 'orange', size = 0.1)
+  geom_line(data = data, aes(x = time, y = ILI), color = 'steelblue', size = 0.5) +
+  geom_line(aes(x = model$summary.random$time$ID[1:nrow(data)], y = model$summary.fitted.values$`0.5quant`[1:nrow(data)]), color = 'orange', size = 0.5)
+  return(p)
 }
 PlotCountModel(count_fit$models, sim.data, i = 1)
 ```
@@ -108,34 +110,45 @@ Here are the three hyperparameters for the AR2 process, the white noise, coeffic
 model_example$summary.hyperpar
 ```
 
-Let's test it for one iteration using AR3 and see how the hyperparameter changes. Using AR3 seems overfit the model.
-
-```{r}
-formula <- 'ILI ~ -1 + f(time, model = "ar", order = 5)'
-count_fit_ar5 = forecast(sim.train, test.time, formula = formula, return_model = T)
-PlotCountModel(count_fit_ar5$models, sim.data, i = 1)
-```
-
-```{r}
-count_fit_ar5$models[[1]]$summary.hyperpar
-```
-
-What about `AR1`? `AR1` also doesn't seem to smooth. 
-
-```{r}
-formula <- 'ILI ~ -1 + f(time, model = "ar", order = 1)'
-count_fit_ar1 = forecast(sim.train, test.time, formula = formula, return_model = T)
-PlotCountModel(count_fit_ar1$models, sim.data, i = 1)
-```
-
-```{r}
-count_fit_ar1$models[[1]]$summary.hyperpar
-```
-
-By inspection, `AR1` is just predicting the same value at all times. `AR(2)` seems to be a good choice and further analysis doesn't change the forecast too much. (Note when using exp(linear predictor), the linear predictor should be based on median instead of mean). 
 
 ## How would adding a seasonality change the forecast?
 
 ```{r}
-formula <- 'ILI ~ -1 + f(time, model = "ar", order = 3) + week'
+formula <- 'ILI ~ -1 + f(time, model = "ar", order = 2) + f(week, model = "rw1", cyclic = T)'
+count_fit_week = forecast(sim.train, test.time, PILAF:::Convert2Week(test.time),
+                          formula = formula, return_model = T)
+PlotCountModel(count_fit_week$models, sim.data, i = 1)
+```
+
+```{r}
+plot(count_fit_week$forecast, sim.train, truth=sim.test)
+```
+
+```{r}
+PILAF::evaluate(count_fit_week$forecast, sim.test)
+```
+
+```{r}
+PILAF::compare(count_fit$forecast, count_fit_week$forecast, sim.test, method = c('count', 'count_week'))
+```
+
+It looks like the width of the count model with week performs significantly better compared with the time only count model. Let's try the joint model next. 
+
+```{r}
+formula <- "Y ~ -1 + beta0 + f(time, w0, model='ar', order = 2) + f(week, w0, model='rw1', constr=F, cyclic=T) + f(time2, w, copy = 'time', fixed=F) + f(week2, w, copy='week', fixed=F)"
+joint_fit_week = forecast(sim.train, test.time, PILAF:::Convert2Week(test.time),
+                          formula = formula, return_model = T, method = 'joint')
+PlotCountModel(joint_fit_week$models, sim.data, i = 1)
+```
+```{r}
+plot(joint_fit_week$forecast, sim.train, truth=sim.test)
+```
+
+```{r}
+PILAF::evaluate(joint_fit_week$forecast, sim.test)
+```
+
+
+```{r}
+PILAF::compare(count_fit_week$forecast, joint_fit_week$forecast, sim.test, method = c('count_week', 'joint_week'))
 ```

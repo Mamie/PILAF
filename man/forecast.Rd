@@ -4,8 +4,8 @@
 \alias{Forecast}
 \title{Constructor to Forecast object}
 \usage{
-Forecast(time = integer(), mean = double(), quant0.025 = double(),
-  quant0.975 = double(), iter = integer())
+Forecast(time = integer(), week = integer(), mean = double(),
+  quant0.025 = double(), quant0.975 = double(), iter = integer())
 }
 \arguments{
 \item{time}{A numeric vector of time.}

@@ -141,13 +141,14 @@ forecast.PILAF.joint = function(x, formula=NULL) {
   link = c(rep(1, n), rep(2, n))
   E = c(x$ILI.E, x$coal.E)
   time = rep(x$time, 2)
+  week <- rep(x$week, 2)
   beta0 = c(rep(0, n), rep(1, n))
   w0 = c(rep(1, n), rep(0, n))
   w = c(rep(0, n), rep(-1, n))
   Y = matrix(NA, nrow=2*n, ncol=2)
   Y[1:n, 1] = x$ILI
   Y[(1:n)+n, 1] = x$coal
-  X = list(time=time, time2=time, beta0=beta0, w0=w0, w=w, Y=Y)
+  X = list(time=time, time2=time, week=week, week2=week, beta0=beta0, w0=w0, w=w, Y=Y)
   if(is.null(formula)) {
     formula = as.formula(paste0("Y ~ -1 + beta0 + f(time, w0, model='ar', order=2) +",
                                 "f(time2, w, copy='time', fixed=F)"))

@@ -9,7 +9,7 @@
 #' @param iter A numeric vector to indicate group of trajectories.
 #' @return A Forecast object.
 #' @export
-Forecast <- function(time=integer(), mean=double(), `quant0.025`=double(),
+Forecast <- function(time=integer(), week=integer(), mean=double(), `quant0.025`=double(),
                      `quant0.975`=double(), iter=integer()) {
   forecast <- data.frame(time = time, mean = mean, `quant0.025` = `quant0.025`,
                          `quant0.975` = `quant0.975`, iter=iter)

@@ -78,7 +78,7 @@ forecast = function(x, ...) {
 #' @param formula An optional character scalar of formula (debugging).
 #' @export
 forecast.PILAF = function(x, time.forecast, week.forecast, method='count', formula='NULL',
-                          return_model = F) {
+                          return_model = F, verbose = F) {
   if (!method %in% c('count', 'joint', 'ps')) {
     warnings('Forecast method not recognized. Use default="count"')
     method = 'count'
@@ -89,6 +89,7 @@ forecast.PILAF = function(x, time.forecast, week.forecast, method='count', formu
   p = dplyr::progress_estimated(n)
   models = list()
   for (iter.id in iter.ids) {
+    if (verbose) print(iter.id)
     x.iter = dplyr::filter(x, iter==iter.id)
     x.forecast = rbind(data.frame(time=time.forecast,
                                   week=week.forecast,
@@ -136,7 +137,7 @@ forecast.PILAF.count = function(x, formula=NULL) {
 #' @param formula A INLA formula.
 #' @return A PILAF object with forecasted ILI counts and 95 % BCI.
 #' @export
-forecast.PILAF.joint = function(x, formula=NULL) {
+forecast.PILAF.joint = function(x, formula=NULL, verbose = F) {
   n = nrow(x)
   link = c(rep(1, n), rep(2, n))
   E = c(x$ILI.E, x$coal.E)
@@ -148,6 +149,7 @@ forecast.PILAF.joint = function(x, formula=NULL) {
   Y = matrix(NA, nrow=2*n, ncol=2)
   Y[1:n, 1] = x$ILI
   Y[(1:n)+n, 1] = x$coal
+  r = rep(1:2, each = n)
   X = list(time=time, time2=time, week=week, week2=week, beta0=beta0, w0=w0, w=w, Y=Y)
   if(is.null(formula)) {
     formula = as.formula(paste0("Y ~ -1 + beta0 + f(time, w0, model='ar', order=2) +",
@@ -156,6 +158,6 @@ forecast.PILAF.joint = function(x, formula=NULL) {
   forecast = INLA::inla(formula,
                         family=c("poisson", "poisson"), data=X,
                         control.predictor=list(compute=T, link=link),
-                        E=X$E)
+                        E=X$E, verbose = verbose)
   return(forecast)
 }

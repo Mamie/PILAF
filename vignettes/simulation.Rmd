@@ -21,7 +21,7 @@ Simulate 10 ILI trajectories and corresponding flu sampling and coalescent count
 
 ```{r generate-data, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
 library(PILAF)
-n = 10
+n = 50
 lim = c(-10, 100)
 flu.Ne = function(...) phylodyn::logistic_traj(..., period = 52, offset = 26)
 flu.sampNum = 100
@@ -38,17 +38,7 @@ test.time = seq(-10, -1) # predict 10 weeks ahead
 sim.train = sim.data[sim.data$time %in% train.time,]
 sim.test = sim.data[!sim.data$time %in% train.time,]
 count_fit = forecast(sim.train, test.time, PILAF:::Convert2Week(test.time), return_model = T)
-# save(count_fit, file='../../data/sandbox_RData/count_fit.RData')
-# load('../../data/sandbox_RData/count_fit.RData')
 plot(count_fit$forecast, sim.train, truth=sim.test)
-```
-
-Evaluate the mean relative deviation and mean relative width between forecast and true trajectory for the 10 trajectories.
-
-
-```{r results="asis"}
-count_res = summary(count_fit$forecast, sim.test)
-pander::pandoc.table(count_res[rev(1:nrow(count_res)),])
 ```
 
 ```{r plot-fit}
@@ -59,14 +49,7 @@ evaluate(count_fit$forecast, sim.test)
 
 ```{r fig.height=5, fig.width=6, message=FALSE, warning=FALSE}
 joint_fit = forecast(sim.train, test.time, PILAF:::Convert2Week(test.time), method='joint')
-# save(joint_fit, file='../../data/sandbox_RData/joint_fit.RData')
-# load('../../data/sandbox_RData/joint_fit.RData')
 plot(joint_fit$forecast, sim.train, truth=sim.test)
-```
-
-```{r, results="asis"}
-joint_res = summary(joint_fit$forecast, sim.test)
-pander::pandoc.table(joint_res[rev(1:nrow(count_res)),])
 ```
 
 Looking at pattern of absolute error and width. It doesn't differ a lot from the count only model. 
@@ -96,12 +79,12 @@ PlotCountModel <- function(models, sim.data, i = 1) {
   model <- models[[i]]
   data <- sim.data[sim.data$iter == i,]
   p <- ggplot() + xlab('time') +
-  ylab('exp(f_t)') + theme_classic() +
+  ylab('ILI') + theme_classic() +
   geom_line(data = data, aes(x = time, y = ILI), color = 'steelblue', size = 0.5) +
   geom_line(aes(x = model$summary.random$time$ID[1:nrow(data)], y = model$summary.fitted.values$`0.5quant`[1:nrow(data)]), color = 'orange', size = 0.5)
   return(p)
 }
-PlotCountModel(count_fit$models, sim.data, i = 1)
+# PlotCountModel(count_fit$models, sim.data, i = 1)
 ```
 
 Here are the three hyperparameters for the AR2 process, the white noise, coefficients to two previous observations. 
@@ -114,41 +97,21 @@ model_example$summary.hyperpar
 ## How would adding a seasonality change the forecast?
 
 ```{r}
-formula <- 'ILI ~ -1 + f(time, model = "ar", order = 2) + f(week, model = "rw1", cyclic = T)'
+formula <- 'ILI ~ -1 + f(time, model = "ar", order = 2) + f(week, model = "rw1", cyclic = T, constr = F)'
 count_fit_week = forecast(sim.train, test.time, PILAF:::Convert2Week(test.time),
                           formula = formula, return_model = T)
-PlotCountModel(count_fit_week$models, sim.data, i = 1)
-```
-
-```{r}
 plot(count_fit_week$forecast, sim.train, truth=sim.test)
-```
-
-```{r}
 PILAF::evaluate(count_fit_week$forecast, sim.test)
-```
-
-```{r}
 PILAF::compare(count_fit$forecast, count_fit_week$forecast, sim.test, method = c('count', 'count_week'))
 ```
 
 It looks like the width of the count model with week performs significantly better compared with the time only count model. Let's try the joint model next. 
 
 ```{r}
-formula <- "Y ~ -1 + beta0 + f(time, w0, model='ar', order = 2) + f(week, w0, model='rw1', constr=F, cyclic=T) + f(time2, w, copy = 'time', fixed=F) + f(week2, w, copy='week', fixed=F)"
+formula <- "Y ~ -1 + beta0 + f(time, w0, model='ar', order = 2) + f(week, w0, model='rw1', cyclic = T, constr = F) + f(time2, w, copy = 'time') + f(week2, w, copy = 'week')"
 joint_fit_week = forecast(sim.train, test.time, PILAF:::Convert2Week(test.time),
-                          formula = formula, return_model = T, method = 'joint')
-PlotCountModel(joint_fit_week$models, sim.data, i = 1)
-```
-```{r}
+                          formula = formula, return_model = T, method = 'joint', verbose=F)
 plot(joint_fit_week$forecast, sim.train, truth=sim.test)
-```
-
-```{r}
 PILAF::evaluate(joint_fit_week$forecast, sim.test)
-```
-
-
-```{r}
 PILAF::compare(count_fit_week$forecast, joint_fit_week$forecast, sim.test, method = c('count_week', 'joint_week'))
 ```

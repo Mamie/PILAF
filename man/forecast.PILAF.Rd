@@ -5,7 +5,8 @@
 \title{Forecast a PILAF Object.}
 \usage{
 \method{forecast}{PILAF}(x, time.forecast, week.forecast,
-  method = "count", formula = "NULL", return_model = F)
+  method = "count", formula = "NULL", return_model = F,
+  verbose = F)
 }
 \arguments{
 \item{x}{A PILAF object.}

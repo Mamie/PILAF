@@ -4,7 +4,7 @@
 \alias{forecast.PILAF.joint}
 \title{Forecast using Count and Coalescent events}
 \usage{
-\method{forecast}{PILAF.joint}(x, formula = NULL)
+\method{forecast}{PILAF.joint}(x, formula = NULL, verbose = F)
 }
 \arguments{
 \item{x}{A PILAF object with NA for values to forecast.}

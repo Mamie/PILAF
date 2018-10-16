@@ -138,10 +138,10 @@ compare.Forecast = function(x, y, truth, method = c(1, 2)) {
   y$method = method[2]
   rbind(x, y) %>%
     tidyr::gather(type, value, -c(time, method)) %>%
-    ggplot(data = .) +
-    geom_violin(aes(x = factor(time, levels=rev(unique(time))), y = value,
-                    color = method)) +
+    ggplot(data = ., aes(x = factor(time, levels=rev(unique(time))), y = value, color = method)) +
+    geom_boxplot(width = 0.5, outlier.size = 0.2) +
     facet_wrap(~type, ncol = 1, scale = 'free_y') +
+    scale_colour_manual(values=c("#0083C3", "#EB975F")) +
     theme_classic() +
     theme(strip.background = element_blank(), axis.title.y = element_blank()) +
     xlab('time')
@@ -163,6 +163,6 @@ summarySE = function(data, measure_var, group_var) {
 computeAEW = function(x, truth) {
   x %>%
     dplyr::left_join(truth, by = c("time", "iter")) %>%
-    dplyr::mutate(`absolute error` = abs(mean - ILI), `width` = `quant0.975` - `quant0.025`) %>%
-    dplyr::select(time, `absolute error`, `width`)
+    dplyr::mutate(`pointwise absolute error` = abs(mean - ILI), `pointwise width` = `quant0.975` - `quant0.025`) %>%
+    dplyr::select(time, `pointwise absolute error`, `pointwise width`)
 }

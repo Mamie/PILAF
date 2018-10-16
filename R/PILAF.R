@@ -48,14 +48,15 @@ is.PILAF = function(x) {
 #' @import ggplot2
 plot.PILAF = function(x) {
   x = with(x,
-          data.frame(time = time, coalescent=coal, sampling=samp,ILI=ILI,iter=iter))
+          dplyr::data_frame(time = time, `coalescent event counts`=coal, `sampling event counts`=samp, `ILI counts`=ILI, iter=iter))
   x = tidyr::gather(x, type, counts, -c(time, iter))
   ggplot(data=x) +
-    geom_line(aes(x=time, y=counts, group=iter, color=iter, alpha=0.8), size=0.1) +
+    geom_line(aes(x=time, y=counts, group=iter, color=iter, alpha=0.3), size=0.1) +
     facet_wrap(~type, scales='free', ncol=1) +
     theme_classic() +
-    xlab('time to present') +
-    theme(axis.ticks.x=element_blank(),
+    xlab('Time to present (weeks)') +
+    theme(axis.ticks.x = element_blank(),
+          axis.title.y = element_blank(),
           legend.position='none',
           strip.background=element_blank())
 }

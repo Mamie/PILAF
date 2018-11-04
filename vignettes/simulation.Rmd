@@ -122,6 +122,12 @@ PILAF::compare(count_fit_week$forecast, joint_fit_week$forecast, sim.test, metho
 ```
 
 ```{r}
+count_fit_week$models[[1]]$summary.hyperpar
+
+joint_fit_week$models[[1]]$summary.hyperpar
+```
+
+```{r}
 p <- PILAF::compare(count_fit_week$forecast, joint_fit_week$forecast, sim.test, method = c('count only', 'joint'))
 p
 ggsave(p, file = '../../manuscript/figures/simulation/simulation-results.pdf',

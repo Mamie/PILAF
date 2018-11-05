@@ -38,22 +38,20 @@ is.Forecast = function(x) {
 #' @param truth An optional PILAF object that shows the truth.
 #' @return A ggplot object for the forecasting results.
 #' @export
-plot.Forecast = function(x, pilaf, truth=NULL) {
+plot.Forecast = function(x, pilaf, truth=NULL, ...) {
   x$type='ILI'
-  pilaf = with(pilaf,
-               data.frame(time=time, coalescent=coal, sampling=samp, ILI=ILI,
-                          iter=iter))
+  pilaf = with(pilaf, data.frame(time=time, coalescent=coal, sampling=samp,
+                                 ILI=ILI, iter=iter))
   pilaf = tidyr::gather(pilaf, type, counts, -c(time, iter))
   p = ggplot(data=pilaf) +
     geom_line(aes(x=time, y=counts, group=iter, color=iter), alpha=0.8, size=0.1) +
     geom_line(data=x, aes(x=time, y=mean, group=iter, color=iter), alpha=0.8, size=0.1) +
-    geom_ribbon(data=x, aes(x=time, ymin=quant0.025, ymax=quant0.975, group=iter), alpha=0.01) +
+    geom_ribbon(data=x, aes(x=time, ymin=quant0.025, ymax=quant0.975, group=iter), ...) +
     geom_vline(aes(xintercept=max(x$time), linetype='dotted'), alpha=0.1) +
     facet_wrap(~type, scales='free_y', ncol=1) +
     xlab('time to present') +
     theme_classic() +
-    theme(axis.ticks.x=element_blank(),
-          legend.position='none',
+    theme(axis.ticks.x=element_blank(), legend.position='none',
           strip.background=element_blank())
   if(!is.null(truth)) {
     truth$type = 'ILI'

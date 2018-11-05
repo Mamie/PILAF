@@ -87,7 +87,7 @@ forecast.PILAF = function(x, time.forecast, week.forecast, method='count', formu
   iter.ids = unique(x$iter)
   forecast.all = Forecast()
   n = length(iter.ids)
-  p = dplyr::progress_estimated(n)
+  if (verbose) p = dplyr::progress_estimated(n)
   models = list()
   for (iter.id in iter.ids) {
     if (verbose) print(iter.id)
@@ -111,7 +111,7 @@ forecast.PILAF = function(x, time.forecast, week.forecast, method='count', formu
                         quant0.975 = forecast$`0.975quant`,
                         iter = iter.id)
     forecast.all = rbind(forecast.all, forecast)
-    p$pause(0.1)$tick()$print()
+    if (verbose) p$pause(0.1)$tick()$print()
   }
   return(list(forecast = forecast.all, models = models))
 }

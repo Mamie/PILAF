@@ -1,4 +1,8 @@
 #' plot real CDC time series data
+#'
+#' @params data A data frame containing year, week and total ILI counts
+#' @param value The name of the variable that contains ILI counts
+#' @export
 plot_traj_heatmap <- function(data, value) {
   data_wide <- data %>%
     mutate(season = ifelse(week >= 30, paste0(year, '-', year + 1),

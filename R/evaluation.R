@@ -65,6 +65,7 @@ create_data_avail_table <- function(data) {
 #' @export
 LOSO_forecast <- function(data, task_list, method = 'count', formula = NULL) {
   eval <- list()
+  models <- list()
   n <- nrow(task_list)
   p <- dplyr::progress_estimated(n)
   for (i in seq(n)) {
@@ -75,10 +76,57 @@ LOSO_forecast <- function(data, task_list, method = 'count', formula = NULL) {
     train_data <- data[data$time %in% train_time, ]
     test_data <- data[data$time %in% test_time, ]
     try({
-      fit <- forecast(train_data, test_data$time, test_data$week, return_model = F, verbose = F, method = method, formula = formula)
-      eval[[i]] <- fit$forecast})
+      fit <- forecast(train_data, test_data$time, test_data$week, return_model = T, verbose = F, method = method, formula = formula)
+      eval[[i]] <- fit$forecast
+      models[[i]] <- fit$models[[1]]})
     p$pause(0.1)$tick()$print()
   }
-  return(eval)
+  return(list(forecast = eval, models = models))
 }
 
+
+#' return the peak week for each model  by simulation
+compute_peak_week <- function(task_list, models, task_season_range, n = 100) {
+  peak_week <- data.frame(time = integer(), peak_week = integer(), quant0.025 = double(), quant0.975 = double(), median = double(), mean = double())
+  peak_ILI <- data.frame(time = integer(), peak_ILI = integer(), quant0.025 = double(), quant0.975 = double(), median = double(), mean = double())
+  p <- dplyr::progress_estimated(length(models))
+  for (i in seq_along(models)) {
+    try({
+      posterior_samples <- INLA::inla.posterior.sample(n, models[[i]])
+      task_entry <- task_list[i, ]
+      seaons_range <- task_season_range[task_season_range$season == task_entry$season, ]
+      peak_week_samples <- data.frame(peak_week = integer(), peak_ILI = double())
+
+      for (j in seq_along(posterior_samples)) {
+        pred <- find_peak_week(posterior_samples[[j]], task_entry, season_range)
+        peak_week_samples <- rbind(peak_week_samples, pred)
+      }
+
+      peak_week <- rbind(peak_week, cbind(time = i, get_summary_stats(peak_week_samples$peak_week)))
+      peak_ILI <- rbind(peak_ILI, cbind(time = i, get_summary_stats(peak_week_samples$peak_ILI)))
+    })
+    p$pause(0.1)$tick()$print()
+  }
+  return(list(peak_week = peak_week, peak_ILI = peak_ILI))
+}
+
+get_summary_stats <- function(samples) {
+  quants <- unname(quantile(samples, c(0.025, 0.975)))
+  quant0.025 <- quants[1]
+  quant0.975 <- quants[2]
+  mean <- mean(samples)
+  median <- median(samples)
+  return(data.frame(quant0.025 = quant0.025, quant0.975 = quant0.975, mean = mean, median = median, stringsAsFactors = F))
+}
+
+find_peak_week <- function(posterior_sample, task_entry, season_range) {
+  actual_times <- seq(task_entry$predict_end, task_entry$train_start)
+  latent_sample <- posterior_sample$latent
+  predictor_idx <- which(grepl('Predictor', rownames(latent_sample), fixed = F))[seq_along(actual_times)]
+  latent_sample_predictor <- exp(latent_sample[predictor_idx])
+  time_latent_map <- hashmap::hashmap(actual_times, latent_sample_predictor)
+
+  season_range_seq <- seq(season_range$time_end, season_range$time_start)
+  ILI <- sapply(season_range_seq, function(x) time_latent_map[[x]])
+  return(data.frame(peak_week = season_range_seq[which.max(ILI)[1]], peak_ILI = max(ILI)))
+}

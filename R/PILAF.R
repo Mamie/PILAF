@@ -128,7 +128,7 @@ forecast.PILAF.count = function(x, formula=NULL) {
   }
   forecast = INLA::inla(formula, family="poisson", data=x,
                         control.predictor=list(compute=T, link=link),
-                        E=x$ILI.E)
+                        E=x$ILI.E, control.compute = list(config = T))
   return(forecast)
 }
 
@@ -159,6 +159,6 @@ forecast.PILAF.joint = function(x, formula=NULL, verbose = F) {
   forecast = INLA::inla(formula,
                         family=c("poisson", "poisson"), data=X,
                         control.predictor=list(compute=T, link=link),
-                        E=X$E, verbose = verbose)
+                        E=X$E, verbose = verbose, control.compute = list(config = T))
   return(forecast)
 }

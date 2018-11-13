@@ -85,7 +85,56 @@ LOSO_forecast <- function(data, task_list, method = 'count', formula = NULL) {
 }
 
 
-#' return the peak week for each model  by simulation
+mean_relative_error <- function(x, truth) {
+  return(mean(abs(x - (truth + 1))/(truth + 1))) # to prevent when results are 1
+}
+
+mean_width <- function(lwr, upr, truth) {
+  return(mean((upr - lwr)/(truth + 1)))
+}
+
+compute_LOSO_performance <- function(fit, time_ILI_map, task_list) {
+  performance <- matrix(unlist(lapply(fit, function(df) {
+    if(is.null(df)) return(c(NA, NA))
+    truth <- sapply(df$time, function(x) time_ILI_map[[x]])
+    c(mean_relative_error(df$mean, truth),
+      mean_width(df$quant0.025, df$quant0.975,truth))})), ncol = 2, byrow = T)
+
+  colnames(performance) <- c('MRE', 'MRW')
+  performance <- data.frame(performance)
+  performance$season <- task_list$season
+  performance$task <- task_list$task
+  return(performance)
+}
+
+plot_LOSO_performance <- function(performances) {
+  performances %>%
+    tidyr::gather(metrics, performance, -c(season, task, model)) %>%
+    ggplot(data = ., aes(x = task, y = performance)) +
+    geom_point(aes(color = model), size = 0.4) +
+    geom_line(aes(color = model), size = 0.2) +
+    facet_wrap(metrics ~ season, scales = 'free', ncol = 6) +
+    theme_classic() +
+    theme(strip.background = element_blank(),
+          legend.position = 'bottom') +
+    scale_color_manual(values = c("#2F408E", "#E5801C"))
+}
+
+find_season_range <- function(task_list) {
+  task_season_range <- task_list %>%
+    group_by(season) %>%
+    mutate(time_start = max(predict_start), time_end = min(predict_end)) %>%
+    select(task, season, time_start, time_end) %>%
+    mutate(time_start = as.integer(time_start), time_end = as.integer(time_end))
+  return(task_season_range)
+}
+
+#' Compute peakk week and peak ILI for each season
+#' @param task_list A list of tasks
+#' @param models A list of INLA model for each task
+#' @param n Number of posterior predictive samples
+#' @return A list containing corresponding peak week and peak ILI for each mode
+#' @exportl
 compute_peak_week <- function(task_list, models, task_season_range, n = 100) {
   peak_week <- data.frame(time = integer(), peak_week = integer(), quant0.025 = double(), quant0.975 = double(), median = double(), mean = double())
   peak_ILI <- data.frame(time = integer(), peak_ILI = integer(), quant0.025 = double(), quant0.975 = double(), median = double(), mean = double())
@@ -94,7 +143,8 @@ compute_peak_week <- function(task_list, models, task_season_range, n = 100) {
     try({
       posterior_samples <- INLA::inla.posterior.sample(n, models[[i]])
       task_entry <- task_list[i, ]
-      seaons_range <- task_season_range[task_season_range$season == task_entry$season, ]
+      # browser()
+      season_range <- task_season_range[task_season_range$season == task_entry$season, ]
       peak_week_samples <- data.frame(peak_week = integer(), peak_ILI = double())
 
       for (j in seq_along(posterior_samples)) {
@@ -110,6 +160,10 @@ compute_peak_week <- function(task_list, models, task_season_range, n = 100) {
   return(list(peak_week = peak_week, peak_ILI = peak_ILI))
 }
 
+#' Get summary statistics from samples
+#' @param samples A numeric vector of samples to summarize
+#' @return A data frame containing the 95% BCI, mean and median of the samples
+#' @export
 get_summary_stats <- function(samples) {
   quants <- unname(quantile(samples, c(0.025, 0.975)))
   quant0.025 <- quants[1]
@@ -119,6 +173,12 @@ get_summary_stats <- function(samples) {
   return(data.frame(quant0.025 = quant0.025, quant0.975 = quant0.975, mean = mean, median = median, stringsAsFactors = F))
 }
 
+#' Find the peak week amd peak ILI from samples
+#' @param posterior_sample  Asample from  inla.posterior.sample
+#' @param task_entry A task entry corresponding to the sample
+#' @param season_range The start and end of the season
+#' @return A data frame containing the peak week and peak ILI from the sample
+#' @export
 find_peak_week <- function(posterior_sample, task_entry, season_range) {
   actual_times <- seq(task_entry$predict_end, task_entry$train_start)
   latent_sample <- posterior_sample$latent

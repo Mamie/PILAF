@@ -14,8 +14,8 @@ create_season_task_list <- function(season_list, starting_time, start_week, end_
   task_list <- data.frame()
   task_list <- cbind(train_start = rep(starting_time, n_windows))
   task_list <- data.frame(task_list)
-  task_list$predict_start <- seq(predict_start, predict_end + min_pred, by = -1)
-  task_list$train_end <- task_list$predict_start - 1
+  task_list$train_end <- seq(predict_start + 1, predict_end + min_pred + 1, by = -1)
+  task_list$predict_start <- task_list$train_end - 1
   task_list$predict_end <- rep(predict_end, n_windows)
   task_list$season <- season_list$season
   task_list$task <- seq(nrow(task_list))
@@ -141,9 +141,8 @@ compute_peak_week <- function(task_list, models, task_season_range, n = 100) {
   p <- dplyr::progress_estimated(length(models))
   for (i in seq_along(models)) {
     try({
-      posterior_samples <- INLA::inla.posterior.sample(n, models[[i]])
+      posterior_samples <- INLA::inla.posterior.sample(n, models[[i]], seed = 1)
       task_entry <- task_list[i, ]
-      # browser()
       season_range <- task_season_range[task_season_range$season == task_entry$season, ]
       peak_week_samples <- data.frame(peak_week = integer(), peak_ILI = double())
 

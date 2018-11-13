@@ -97,6 +97,7 @@ forecast.PILAF = function(x, time.forecast, week.forecast, method='count', formu
                                   coal=NA, samp=NA, ILI=NA,
                                   coal.E=1, samp.E=1, ILI.E=1,
                                   iter=x.iter$iter[1]), x.iter)
+    # time is with respect to present, future has smaller value of time
     x.forecast = x.forecast[order(x.forecast[,'iter'], x.forecast[,'time']),]
     invisible({
       forecast.inla = eval(parse(text=paste0('forecast.PILAF.', method, '(x.forecast, formula=',
@@ -122,13 +123,13 @@ forecast.PILAF = function(x, time.forecast, week.forecast, method='count', formu
 #' @return A PILAF object with forecasted ILI counts and 95 % BCI.
 #' @export
 forecast.PILAF.count = function(x, formula=NULL) {
-  link = rep(1, nrow(x))
+  link <- rep(1, nrow(x))
   if(is.null(formula)) {
     formula = as.formula('ILI ~ -1 + f(time, model="ar", order=2)')
   }
-  forecast = INLA::inla(formula, family="poisson", data=x,
-                        control.predictor=list(compute=T, link=link),
-                        E=x$ILI.E, control.compute = list(config = T))
+  forecast = INLA::inla(formula, family = "poisson", data = x,
+                        control.predictor = list(compute = T, link = link),
+                        E = x$ILI.E, control.compute = list(config = T))
   return(forecast)
 }
 
@@ -139,26 +140,25 @@ forecast.PILAF.count = function(x, formula=NULL) {
 #' @return A PILAF object with forecasted ILI counts and 95 % BCI.
 #' @export
 forecast.PILAF.joint = function(x, formula=NULL, verbose = F) {
-  n = nrow(x)
-  link = c(rep(1, n), rep(2, n))
-  E = c(x$ILI.E, x$coal.E)
-  time = rep(x$time, 2)
+  n <- nrow(x)
+  link <- c(rep(1, n), rep(2, n))
+  E <- c(x$ILI.E, x$coal.E)
+  time <- rep(x$time, 2)
   week <- rep(x$week, 2)
-  beta0 = c(rep(0, n), rep(1, n))
-  w0 = c(rep(1, n), rep(0, n))
-  w = c(rep(0, n), rep(-1, n))
-  Y = matrix(NA, nrow=2*n, ncol=2)
-  Y[1:n, 1] = x$ILI
-  Y[(1:n)+n, 1] = x$coal
-  r = rep(1:2, each = n)
-  X = list(time=time, time2=time, week=week, week2=week, beta0=beta0, w0=w0, w=w, Y=Y)
+  beta0 <- c(rep(0, n), rep(1, n))
+  w0 <- c(rep(1, n), rep(0, n))
+  w <- c(rep(0, n), rep(-1, n))
+  Y <- matrix(NA, nrow=2*n, ncol=2)
+  Y[1:n, 1] <- x$ILI
+  Y[(1:n)+n, 1] <- x$coal
+  r <- rep(1:2, each = n)
+  X <- list(time=time, time2=time, week=week, week2=week, beta0=beta0, w0=w0, w=w, Y=Y)
   if(is.null(formula)) {
-    formula = as.formula(paste0("Y ~ -1 + beta0 + f(time, w0, model='ar', order=2) +",
+    formula <- as.formula(paste0("Y ~ -1 + beta0 + f(time, w0, model='ar', order=2) +",
                                 "f(time2, w, copy='time', fixed=F)"))
   }
-  forecast = INLA::inla(formula,
-                        family=c("poisson", "poisson"), data=X,
-                        control.predictor=list(compute=T, link=link),
+  forecast <- INLA::inla(formula, family = c("poisson", "poisson"), data = X,
+                        control.predictor = list(compute = T, link = link),
                         E=X$E, verbose = verbose, control.compute = list(config = T))
   return(forecast)
 }

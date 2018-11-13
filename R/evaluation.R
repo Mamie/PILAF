@@ -11,9 +11,7 @@ create_season_task_list <- function(season_list, starting_time, start_week, end_
   predict_start <- season_list$start_time - (start_week - season_list$start_weeks)
   predict_end <- season_list$end_time + (season_list$end_weeks - end_week)
   n_windows <- predict_start - predict_end + 1 - min_pred
-  task_list <- data.frame()
-  task_list <- cbind(train_start = rep(starting_time, n_windows))
-  task_list <- data.frame(task_list)
+  task_list <- data.frame(train_start = rep(starting_time, n_windows))
   task_list$train_end <- seq(predict_start + 1, predict_end + min_pred + 1, by = -1)
   task_list$predict_start <- task_list$train_end - 1
   task_list$predict_end <- rep(predict_end, n_windows)
@@ -69,10 +67,9 @@ LOSO_forecast <- function(data, task_list, method = 'count', formula = NULL) {
   n <- nrow(task_list)
   p <- dplyr::progress_estimated(n)
   for (i in seq(n)) {
-    # browser()
     task_entry <- task_list[i, ]
-    train_time <- seq(task_entry$train_start, task_entry$train_end, by = -1)
-    test_time <- seq(task_entry$predict_start, task_entry$predict_end, by = -1)
+    train_time <- seq(task_entry$train_end, task_entry$train_start)
+    test_time <- seq(task_entry$predict_end, task_entry$predict_start)
     train_data <- data[data$time %in% train_time, ]
     test_data <- data[data$time %in% test_time, ]
     try({

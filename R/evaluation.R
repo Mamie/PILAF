@@ -104,19 +104,11 @@ compute_LOSO_performance <- function(fit, time_ILI_map, task_list) {
   return(performance)
 }
 
-plot_LOSO_performance <- function(performances) {
-  performances %>%
-    tidyr::gather(metrics, performance, -c(season, task, model)) %>%
-    ggplot(data = ., aes(x = task, y = performance)) +
-    geom_point(aes(color = model), size = 0.4) +
-    geom_line(aes(color = model), size = 0.2) +
-    facet_wrap(metrics ~ season, scales = 'free', ncol = 6) +
-    theme_classic() +
-    theme(strip.background = element_blank(),
-          legend.position = 'bottom') +
-    scale_color_manual(values = c("#2F408E", "#E5801C"))
-}
 
+#' Find the starting and ending time of a season
+#' @param task_list A data frame of task generated from generate_task_list
+#' @return A data frame containing the start and end time of each season
+#' @export
 find_season_range <- function(task_list) {
   task_season_range <- task_list %>%
     group_by(season) %>%

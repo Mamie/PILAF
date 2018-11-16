@@ -4,7 +4,7 @@
 \alias{plot.Forecast}
 \title{Plot the Forecast Results}
 \usage{
-\method{plot}{Forecast}(x, pilaf, truth = NULL, ...)
+plot.Forecast(x, pilaf, truth = NULL, ...)
 }
 \arguments{
 \item{x}{A PILAF object.}

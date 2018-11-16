@@ -4,7 +4,7 @@
 \alias{plot.PILAF}
 \title{Plot PILAF trajectory}
 \usage{
-\method{plot}{PILAF}(x, ...)
+plot.PILAF(x, ...)
 }
 \arguments{
 \item{x}{A PILAF object}

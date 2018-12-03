@@ -1,18 +1,19 @@
-# Probabilistic Forecast of Human Influenza A Virus from Genetic and Count Data
-
-## What is PILAF (Phylodynamics InfLuenzA Forecast)?
+![PILAF-logo](logo.svg?sanitize=true)
 
 ## Overview
 
-## Workflow diagram
+**PILAF** (Phylodynamics InfLuenzA Forecast) uses viral genetic data to forecast CDC influenza count time series. Viral sequence data is integrated into a dynamic model under the framework of phylodynamic inference. Integrated Nested Laplace Approximation (INLA) was used for computationally efficient inference.
 
-## Getting started
 
 ## Install
 
-## Example data sources
+```r
+devtools::install_github("Mamie/PILAF")
+```
 
-## Project Team
+## Vignette
+
+- [simulation](vignettes/simulation.Rmd): An example showing how to simulate count time series and viral genealogy and perform forecast.
 
 ## License
 

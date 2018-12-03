@@ -90,14 +90,25 @@ mean_width <- function(lwr, upr, truth) {
   return(mean((upr - lwr)/(truth + 1)))
 }
 
+
+mean_coverage <- function(lwr, upr, truth) {
+  return(mean(truth < upr & truth > lwr))
+}
+
+one_week_ahead <- function(lwr, upr, truth) {
+  return(truth[1] < upr[1] & truth[1] > lwr[1])
+}
+
 compute_LOSO_performance <- function(fit, time_ILI_map, task_list) {
   performance <- matrix(unlist(lapply(fit, function(df) {
     if(is.null(df)) return(c(NA, NA))
     truth <- sapply(df$time, function(x) time_ILI_map[[x]])
     c(mean_relative_error(df$mean, truth),
-      mean_width(df$quant0.025, df$quant0.975,truth))})), ncol = 2, byrow = T)
+      mean_width(df$quant0.025, df$quant0.975,truth),
+      mean_coverage(df$quant0.025, df$quant0.975, truth),
+      one_week_ahead(df$quant0.025, df$quant0.975, truth))})), ncol = 4, byrow = T)
 
-  colnames(performance) <- c('MRE', 'MRW')
+  colnames(performance) <- c('MRE', 'MRW', 'MCV', 'one_week_ahead')
   performance <- data.frame(performance)
   performance$season <- task_list$season
   performance$task <- task_list$task

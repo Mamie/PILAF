@@ -41,5 +41,8 @@ plot_LOSO_performance <- function(performances) {
 
   p_MRW <- plot_metric(perf %>%
                          filter(metrics == 'MRW')) + xlab("Mean relative width")
-  return(list(p_MRE = p_MRE, p_MRW = p_MRW))
+
+  p_MCV <- plot_metric(perf %>%
+                         filter(metrics == 'MCV')) + xlab("Mean coverage")
+  return(list(p_MRE = p_MRE, p_MRW = p_MRW, p_MCV = p_MCV))
 }

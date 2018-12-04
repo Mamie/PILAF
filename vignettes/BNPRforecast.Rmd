@@ -1,0 +1,33 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Forecasting Ne using BNPR
+
+```{r}
+library(phylodyn)
+library(dplyr)
+library(ggplot2)
+
+H3N2_tree <- ape::read.tree("../../projectingvirus/data/H3N2_NY_Skygrid_cutoff8/H3N2_NY_Skygrid_cutoff8.newick")
+H3N2_last_time <- 2017.583562
+H3N2_Ne_forecast <- BNPR_forecast(H3N2_tree, last_time = H3N2_last_time, pred = 5)
+```
+
+```{r}
+with(H3N2_Ne_forecast, data.frame(time = result$summary.random$time$ID,
+                                  mean = effpopmean, 
+                                  lwr = H3N2_Ne_forecast$effpop025,
+                                  upr = H3N2_Ne_forecast$effpop975)) %>%
+ggplot(data = ., aes(x = time, y = mean, ymin = lwr, ymax = upr)) +
+  geom_ribbon(fill = 'gray', alpha = 0.2) +
+  geom_line(size = 0.1) +
+  theme_classic() +
+  scale_y_log10() +
+  geom_vline(aes(xintercept = 0), linetype = 'dotdash')
+```
+
+```{r}
+H3N2_Ne_forecast$
+```

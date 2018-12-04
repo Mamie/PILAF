@@ -99,19 +99,21 @@ forecast.PILAF = function(x, time.forecast, week.forecast, method='count', formu
                                   iter=x.iter$iter[1]), x.iter)
     # time is with respect to present, future has smaller value of time
     x.forecast = x.forecast[order(x.forecast[,'iter'], x.forecast[,'time']),]
-    invisible({
-      forecast.inla = eval(parse(text=paste0('forecast.PILAF.', method, '(x.forecast, formula=',
-                                             formula, ')')))
+    try({
+      invisible({
+        forecast.inla = eval(parse(text=paste0('forecast.PILAF.', method, '(x.forecast, formula=',
+                                               formula, ')')))
+      })
+      if (return_model) models[[iter.id]] = forecast.inla
+      forecast = forecast.inla$summary.fitted.values[1:length(time.forecast),]
+      forecast = Forecast(time = time.forecast,
+                          week = week.forecast,
+                          mean = forecast$mean,
+                          quant0.025 = forecast$`0.025quant`,
+                          quant0.975 = forecast$`0.975quant`,
+                          iter = iter.id)
+      forecast.all = rbind(forecast.all, forecast)
     })
-    if (return_model) models[[iter.id]] = forecast.inla
-    forecast = forecast.inla$summary.fitted.values[1:length(time.forecast),]
-    forecast = Forecast(time = time.forecast,
-                        week = week.forecast,
-                        mean = forecast$mean,
-                        quant0.025 = forecast$`0.025quant`,
-                        quant0.975 = forecast$`0.975quant`,
-                        iter = iter.id)
-    forecast.all = rbind(forecast.all, forecast)
     if (verbose) p$pause(0.1)$tick()$print()
   }
   return(list(forecast = forecast.all, models = models))

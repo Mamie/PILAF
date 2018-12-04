@@ -98,13 +98,13 @@ evaluate = function(x, ...) {
 evaluate.Forecast = function(x, truth) {
   merged = computeAEW(x, truth)
   merged_AE = merged %>%
-    dplyr::select(time, `absolute error`)
+    dplyr::select(time, `pointwise absolute error`)
   merged_W = merged %>%
-    dplyr::select(time, `width`)
-  AE = summarySE(merged_AE, 'absolute error', 'time')
-  AE$type = 'absolute error'
-  W = summarySE(merged_W, 'width', 'time')
-  W$type = 'width'
+    dplyr::select(time, `pointwise width`)
+  AE = summarySE(merged_AE, 'pointwise absolute error', 'time')
+  AE$type = 'pointwise absolute error'
+  W = summarySE(merged_W, 'pointwise width', 'time')
+  W$type = 'pointwise width'
 
   rbind(AE, W) %>%
     dplyr::ungroup() %>%

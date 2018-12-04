@@ -1,5 +1,5 @@
 #' BNPR forecast
-BNPR_forecast <- function (data, last_time, lengthout = 100, pref = FALSE, prec_alpha = 0.01,
+BNPR_forecast <- function (data, last_time, formula, lengthout = 100, pref = FALSE, prec_alpha = 0.01,
           prec_beta = 0.01, beta1_prec = 0.001, fns = NULL, log_fns = TRUE,
           simplify = TRUE, derivative = FALSE, forward = TRUE, pred = 4)
 {
@@ -13,7 +13,7 @@ BNPR_forecast <- function (data, last_time, lengthout = 100, pref = FALSE, prec_
   }
   result <- infer_coal_samp_pred(samp_times = phy$samp_times, coal_times = phy$coal_times,
                                  last_time = last_time, n_sampled = phy$n_sampled,
-                                 fns = fns, lengthout = lengthout,
+                                 formula = formula, fns = fns, lengthout = lengthout,
                             prec_alpha = prec_alpha, prec_beta = prec_beta, beta1_prec = beta1_prec,
                             use_samp = pref, log_fns = log_fns, simplify = simplify,
                             derivative = derivative, pred = pred)
@@ -70,11 +70,16 @@ create_grid <- function(samp_times, coal_times, last_time, pred){
   max_mon_date <- lastmon(as.Date(max_date))
 
   train_time <- seq(min_mon_date, max_mon_date, by = 7)
-  test_time <- seq(max_mon_date + 7, max_mon_date + 7 * pred, by = 7)
   train_week <- rev(as.numeric(strftime(train_time, format = "%V")))
-  test_week <- rev(as.numeric(strftime(test_time, format = "%V")))
   train_grid_0 <- rev(last_time - lubridate::decimal_date(time2grid(train_time)))
-  test_time_0 <- rev(last_time - lubridate::decimal_date(test_time))
+  if (pred == 0) {
+    test_time_0 <- NULL
+    test_week <- NULL
+  } else {
+    test_time <- seq(max_mon_date + 7, max_mon_date + 7 * pred, by = 7)
+    test_week <- rev(as.numeric(strftime(test_time, format = "%V")))
+    test_time_0 <- rev(last_time - lubridate::decimal_date(test_time))
+  }
 
   grid_week$train$grid <- train_grid_0
   grid_week$train$week <- train_week
@@ -85,7 +90,7 @@ create_grid <- function(samp_times, coal_times, last_time, pred){
 }
 
 
-infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled = NULL, fns = NULL,
+infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled = NULL, formula = formula, fns = NULL,
           lengthout = 100, prec_alpha = 0.01, prec_beta = 0.01, beta1_prec = 0.001,
           use_samp = FALSE, log_fns = TRUE, simplify = FALSE, events_only = FALSE,
           derivative = FALSE, pred = 4)
@@ -117,13 +122,13 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
     data <- with(coal_data, data.frame(y = event, time = time,
                                        E_log = E_log))
     data <- cbind(data, week = week)
-    data <- rbind(data, data.frame(y = rep(NA, pred),
-                                   time = time_pred,
-                                   week = week_pred,
-                                   E_log = rep(NA, pred)))
+    if (pred != 0) {
+      data <- rbind(data, data.frame(y = rep(NA, pred),
+                                     time = time_pred,
+                                     week = week_pred,
+                                     E_log = rep(NA, pred)))
+    }
 
-    formula <- y ~ -1 + f(time, model = "ar", order = 2) +
-      f(week, model = "rw1", cyclic = T, constr = F)
     family <- "poisson"
   }
   else if (use_samp) {
@@ -164,7 +169,6 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
   else {
     lc_many <- NULL
   }
-  browser()
   mod <- INLA::inla(formula, family = family, data = data,
                     lincomb = lc_many, offset = data$E_log,
                     control.predictor = list(compute = TRUE),

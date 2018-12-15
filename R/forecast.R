@@ -62,6 +62,42 @@ plot.Forecast = function(x, pilaf, truth=NULL, ...) {
   return(p)
 }
 
+#' Compute absolute error and width between forecast and truth.
+computeAEW = function(x, truth) {
+  x %>%
+    dplyr::left_join(truth, by = c("time", "iter")) %>%
+    dplyr::mutate(`pointwise relative error` = abs(mean - ILI)/ILI,
+                  `pointwise relative width` = (`quant0.975` - `quant0.025`)/ILI,
+                  `pointwise coverage` = (`quant0.025` <= ILI & ILI <= `quant0.975`)) %>%
+    dplyr::select(time, `pointwise relative error`, `pointwise relative width`, `pointwise coverage`)
+}
+
+#' Generic function for comparison
+#' @export
+compare <- function(x, ...) {
+  UseMethod('compare', x)
+}
+
+#' Compare performance of two models by AE and W
+#'
+#' @param x, y Two Forecast object.
+#' @return A ggplot object comparing the AE and W between the two methods.
+#' @export
+compare.Forecast = function(x, y, truth, method = c(1, 2)) {
+  x = computeAEW(x, truth)
+  x$method = method[1]
+  y = computeAEW(y, truth)
+  y$method = method[2]
+  rbind(x, y) %>%
+    tidyr::gather(type, value, -c(time, method)) %>%
+    ggplot(data = ., aes(x = factor(time, levels=rev(unique(time))), y = value, color = method)) +
+    geom_boxplot(width = 0.5, outlier.size = 0.2) +
+    facet_wrap(~type, ncol = 1, scale = 'free_y') +
+    scale_colour_manual(values=c("#0083C3", "#EB975F")) +
+    theme_classic() +
+    theme(strip.background = element_blank(), axis.title.y = element_blank()) +
+    xlab('time')
+}
 
 #' Summarize the Forecast
 #'
@@ -73,11 +109,25 @@ plot.Forecast = function(x, pilaf, truth=NULL, ...) {
 #' @export
 #' @import dplyr
 summary.Forecast <- function(x, truth) {
+  mean_narm <- partial(mean, na.rm = T)
   merged <- computeAEW(x, truth) %>%
     dplyr::group_by(time) %>%
-    dplyr::summarize(MAE = mean(`absolute error`, na.rm=T),
-                     MW = mean(width, na.rm=T))
+    dplyr::summarize(MRE = mean_narm(`pointwise relative error`),
+                     MRW = mean_narm(`pointwise relative width`),
+                     MCV = mean_narm(`pointwise coverage`))
   return(merged)
+}
+
+#' Compute SE for given variable.
+summarySE = function(data, measure_var, group_var) {
+  data %>%
+    dplyr::group_by_(.dots = group_var) %>%
+    dplyr::mutate(n = dplyr::n()) %>%
+    dplyr::mutate_(.dots = setNames(paste0('mean(`', measure_var, '`)'), 'mean')) %>%
+    dplyr::mutate_(.dots = setNames(paste0('sd(`', measure_var, '`)'), 'sd')) %>%
+    dplyr::select(-dplyr::matches(measure_var)) %>%
+    dplyr::distinct() %>%
+    dplyr::mutate(SE = sd/sqrt(n))
 }
 
 #' Generic function for evaluation
@@ -98,15 +148,19 @@ evaluate = function(x, ...) {
 evaluate.Forecast = function(x, truth) {
   merged = computeAEW(x, truth)
   merged_AE = merged %>%
-    dplyr::select(time, `pointwise absolute error`)
+    dplyr::select(time, `pointwise relative error`)
   merged_W = merged %>%
-    dplyr::select(time, `pointwise width`)
-  AE = summarySE(merged_AE, 'pointwise absolute error', 'time')
-  AE$type = 'pointwise absolute error'
-  W = summarySE(merged_W, 'pointwise width', 'time')
-  W$type = 'pointwise width'
+    dplyr::select(time, `pointwise relative width`)
+  merged_CV <- merged %>%
+    dplyr::select(time, `pointwise coverage`)
+  AE = summarySE(merged_AE, 'pointwise relative error', 'time')
+  AE$type = 'pointwise relative error'
+  W = summarySE(merged_W, 'pointwise relative width', 'time')
+  W$type = 'pointwise relative width'
+  CV = summarySE(merged_CV, 'pointwise coverage', 'time')
+  CV$type = 'pointwise coverage'
 
-  rbind(AE, W) %>%
+  rbind(AE, W, CV) %>%
     dplyr::ungroup() %>%
     ggplot(data=., aes(x = time, y = mean)) +
     geom_line(size=0.3, alpha=0.8) +
@@ -118,49 +172,7 @@ evaluate.Forecast = function(x, truth) {
     scale_x_reverse()
 }
 
-#' Generic function for comparison
-#' @export
-compare <- function(x, ...) {
-  UseMethod('compare', x)
-}
 
-#' Compare performance of two models by AE and W
-#'
-#' @param x, y Two Forecast object.
-#' @return A ggplot object comparing the AE and W between the two methods.
-#' @export
-compare.Forecast = function(x, y, truth, method = c(1, 2)) {
-  x = PILAF:::computeAEW(x, truth)
-  x$method = method[1]
-  y = PILAF:::computeAEW(y, truth)
-  y$method = method[2]
-  rbind(x, y) %>%
-    tidyr::gather(type, value, -c(time, method)) %>%
-    ggplot(data = ., aes(x = factor(time, levels=rev(unique(time))), y = value, color = method)) +
-    geom_boxplot(width = 0.5, outlier.size = 0.2) +
-    facet_wrap(~type, ncol = 1, scale = 'free_y') +
-    scale_colour_manual(values=c("#0083C3", "#EB975F")) +
-    theme_classic() +
-    theme(strip.background = element_blank(), axis.title.y = element_blank()) +
-    xlab('time')
-}
 
-#' Compute SE for given variable.
-summarySE = function(data, measure_var, group_var) {
-  data %>%
-    dplyr::group_by_(.dots = group_var) %>%
-    dplyr::mutate(n = dplyr::n()) %>%
-    dplyr::mutate_(.dots = setNames(paste0('mean(`', measure_var, '`)'), 'mean')) %>%
-    dplyr::mutate_(.dots = setNames(paste0('sd(`', measure_var, '`)'), 'sd')) %>%
-    dplyr::select(-dplyr::matches(measure_var)) %>%
-    dplyr::distinct() %>%
-    dplyr::mutate(SE = sd/sqrt(n))
-}
 
-#' Compute absolute error and width between forecast and truth.
-computeAEW = function(x, truth) {
-  x %>%
-    dplyr::left_join(truth, by = c("time", "iter")) %>%
-    dplyr::mutate(`pointwise absolute error` = abs(mean - ILI), `pointwise width` = `quant0.975` - `quant0.025`) %>%
-    dplyr::select(time, `pointwise absolute error`, `pointwise width`)
-}
+

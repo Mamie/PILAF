@@ -18,20 +18,15 @@ library(dplyr)
 
 ```{r generate-data, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
 library(PILAF)
-n = 100
-lim = c(-10, 100)
+n = 100 # number of  simulations
+lim = c(-10, 150) # time limits (relative to present)
 flu.Ne = function(...) phylodyn::logistic_traj(..., period = 52, offset = 26)
-flu.sampNum = 100
-ILI.sampNum = 1000
+flu.sampNum = 100 # average # of flu samples in a year
+ILI.sampNum = 1000 # average # of ILI cases in a year
 sim.data = PILAF::SimulateILISampCoalCountsN(n, lim, flu.Ne, flu.sampNum, ILI.sampNum)
-p <- plot(sim.data)
 # ggsave(p, file='../../manuscript/Figures/simulation/simulatedTraj.pdf', width = 5,   height = 5)
-```
 
-Forecast the trajectories. 
-
-```{r forecasting, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
-train.time = seq(0, 100) # given 101 weeks before and including present
+train.time = seq(0, 150) # given 101 weeks before and including present
 test.time = seq(-10, -1) # predict 10 weeks ahead
 sim.train = sim.data[sim.data$time %in% train.time,]
 sim.test = sim.data[!sim.data$time %in% train.time,]
@@ -39,20 +34,26 @@ sim.test = sim.data[!sim.data$time %in% train.time,]
 
 ```{r}
 formula <- 'ILI ~ -1 + f(time, model = "ar", order = 2) + f(week, model = "rw1", cyclic = T, constr = F)'
-count_fit_week = forecast(sim.train, test.time, PILAF:::Convert2Week(test.time),
-                          formula = formula, return_model = T)
+count_fit_week <- forecast(sim.train, test.time, PILAF:::Convert2Week(test.time), formula = formula, return_model = T, verbose = T)
 plot(count_fit_week$forecast, sim.train, truth=sim.test)
 PILAF::evaluate(count_fit_week$forecast, sim.test)
-# PILAF::compare(count_fit$forecast, count_fit_week$forecast, sim.test, method = c('count', 'count_week'))
 ```
+
+```{r}
+
+train.time = seq(0, 150) # given 101 weeks before and including present
+test.time = seq(-10, -1) # predict 10 weeks ahead
+sim.train = sim.data[sim.data$time %in% train.time,]
+sim.test = sim.data[!sim.data$time %in% train.time,]
+```
+
 
 
 ```{r}
 formula <- "Y ~ -1 + beta0 + f(time, w0, model='ar', order = 2) + f(week, w0, model='rw1', cyclic = T, constr = F) + f(time2, w, copy = 'time') + f(week2, w, copy = 'week')"
 joint_fit_week = forecast(sim.train, test.time, PILAF:::Convert2Week(test.time), formula = formula, return_model = T, method = 'joint', verbose=F)
-plot(joint_fit_week$forecast, sim.train, truth=sim.test)
-# PILAF::evaluate(joint_fit_week$forecast, sim.test)
-PILAF::compare(count_fit_week$forecast, joint_fit_week$forecast, sim.test, method = c('count_week', 'joint_week'))
+# plot(joint_fit_week$forecast, sim.train, truth=sim.test)
+# PILAF::compare(count_fit_week$forecast, joint_fit_week$forecast, sim.test, method = c('count_week', 'joint_week'))
 ```
 
 ```{r}

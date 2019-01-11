@@ -66,10 +66,11 @@ plot.Forecast = function(x, pilaf, truth=NULL, ...) {
 computeAEW = function(x, truth) {
   x %>%
     dplyr::left_join(truth, by = c("time", "iter")) %>%
-    dplyr::mutate(`pointwise relative error` = abs(mean - ILI)/ILI,
-                  `pointwise relative width` = (`quant0.975` - `quant0.025`)/ILI,
-                  `pointwise coverage` = (`quant0.025` <= ILI & ILI <= `quant0.975`)) %>%
-    dplyr::select(time, `pointwise relative error`, `pointwise relative width`, `pointwise coverage`)
+    group_by(time) %>%
+    dplyr::summarize(`mean relative error` = mean(abs(mean - ILI)/ILI),
+                  `mean relative width` = mean((`quant0.975` - `quant0.025`)/ILI),
+                  `coverage` = mean((`quant0.025` <= ILI & ILI <= `quant0.975`))) %>%
+    dplyr::select(time, `mean relative error`, `mean relative width`, `coverage`)
 }
 
 #' Generic function for comparison
@@ -90,18 +91,20 @@ compare.Forecast = function(x, y, truth, method = c(1, 2)) {
   y$method = method[2]
   rbind(x, y) %>%
     tidyr::gather(type, value, -c(time, method)) %>%
-    ggplot(data = ., aes(x = factor(time, levels=rev(unique(time))), y = value, color = method)) +
-    geom_boxplot(width = 0.5, outlier.size = 0.2) +
+    ggplot(data = ., aes(x = time, y = value, color = method)) +
+    geom_point() +
+    geom_line() +
     facet_wrap(~type, ncol = 1, scale = 'free_y') +
     scale_colour_manual(values=c("#0083C3", "#EB975F")) +
     theme_classic() +
     theme(strip.background = element_blank(), axis.title.y = element_blank()) +
+    scale_x_reverse(breaks = c(-2, -4, -6, -8, -10)) +
     xlab('time')
 }
 
 #' Summarize the Forecast
 #'
-#' Summarize the forecast by pointwise mean absolute error and mean relative
+#' Summarize the forecast by  mean absolute error and mean relative
 #' width.
 #' @param x A forecast object.
 #' @param truth A data frame containing time, true ILI.
@@ -112,9 +115,9 @@ summary.Forecast <- function(x, truth) {
   mean_narm <- partial(mean, na.rm = T)
   merged <- computeAEW(x, truth) %>%
     dplyr::group_by(time) %>%
-    dplyr::summarize(MRE = mean_narm(`pointwise relative error`),
-                     MRW = mean_narm(`pointwise relative width`),
-                     MCV = mean_narm(`pointwise coverage`))
+    dplyr::summarize(MRE = mean_narm(`mean relative error`),
+                     MRW = mean_narm(`mean relative width`),
+                     CV = mean_narm(`coverage`))
   return(merged)
 }
 
@@ -138,7 +141,7 @@ evaluate = function(x, ...) {
 
 #' Evaluate the Forecast
 #'
-#' Evaluate the forecast by pointwise absolute error and BCI
+#' Evaluate the forecast by  absolute error and BCI
 #' width. Return a plot of AE and width.
 #' @param x A forecast object.
 #' @param truth A data frame containing time, true ILI.
@@ -148,17 +151,17 @@ evaluate = function(x, ...) {
 evaluate.Forecast = function(x, truth) {
   merged = computeAEW(x, truth)
   merged_AE = merged %>%
-    dplyr::select(time, `pointwise relative error`)
+    dplyr::select(time, `mean relative error`)
   merged_W = merged %>%
-    dplyr::select(time, `pointwise relative width`)
+    dplyr::select(time, `mean relative width`)
   merged_CV <- merged %>%
-    dplyr::select(time, `pointwise coverage`)
-  AE = summarySE(merged_AE, 'pointwise relative error', 'time')
-  AE$type = 'pointwise relative error'
-  W = summarySE(merged_W, 'pointwise relative width', 'time')
-  W$type = 'pointwise relative width'
-  CV = summarySE(merged_CV, 'pointwise coverage', 'time')
-  CV$type = 'pointwise coverage'
+    dplyr::select(time, `coverage`)
+  AE = summarySE(merged_AE, 'mean relative error', 'time')
+  AE$type = 'mean relative error'
+  W = summarySE(merged_W, 'mean relative width', 'time')
+  W$type = 'mean relative width'
+  CV = summarySE(merged_CV, 'coverage', 'time')
+  CV$type = 'coverage'
 
   rbind(AE, W, CV) %>%
     dplyr::ungroup() %>%

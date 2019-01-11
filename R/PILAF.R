@@ -90,7 +90,7 @@ forecast.PILAF = function(x, time.forecast, week.forecast, method='count', formu
   if (verbose) p = dplyr::progress_estimated(n)
   models = list()
   for (iter.id in iter.ids) {
-    if (verbose) print(iter.id)
+    #if (verbose) print(iter.id)
     x.iter = dplyr::filter(x, iter==iter.id)
     x.forecast = rbind(data.frame(time=time.forecast,
                                   week=week.forecast,

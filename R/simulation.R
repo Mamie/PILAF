@@ -48,15 +48,11 @@ ComputePropCnst = function(n, traj, lim) {
 #' @export
 #' @seealso phylodyn::coalsim
 SimulateCoalCounts = function(grid, samp.times, samp.num, traj) {
-  coal.events = phylodyn::coalsim(samp_times=samp.times,
-                                  n_sampled=samp.num,
+  coal.events = phylodyn::coalsim(samp_times=samp.times, n_sampled=samp.num,
                                   traj=traj)
-  coal.counts = phylodyn:::coal_stats(grid,
-                                      coal.events$samp_times,
-                                      coal.events$coal_times,
-                                      coal.events$n_sampled)
-  coal.counts = phylodyn:::condense_stats(coal.counts$time,
-                                          coal.counts$event,
+  coal.counts = phylodyn:::coal_stats(grid, coal.events$samp_times,
+                                      coal.events$coal_times, coal.events$n_sampled)
+  coal.counts = phylodyn:::condense_stats(coal.counts$time, coal.counts$event,
                                           coal.counts$E)
   return(coal.counts)
 }
@@ -86,10 +82,10 @@ AsForwardTime = function(time, last.time) {
   return(forward.time)
 }
 
-Convert2Week <- function(time) {
-  ifelse(time %% 52 == 0, 52, time %% 52)
-}
-
+Convert2Week <- Vectorize(function(time) {
+  if (time >= 0) return(ifelse(time %% 52 == 0, 52, 52 - time %% 52))
+  else return(ifelse(time %% 52 == 0, 52, -time %% 52))
+})
 
 #' Simulate ILI, Sampling, and Coalescent counts
 #'

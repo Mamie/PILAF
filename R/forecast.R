@@ -79,11 +79,7 @@ compare <- function(x, ...) {
   UseMethod('compare', x)
 }
 
-#' Compare performance of two models by AE and W
-#'
-#' @param x, y Two Forecast object.
-#' @return A ggplot object comparing the AE and W between the two methods.
-#' @export
+
 compare.Forecast = function(x, y, truth, method = c(1, 2)) {
   x = computeAEW(x, truth)
   x$method = method[1]
@@ -148,34 +144,29 @@ evaluate = function(x, ...) {
 #' @return A ggplot object
 #' @export
 #' @import dplyr
-evaluate.Forecast = function(x, truth) {
-  merged = computeAEW(x, truth)
-  merged_AE = merged %>%
-    dplyr::select(time, `mean relative error`)
-  merged_W = merged %>%
-    dplyr::select(time, `mean relative width`)
-  merged_CV <- merged %>%
-    dplyr::select(time, `coverage`)
-  AE = summarySE(merged_AE, 'mean relative error', 'time')
-  AE$type = 'mean relative error'
-  W = summarySE(merged_W, 'mean relative width', 'time')
-  W$type = 'mean relative width'
-  CV = summarySE(merged_CV, 'coverage', 'time')
-  CV$type = 'coverage'
-
-  rbind(AE, W, CV) %>%
-    dplyr::ungroup() %>%
-    ggplot(data=., aes(x = time, y = mean)) +
-    geom_line(size=0.3, alpha=0.8) +
-    geom_errorbar(aes(ymin = mean - SE, ymax = mean + SE), size = 0.3, alpha = 0.8, width = 0.3) +
-    facet_wrap(~type, scale='free_y') +
-    theme_classic() +
-    theme(strip.background = element_blank(), axis.title.y = element_blank()) +
-    xlab('time') +
-    scale_x_reverse()
+evaluate.Forecast = function(x, truth, title, color = NULL) {
+  if (is.null(color)) color <- 'steelblue'
+  p1 <- PILAF:::plot_MRE(x, sim.test, color = color) +
+    annotate('text', x = -1.5, y = 0.95, label = title)
+  p2 <- PILAF:::plot_coverage(x, sim.test, color = color)
+  p3 <- PILAF::plot_MRW(x, sim.test, color = color)
+  p <- suppressWarnings(cowplot::plot_grid(p1, p2, p3, ncol =1))
+  return(p)
 }
 
-
-
+#' Compare performance of two models by AE and W
+#'
+#' @param x, y Two Forecast object.
+#' @return A ggplot object comparing the AE and W between the two methods.
+#' @export
+compare.Forecast <- function(x, y, xlabel, ylabel, truth, color = c("#0083C3", "#EB975F")) {
+  forecast_all <- rbind(cbind(x, type = xlabel),
+                        cbind(y, type = ylabel))
+  p1 <- PILAF:::plot_MRE(forecast_all, sim.test, color = color)
+  p2 <- PILAF:::plot_coverage(forecast_all, sim.test, color = color)
+  p3 <- PILAF::plot_MRW(forecast_all, sim.test, color = color)
+  p <- suppressWarnings(cowplot::plot_grid(p1, p2, p3, ncol =1, rel_heights = c(1.3, 0.9, 1.1)))
+  return(p)
+}
 
 

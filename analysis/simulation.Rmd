@@ -35,17 +35,15 @@ sim.test = sim.data[!sim.data$time %in% train.time,]
 
 ```{r}
 formula <- 'ILI ~ -1 + f(time, model = "ar", order = 2) + f(week, model = "rw1", cyclic = T, constr = F)'
-count_fit_week <- forecast(sim.train, test.time, PILAF:::Convert2Week(test.time), formula = formula, return_model = T, verbose = T)
-plot(count_fit_week$forecast, sim.train, truth=sim.test, alpha = 0.2)
-PILAF::evaluate(count_fit_week$forecast, sim.test, 'count', color = 'steelblue')
+# time-consuming to run 
+# count_fit_week <- forecast(sim.train, test.time, PILAF:::Convert2Week(test.time), formula = formula, return_model = T, verbose = T)
 ```
 
 - each iteration 0 - 156 train - week -1 to -10 (statistics), boxplot (first) - count, joint, PS
 
 ```{r}
 formula <- "Y ~ -1 + beta0 + f(time, w0, model='ar', order = 2) + f(week, w0, model='rw1', cyclic = T, constr = F) + f(time2, w, copy = 'time') + f(week2, w, copy = 'week')"
-joint_fit_week = forecast(sim.train, test.time, PILAF:::Convert2Week(test.time), formula = formula, return_model = T, method = 'joint', verbose=F)
-PILAF::evaluate(joint_fit_week$forecast, sim.test, 'phylo', color = 'orange')
+# joint_fit_week = forecast(sim.train, test.time, PILAF:::Convert2Week(test.time), formula = formula, return_model = T, method = 'joint', verbose=F)
 ```
 
 ```{r}

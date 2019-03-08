@@ -3,3 +3,9 @@
 .RData
 .Ruserdata
 *.html
+
+# slurm log files
+*.err
+*.log
+*.out
+*.trees

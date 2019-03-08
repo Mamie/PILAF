@@ -1,0 +1,439 @@
+isolate_name	collection_date	last_modified	type	lineage	originating lab	submitting lab	id	duplicate
+A/NewYork/04/2014	2014-01-25T05:00:00Z	2014-03-21T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1010	FALSE
+A/NewYork/10/2014	2014-04-08T04:00:00Z	2014-05-21T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1119	FALSE
+A/NewYork/08/2014	2014-04-01T04:00:00Z	2014-06-11T04:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1120	FALSE
+A/NewYork/07/2014	2014-02-10T05:00:00Z	2014-06-11T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1121	FALSE
+A/NewYork/16/2014	2014-03-26T04:00:00Z	2014-08-08T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1124	FALSE
+A/NewYork/11/2014	2014-04-28T04:00:00Z	2014-08-11T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1125	FALSE
+A/NewYork/05/2014	2014-01-21T05:00:00Z	2014-08-13T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1126	FALSE
+A/NewYork/15/2014	2014-03-31T04:00:00Z	2014-08-22T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1127	FALSE
+A/NewYork/12/2014	2014-05-01T04:00:00Z	2014-08-22T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1128	FALSE
+A/NewYork/13/2014	2014-04-30T04:00:00Z	2014-08-22T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1129	FALSE
+A/NewYork/14/2014	2014-04-25T04:00:00Z	2014-08-22T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1130	FALSE
+A/NewYork/17/2014	2014-08-28T04:00:00Z	2014-10-20T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1131	FALSE
+A/NewYork/01/2015	2015-01-02T05:00:00Z	2015-02-11T05:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1146	FALSE
+A/NewYork/37/2014	2014-10-23T04:00:00Z	2015-07-14T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1176	FALSE
+A/NewYork/4160/2014	2014-12-08T05:00:00Z	2015-08-19T04:00:00Z	A/H3N2		  	 Other Database Import	1177	FALSE
+A/NewYork/4161/2014	2014-12-04T05:00:00Z	2015-08-19T04:00:00Z	A/H3N2		  	 Other Database Import	1178	FALSE
+A/NewYork/4162/2014	2014-12-05T05:00:00Z	2015-08-19T04:00:00Z	A/H3N2		  	 Other Database Import	1179	FALSE
+A/NewYork/4163/2014	2014-12-08T05:00:00Z	2015-08-19T04:00:00Z	A/H3N2		  	 Other Database Import	1180	FALSE
+A/NewYork/4164/2014	2014-12-19T05:00:00Z	2015-08-19T04:00:00Z	A/H3N2		  	 Other Database Import	1181	FALSE
+A/NewYork/56/2015	2015-07-19T04:00:00Z	2015-10-08T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1190	FALSE
+A/NewYork/64/2015	2015-08-10T04:00:00Z	2015-10-14T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1191	FALSE
+A/NewYork/4305/2014	2014-12-16T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1192	FALSE
+A/NewYork/4306/2014	2014-12-22T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1193	FALSE
+A/NewYork/4307/2014	2014-12-28T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1194	FALSE
+A/NewYork/4308/2014	2014-12-23T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1195	FALSE
+A/NewYork/4309/2014	2014-12-24T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1196	FALSE
+A/NewYork/4310/2014	2014-12-24T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1197	FALSE
+A/NewYork/4311/2014	2014-12-29T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1198	FALSE
+A/NewYork/4447/2015	2015-01-07T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1199	FALSE
+A/NewYork/4448/2014	2014-12-31T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1200	FALSE
+A/NewYork/4449/2015	2015-01-04T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1201	FALSE
+A/NewYork/4450/2015	2015-01-06T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1202	FALSE
+A/NewYork/4451/2015	2015-01-06T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1203	FALSE
+A/NewYork/4452/2015	2015-01-09T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1204	FALSE
+A/NewYork/4453/2015	2015-01-09T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1205	FALSE
+A/NewYork/4454/2015	2015-01-10T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1206	FALSE
+A/NewYork/4455/2015	2015-01-11T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1207	FALSE
+A/NewYork/4456/2015	2015-01-12T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1208	FALSE
+A/NewYork/4546/2015	2015-01-14T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1209	FALSE
+A/NewYork/4547/2015	2015-01-14T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1210	FALSE
+A/NewYork/4548/2015	2015-01-15T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1211	FALSE
+A/NewYork/4549/2015	2015-01-16T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1212	FALSE
+A/NewYork/4550/2015	2015-01-19T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1213	FALSE
+A/NewYork/4551/2015	2015-01-20T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1214	FALSE
+A/NewYork/4552/2015	2015-01-20T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1215	FALSE
+A/NewYork/4553/2015	2015-02-04T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1216	FALSE
+A/NewYork/4554/2015	2015-02-04T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1217	FALSE
+A/NewYork/4680/2014	2014-12-24T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1218	FALSE
+A/NewYork/4681/2014	2014-12-30T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1219	FALSE
+A/NewYork/4682/2015	2015-01-21T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1220	FALSE
+A/NewYork/4683/2015	2015-01-21T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1221	FALSE
+A/NewYork/4684/2015	2015-01-26T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1222	FALSE
+A/NewYork/4685/2015	2015-01-28T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1223	FALSE
+A/NewYork/4686/2015	2015-01-29T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1224	FALSE
+A/NewYork/4687/2015	2015-01-30T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1225	FALSE
+A/NewYork/4690/2015	2015-01-28T05:00:00Z	2015-09-16T04:00:00Z	A/H3N2		  	 Other Database Import	1226	FALSE
+A/NewYork/55/2015	2015-07-10T04:00:00Z	2015-10-26T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1227	FALSE
+A/NewYork/65/2015	2015-08-25T04:00:00Z	2015-10-26T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1228	FALSE
+A/NewYork/4811/2015	2015-02-26T05:00:00Z	2015-11-10T05:00:00Z	A/H3N2		  	 Other Database Import	1229	FALSE
+A/NewYork/4812/2015	2015-03-02T05:00:00Z	2015-11-10T05:00:00Z	A/H3N2		  	 Other Database Import	1230	FALSE
+A/NewYork/4813/2015	2015-03-23T04:00:00Z	2015-11-10T05:00:00Z	A/H3N2		  	 Other Database Import	1231	FALSE
+A/NewYork/4814/2015	2015-03-19T04:00:00Z	2015-11-10T05:00:00Z	A/H3N2		  	 Other Database Import	1232	FALSE
+A/NewYork/4815/2015	2015-03-19T04:00:00Z	2015-11-10T05:00:00Z	A/H3N2		  	 Other Database Import	1233	FALSE
+A/NewYork/4816/2015	2015-03-24T04:00:00Z	2015-11-10T05:00:00Z	A/H3N2		  	 Other Database Import	1234	FALSE
+A/NewYork/4817/2015	2015-03-26T04:00:00Z	2015-11-10T05:00:00Z	A/H3N2		  	 Other Database Import	1235	FALSE
+A/NewYork/71/2015	2015-11-03T05:00:00Z	2015-12-15T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1236	FALSE
+A/NewYork/66/2015	2015-09-03T04:00:00Z	2015-12-23T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1237	FALSE
+A/NewYork/67/2015	2015-09-06T04:00:00Z	2015-12-23T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1238	FALSE
+A/NewYork/68/2015	2015-08-27T04:00:00Z	2015-12-23T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1239	FALSE
+A/NewYork/69/2015	2015-10-12T04:00:00Z	2015-12-23T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1240	FALSE
+A/NewYork/77/2015	2015-12-07T05:00:00Z	2016-02-11T05:00:00Z	A/H3N2		 New York Presbyterian Hospital Columbia University Medical Center, Microbiology Department 	 Centers for Disease Control and Prevention	1241	FALSE
+A/NewYork/03/2016	2016-01-04T05:00:00Z	2016-02-16T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1242	FALSE
+A/NewYork/07/2016	2016-01-11T05:00:00Z	2016-02-16T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1243	FALSE
+A/NewYork/13/2016	2016-01-16T05:00:00Z	2016-03-07T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1245	FALSE
+A/NewYork/14/2016	2016-01-29T05:00:00Z	2016-03-16T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1246	FALSE
+A/NewYork/79/2015	2015-12-14T05:00:00Z	2016-03-16T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1247	FALSE
+A/NewYork/76/2015	2015-12-01T05:00:00Z	2016-03-22T04:00:00Z	A/H3N2		 New York Presbyterian Hospital Columbia University Medical Center, Microbiology Department 	 Centers for Disease Control and Prevention	1250	FALSE
+A/NewYork/20/2016	2016-02-12T05:00:00Z	2016-05-02T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1251	FALSE
+A/NewYork/29/2016	2016-02-21T05:00:00Z	2016-05-02T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1253	FALSE
+A/NewYork/43/2016	2016-02-29T05:00:00Z	2016-05-10T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1254	FALSE
+A/NewYork/62/2016	2016-04-11T04:00:00Z	2016-07-21T04:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1255	FALSE
+A/NewYork/18/2016	2016-02-05T05:00:00Z	2016-05-17T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1256	FALSE
+A/NewYork/19/2016	2016-02-09T05:00:00Z	2016-05-17T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1257	FALSE
+A/NewYork/57/2016	2016-03-07T05:00:00Z	2016-05-26T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1259	FALSE
+A/NewYork/59/2016	2016-03-29T04:00:00Z	2016-05-26T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1261	FALSE
+A/NewYork/25/2016	2016-02-08T05:00:00Z	2016-06-22T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1262	FALSE
+A/NewYork/56/2016	2016-03-02T05:00:00Z	2016-06-22T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1263	FALSE
+A/NewYork/58/2016	2016-03-20T04:00:00Z	2016-06-22T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1264	FALSE
+A/NewYork/60/2016	2016-03-31T04:00:00Z	2016-06-22T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1265	FALSE
+A/NewYork/21/2016	2016-02-13T05:00:00Z	2016-06-28T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1266	FALSE
+A/NewYork/80/2016	2016-04-29T04:00:00Z	2016-07-14T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1269	FALSE
+A/NewYork/77/2016	2016-04-26T04:00:00Z	2016-07-14T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1270	FALSE
+A/NewYork/68/2016	2016-04-06T04:00:00Z	2016-07-21T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1271	FALSE
+A/NewYork/78/2016	2016-04-26T04:00:00Z	2016-07-21T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1272	FALSE
+A/NewYork/27/2016	2016-02-11T05:00:00Z	2016-07-21T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1273	FALSE
+A/NewYork/26/2016	2016-02-05T05:00:00Z	2016-07-21T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1274	FALSE
+A/NewYork/83/2016	2016-07-13T04:00:00Z	2016-09-01T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1276	FALSE
+A/NewYork/81/2016	2016-07-12T04:00:00Z	2016-09-01T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1277	FALSE
+A/NewYork/84/2016	2016-07-13T04:00:00Z	2016-09-01T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1278	FALSE
+A/NewYork/85/2016	2016-07-13T04:00:00Z	2016-09-01T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1279	FALSE
+A/NewYork/82/2016	2016-07-12T04:00:00Z	2016-09-12T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1280	FALSE
+A/NewYork/86/2016	2016-07-28T04:00:00Z	2016-09-12T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1281	FALSE
+A/NewYork/WC-LVD-14-068/2014	2014-12-01T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1292	FALSE
+A/NewYork/WC-LVD-15-019/2015	2015-01-28T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1293	FALSE
+A/NewYork/WC-LVD-15-023/2015	2015-01-26T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1294	FALSE
+A/NewYork/WC-LVD-15-030/2015	2015-02-10T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1295	FALSE
+A/NewYork/WC-LVD-15-036/2015	2015-01-31T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1296	FALSE
+A/NewYork/WC-LVD-14-064/2014	2014-11-04T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1297	FALSE
+A/NewYork/WC-LVD-14-066/2014	2014-12-29T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1298	FALSE
+A/NewYork/WC-LVD-14-067/2014	2014-11-24T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1299	FALSE
+A/NewYork/WC-LVD-14-069/2014	2014-12-02T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1300	FALSE
+A/NewYork/WC-LVD-14-070/2014	2014-12-02T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1301	FALSE
+A/NewYork/WC-LVD-14-071/2014	2014-12-08T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1302	FALSE
+A/NewYork/WC-LVD-14-072/2014	2014-12-10T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1303	FALSE
+A/NewYork/WC-LVD-14-073/2014	2014-12-03T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1304	FALSE
+A/NewYork/WC-LVD-14-074/2014	2014-12-17T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1305	FALSE
+A/NewYork/WC-LVD-14-075/2014	2014-12-21T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1306	FALSE
+A/NewYork/WC-LVD-14-076/2014	2014-12-21T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1307	FALSE
+A/NewYork/WC-LVD-14-077/2014	2014-12-22T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1308	FALSE
+A/NewYork/WC-LVD-14-079/2014	2014-12-22T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1309	FALSE
+A/NewYork/WC-LVD-14-080/2014	2014-12-25T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1310	FALSE
+A/NewYork/WC-LVD-14-081/2014	2014-12-28T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1311	FALSE
+A/NewYork/WC-LVD-15-001/2015	2015-01-07T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1312	FALSE
+A/NewYork/WC-LVD-15-002/2015	2015-01-04T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1313	FALSE
+A/NewYork/WC-LVD-15-003/2015	2015-01-04T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1314	FALSE
+A/NewYork/WC-LVD-15-004/2015	2015-01-04T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1315	FALSE
+A/NewYork/WC-LVD-14-082/2014	2014-12-22T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1316	FALSE
+A/NewYork/WC-LVD-14-083/2014	2014-12-23T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1317	FALSE
+A/NewYork/WC-LVD-14-084/2014	2014-12-30T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1318	FALSE
+A/NewYork/WC-LVD-14-085/2014	2014-12-30T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1319	FALSE
+A/NewYork/WC-LVD-14-086/2014	2014-12-24T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1320	FALSE
+A/NewYork/WC-LVD-15-005/2015	2015-01-15T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1321	FALSE
+A/NewYork/WC-LVD-15-006/2015	2015-01-19T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1322	FALSE
+A/NewYork/WC-LVD-14-087/2014	2014-12-27T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1323	FALSE
+A/NewYork/WC-LVD-15-007/2015	2015-01-05T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1324	FALSE
+A/NewYork/WC-LVD-15-008/2015	2015-01-14T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1325	FALSE
+A/NewYork/WC-LVD-15-009/2015	2015-01-08T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1326	FALSE
+A/NewYork/WC-LVD-15-011/2015	2015-01-14T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1327	FALSE
+A/NewYork/WC-LVD-15-012/2015	2015-01-14T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1328	FALSE
+A/NewYork/WC-LVD-14-088/2014	2014-12-29T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1329	FALSE
+A/NewYork/WC-LVD-14-089/2014	2014-12-28T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1330	FALSE
+A/NewYork/WC-LVD-14-090/2014	2014-12-13T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1331	FALSE
+A/NewYork/WC-LVD-15-013/2015	2015-01-20T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1332	FALSE
+A/NewYork/WC-LVD-14-091/2014	2014-12-26T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1333	FALSE
+A/NewYork/WC-LVD-15-014/2015	2015-01-19T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1334	FALSE
+A/NewYork/WC-LVD-15-015/2015	2015-01-16T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1335	FALSE
+A/NewYork/WC-LVD-14-092/2014	2014-12-14T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1336	FALSE
+A/NewYork/WC-LVD-14-093/2014	2014-12-21T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1337	FALSE
+A/NewYork/WC-LVD-14-094/2014	2014-12-26T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1338	FALSE
+A/NewYork/WC-LVD-15-016/2015	2015-01-28T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1339	FALSE
+A/NewYork/WC-LVD-15-017/2015	2015-01-28T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1340	FALSE
+A/NewYork/WC-LVD-15-018/2015	2015-01-14T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1341	FALSE
+A/NewYork/WC-LVD-15-020/2015	2015-02-03T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1342	FALSE
+A/NewYork/WC-LVD-15-021/2015	2015-02-02T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1343	FALSE
+A/NewYork/WC-LVD-15-022/2015	2015-01-25T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1344	FALSE
+A/NewYork/WC-LVD-15-024/2015	2015-01-30T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1345	FALSE
+A/NewYork/WC-LVD-15-025/2015	2015-02-04T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1346	FALSE
+A/NewYork/WC-LVD-15-026/2015	2015-02-03T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1347	FALSE
+A/NewYork/WC-LVD-15-027/2015	2015-02-23T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1348	FALSE
+A/NewYork/WC-LVD-15-028/2015	2015-01-28T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1349	FALSE
+A/NewYork/WC-LVD-15-029/2015	2015-02-10T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1350	FALSE
+A/NewYork/WC-LVD-15-031/2015	2015-02-11T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1351	FALSE
+A/NewYork/WC-LVD-15-032/2015	2015-02-18T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1352	FALSE
+A/NewYork/WC-LVD-15-033/2015	2015-02-17T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1353	FALSE
+A/NewYork/WC-LVD-15-034/2015	2015-01-16T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1354	FALSE
+A/NewYork/WC-LVD-15-035/2015	2015-01-27T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1355	FALSE
+A/NewYork/WC-LVD-15-037/2015	2015-03-03T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1356	FALSE
+A/NewYork/WC-LVD-15-038/2015	2015-03-04T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1357	FALSE
+A/NewYork/WC-LVD-15-039/2015	2015-03-08T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1358	FALSE
+A/NewYork/WC-LVD-15-040/2015	2015-03-07T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1359	FALSE
+A/NewYork/WC-LVD-15-041/2015	2015-03-18T04:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1360	FALSE
+A/NewYork/WC-LVD-15-042/2015	2015-03-14T04:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1361	FALSE
+A/NewYork/WC-LVD-15-043/2015	2015-02-21T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1362	FALSE
+A/NewYork/WC-LVD-15-044/2015	2015-03-21T04:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1363	FALSE
+A/NewYork/WC-LVD-15-045/2015	2015-08-03T04:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1364	FALSE
+A/NewYork/WC-LVD-15-046/2015	2015-03-28T04:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1365	FALSE
+A/NewYork/WC-LVD-15-047/2015	2015-04-15T04:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1366	FALSE
+A/NewYork/WC-LVD-14-095/2014	2014-12-18T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1367	FALSE
+A/NewYork/WC-LVD-14-096/2014	2014-12-12T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1368	FALSE
+A/NewYork/WC-LVD-14-097/2014	2014-11-10T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1369	FALSE
+A/NewYork/WC-LVD-14-098/2014	2014-12-08T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1370	FALSE
+A/NewYork/WC-LVD-15-048/2015	2015-01-30T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1371	FALSE
+A/NewYork/WC-LVD-15-049/2015	2015-01-22T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1372	FALSE
+A/NewYork/WC-LVD-14-099/2014	2014-12-23T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1373	FALSE
+A/NewYork/WC-LVD-14-100/2014	2014-11-29T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1374	FALSE
+A/NewYork/WC-LVD-15-051/2015	2015-01-12T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1375	FALSE
+A/NewYork/WC-LVD-14-102/0214	2014-12-18T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1376	FALSE
+A/NewYork/WC-LVD-15-052/2015	2015-02-02T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1377	FALSE
+A/NewYork/WC-LVD-15-053/2015	2015-01-23T05:00:00Z	2016-10-10T04:00:00Z	A/H3N2		  	 Other Database Import	1378	FALSE
+A/NewYork/03/2015	2015-01-23T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1379	FALSE
+A/NewYork/18/2015	2015-01-23T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1380	FALSE
+A/NewYork/12/2015	2015-01-22T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1381	FALSE
+A/NewYork/04/2015	2015-01-22T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1382	FALSE
+A/NewYork/02/2015	2015-01-21T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1383	FALSE
+A/NewYork/99/2016	2016-09-23T04:00:00Z	2016-11-04T04:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1384	FALSE
+A/NewYork/98/2016	2016-09-21T04:00:00Z	2016-11-04T04:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1386	FALSE
+A/NewYork/88/2016	2016-07-27T04:00:00Z	2016-11-04T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1388	FALSE
+A/NewYork/96/2016	2016-09-01T04:00:00Z	2016-11-04T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1389	FALSE
+A/NewYork/89/2016	2016-08-08T04:00:00Z	2016-11-04T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1390	FALSE
+A/NewYork/90/2016	2016-08-09T04:00:00Z	2016-11-04T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1391	FALSE
+A/NewYork/91/2016	2016-08-23T04:00:00Z	2016-11-04T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1392	FALSE
+A/NewYork/92/2016	2016-08-23T04:00:00Z	2016-11-04T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1393	FALSE
+A/NewYork/93/2016	2016-08-24T04:00:00Z	2016-11-04T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1394	FALSE
+A/NewYork/94/2016	2016-08-27T04:00:00Z	2016-11-04T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1395	FALSE
+A/NewYork/95/2016	2016-08-29T04:00:00Z	2016-11-04T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1396	FALSE
+A/NewYork/100/2016	2016-09-26T04:00:00Z	2016-11-28T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1398	FALSE
+A/NewYork/104/2016	2016-10-25T04:00:00Z	2016-12-20T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1401	FALSE
+A/NewYork/106/2016	2016-11-15T05:00:00Z	2016-12-20T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1403	FALSE
+A/NewYork/107/2016	2016-11-26T05:00:00Z	2016-12-20T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1404	FALSE
+A/NewYork/102/2016	2016-10-18T04:00:00Z	2017-01-04T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1405	FALSE
+A/NewYork/103/2016	2016-10-26T04:00:00Z	2017-01-04T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1406	FALSE
+A/NewYork/109/2016	2016-11-30T05:00:00Z	2017-01-17T05:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1407	FALSE
+A/NewYork/110/2016	2016-12-06T05:00:00Z	2017-01-17T05:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1408	FALSE
+A/NewYork/112/2016	2016-12-01T05:00:00Z	2017-01-17T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1410	FALSE
+A/NewYork/113/2016	2016-12-03T05:00:00Z	2017-01-17T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1411	FALSE
+A/NewYork/105/2016	2016-11-01T04:00:00Z	2017-01-24T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1412	FALSE
+A/NewYork/4881/2015	2015-04-27T04:00:00Z	2016-11-29T05:00:00Z	A/H3N2		  	 Other Database Import	1413	FALSE
+A/NewYork/5019/2016	2016-02-10T05:00:00Z	2016-11-29T05:00:00Z	A/H3N2		  	 Other Database Import	1414	FALSE
+A/NewYork/5080/2016	2016-02-25T05:00:00Z	2016-11-29T05:00:00Z	A/H3N2		  	 Other Database Import	1415	FALSE
+A/NewYork/01/2017	2017-01-02T05:00:00Z	2017-02-01T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1417	FALSE
+A/NewYork/02/2017	2017-01-22T05:00:00Z	2017-02-13T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1419	FALSE
+A/NewYork/111/2016	2016-12-14T05:00:00Z	2017-02-17T05:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1420	FALSE
+A/NewYork/114/2016	2016-12-29T05:00:00Z	2017-02-17T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1421	FALSE
+A/NewYork/18/2014	2014-09-18T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1422	FALSE
+A/NewYork/19/2014	2014-09-23T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1423	FALSE
+A/NewYork/20/2014	2014-09-25T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1424	FALSE
+A/NewYork/26/2014	2014-10-14T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1425	FALSE
+A/NewYork/28/2014	2014-10-14T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1426	FALSE
+A/NewYork/35/2014	2014-10-21T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1427	FALSE
+A/NewYork/24/2014	2014-10-10T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1428	FALSE
+A/NewYork/34/2014	2014-10-17T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1429	FALSE
+A/NewYork/36/2014	2014-10-23T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1430	FALSE
+A/NewYork/31/2014	2014-10-17T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1431	FALSE
+A/NewYork/40/2014	2014-12-29T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1432	FALSE
+A/NewYork/38/2014	2014-12-31T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1433	FALSE
+A/NewYork/39/2014	2014-12-31T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1434	FALSE
+A/NewYork/08/2015	2015-01-07T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1435	FALSE
+A/NewYork/09/2015	2015-01-08T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1436	FALSE
+A/NewYork/10/2015	2015-01-08T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1437	FALSE
+A/NewYork/11/2015	2015-01-05T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1438	FALSE
+A/NewYork/07/2015	2015-01-07T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1440	FALSE
+A/NewYork/05/2015	2015-01-06T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1441	FALSE
+A/NewYork/13/2015	2015-02-10T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1442	FALSE
+A/NewYork/20/2015	2015-02-25T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1443	FALSE
+A/NewYork/14/2015	2015-02-05T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1444	FALSE
+A/NewYork/19/2015	2015-02-17T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1445	FALSE
+A/NewYork/15/2015	2015-02-05T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1446	FALSE
+A/NewYork/16/2015	2015-02-09T05:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1447	FALSE
+A/NewYork/57/2015	2015-07-21T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1448	FALSE
+A/NewYork/58/2015	2015-08-03T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1449	FALSE
+A/NewYork/59/2015	2015-07-29T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1450	FALSE
+A/NewYork/60/2015	2015-08-01T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1451	FALSE
+A/NewYork/62/2015	2015-08-04T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1452	FALSE
+A/NewYork/63/2015	2015-08-06T04:00:00Z	2015-10-11T04:00:00Z	A/H3N2		  	 Other Database Import	1453	FALSE
+A/NewYork/03/2017	2017-01-24T05:00:00Z	2017-03-20T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1456	FALSE
+A/NewYork/06/2017	2017-02-05T05:00:00Z	2017-03-27T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1457	FALSE
+A/NewYork/07/2017	2017-02-07T05:00:00Z	2017-03-27T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1458	FALSE
+A/NewYork/11/2017	2017-02-11T05:00:00Z	2017-04-04T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1460	FALSE
+A/NewYork/10/2017	2017-02-09T05:00:00Z	2017-04-10T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1461	FALSE
+A/NewYork/14/2017	2017-02-28T05:00:00Z	2017-04-10T04:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1463	FALSE
+A/NewYork/13/2017	2017-02-23T05:00:00Z	2017-04-10T04:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1464	FALSE
+A/NewYork/12/2017	2017-02-21T05:00:00Z	2017-04-10T04:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1465	FALSE
+A/NewYork/18/2017	2017-02-23T05:00:00Z	2017-04-28T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1468	FALSE
+A/NewYork/17/2017	2017-02-06T05:00:00Z	2017-05-08T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1469	FALSE
+A/NewYork/19/2017	2017-01-30T05:00:00Z	2017-05-15T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1470	FALSE
+A/NewYork/20/2017	2017-03-29T04:00:00Z	2017-05-15T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1471	FALSE
+A/NewYork/21/2017	2017-03-28T04:00:00Z	2017-05-31T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1472	FALSE
+A/NewYork/22/2017	2017-04-05T04:00:00Z	2017-05-31T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1473	FALSE
+A/NewYork/28/2017	2017-04-19T04:00:00Z	2017-05-31T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1475	FALSE
+A/NewYork/5610/2016	2016-11-08T05:00:00Z	2017-06-19T04:00:00Z	A/H3N2		  	 Other Database Import	1476	FALSE
+A/NewYork/5611/2016	2016-09-23T04:00:00Z	2017-06-19T04:00:00Z	A/H3N2		  	 Other Database Import	1477	FALSE
+A/NewYork/5646/2016	2016-12-19T05:00:00Z	2017-06-19T04:00:00Z	A/H3N2		  	 Other Database Import	1478	FALSE
+A/NewYork/5647/2016	2016-12-19T05:00:00Z	2017-06-19T04:00:00Z	A/H3N2		  	 Other Database Import	1479	FALSE
+A/NewYork/5648/2016	2016-12-08T05:00:00Z	2017-06-19T04:00:00Z	A/H3N2		  	 Other Database Import	1480	FALSE
+A/NewYork/5649/2016	2016-12-09T05:00:00Z	2017-06-19T04:00:00Z	A/H3N2		  	 Other Database Import	1481	FALSE
+A/NewYork/5650/2016	2016-12-12T05:00:00Z	2017-06-19T04:00:00Z	A/H3N2		  	 Other Database Import	1482	FALSE
+A/NewYork/5651/2016	2016-12-15T05:00:00Z	2017-06-19T04:00:00Z	A/H3N2		  	 Other Database Import	1483	FALSE
+A/NewYork/5652/2016	2016-12-15T05:00:00Z	2017-06-19T04:00:00Z	A/H3N2		  	 Other Database Import	1484	FALSE
+A/NewYork/5653/2016	2016-12-19T05:00:00Z	2017-06-19T04:00:00Z	A/H3N2		  	 Other Database Import	1485	FALSE
+A/NewYork/31/2017	2017-04-25T04:00:00Z	2017-06-28T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1486	FALSE
+A/NewYork/30/2017	2017-04-20T04:00:00Z	2017-06-28T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1487	FALSE
+A/NewYork/27/2017	2017-04-09T04:00:00Z	2017-07-18T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1488	FALSE
+A/NewYork/5689/2016	2016-12-27T05:00:00Z	2017-06-26T04:00:00Z	A/H3N2		  	 Other Database Import	1489	FALSE
+A/NewYork/5690/2017	2017-01-08T05:00:00Z	2017-06-26T04:00:00Z	A/H3N2		  	 Other Database Import	1490	FALSE
+A/NewYork/5736/2017	2017-01-17T05:00:00Z	2017-06-26T04:00:00Z	A/H3N2		  	 Other Database Import	1491	FALSE
+A/NewYork/32/2017	2017-06-28T04:00:00Z	2017-09-06T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1492	FALSE
+A/NewYork/6289/2017	2017-03-07T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1493	FALSE
+A/NewYork/6290/2017	2017-03-14T04:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1494	FALSE
+A/NewYork/6291/2017	2017-03-10T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1495	FALSE
+A/NewYork/6292/2017	2017-03-09T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1496	FALSE
+A/NewYork/6293/2017	2017-03-09T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1497	FALSE
+A/NewYork/6294/2017	2017-03-21T04:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1498	FALSE
+A/NewYork/6129/2017	2017-02-17T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1499	FALSE
+A/NewYork/6130/2017	2017-02-22T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1500	FALSE
+A/NewYork/6131/2017	2017-02-22T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1501	FALSE
+A/NewYork/6133/2017	2017-02-23T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1502	FALSE
+A/NewYork/6134/2017	2017-02-28T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1503	FALSE
+A/NewYork/6135/2017	2017-03-02T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1504	FALSE
+A/NewYork/6136/2017	2017-03-07T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1505	FALSE
+A/NewYork/6058/2017	2017-02-13T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1506	FALSE
+A/NewYork/6059/2017	2017-02-19T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1507	FALSE
+A/NewYork/6060/2017	2017-02-21T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1508	FALSE
+A/NewYork/5948/2017	2017-02-03T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1509	FALSE
+A/NewYork/5949/2017	2017-02-07T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1510	FALSE
+A/NewYork/6001/2017	2017-02-06T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1511	FALSE
+A/NewYork/6002/2017	2017-02-13T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1512	FALSE
+A/NewYork/6003/2017	2017-02-08T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1513	FALSE
+A/NewYork/6004/2017	2017-02-13T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1514	FALSE
+A/NewYork/6005/2017	2017-02-14T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1515	FALSE
+A/NewYork/5898/2017	2017-01-27T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1516	FALSE
+A/NewYork/5899/2017	2017-01-30T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1517	FALSE
+A/NewYork/5835/2017	2017-01-17T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1518	FALSE
+A/NewYork/5836/2017	2017-01-25T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1519	FALSE
+A/NewYork/5837/2017	2017-01-25T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1520	FALSE
+A/NewYork/5771/2016	2016-12-28T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1521	FALSE
+A/NewYork/5772/2017	2017-01-13T05:00:00Z	2017-09-18T04:00:00Z	A/H3N2		  	 Other Database Import	1522	FALSE
+A/NewYork/33/2017	2017-08-02T04:00:00Z	2017-11-06T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1524	FALSE
+A/NewYork/35/2017	2017-10-13T04:00:00Z	2017-11-13T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1525	FALSE
+A/NewYork/37/2017	2017-10-26T04:00:00Z	2017-11-20T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1526	FALSE
+A/NewYork/36/2017	2017-10-21T04:00:00Z	2017-11-20T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1527	FALSE
+A/NewYork/38/2017	2017-10-24T04:00:00Z	2017-11-27T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1528	FALSE
+A/NewYork/41/2017	2017-11-08T05:00:00Z	2017-12-18T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1530	FALSE
+A/NewYork/40/2017	2017-10-31T04:00:00Z	2017-12-18T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1531	FALSE
+A/NewYork/43/2017	2017-11-26T05:00:00Z	2017-12-18T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1533	FALSE
+A/NewYork/39/2017	2017-10-30T04:00:00Z	2017-12-18T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1534	FALSE
+A/NewYork/45/2017	2017-11-27T05:00:00Z	2017-12-27T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1535	FALSE
+A/NewYork/49/2017	2017-11-30T05:00:00Z	2018-01-02T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1537	FALSE
+A/NewYork/48/2017	2017-11-10T05:00:00Z	2018-01-02T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1538	FALSE
+A/NewYork/51/2017	2017-12-08T05:00:00Z	2018-01-08T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1539	FALSE
+A/NewYork/50/2017	2017-12-07T05:00:00Z	2018-01-08T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1540	FALSE
+A/NewYork/52/2017	2017-12-12T05:00:00Z	2018-01-16T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1541	FALSE
+A/NewYork/42/2017	2017-11-25T05:00:00Z	2018-01-23T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1543	FALSE
+A/NewYork/47/2017	2017-11-30T05:00:00Z	2018-01-23T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1544	FALSE
+A/NewYork/A-WC-LVD-16-001/2016	2016-10-21T04:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1545	FALSE
+A/NewYork/A-WC-LVD-16-002/2016	2016-10-26T04:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1546	FALSE
+A/NewYork/A-WC-LVD-16-003/2016	2016-11-14T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1547	FALSE
+A/NewYork/A-WC-LVD-16-004/2016	2016-12-12T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1548	FALSE
+A/NewYork/A-WC-LVD-16-005/2016	2016-12-23T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1549	FALSE
+A/NewYork/A-WC-LVD-16-006/2016	2016-12-27T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1550	FALSE
+A/NewYork/A-WC-LVD-16-007/2016	2016-12-30T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1551	FALSE
+A/NewYork/A-WC-LVD-17-001/2017	2017-01-04T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1552	FALSE
+A/NewYork/A-WC-LVD-17-002/2017	2017-01-08T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1553	FALSE
+A/NewYork/A-WC-LVD-17-003/2017	2017-01-13T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1554	FALSE
+A/NewYork/A-WC-LVD-17-005/2017	2017-01-05T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1555	FALSE
+A/NewYork/A-WC-LVD-17-007/2017	2017-01-19T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1556	FALSE
+A/NewYork/A-WC-LVD-17-008/2017	2017-01-17T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1557	FALSE
+A/NewYork/A-WC-LVD-17-009/2017	2017-01-19T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1558	FALSE
+A/NewYork/A-WC-LVD-17-010/2017	2017-01-24T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1559	FALSE
+A/NewYork/A-WC-LVD-17-011/2017	2017-01-22T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1560	FALSE
+A/NewYork/A-WC-LVD-17-012/2017	2017-01-23T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1561	FALSE
+A/NewYork/A-WC-LVD-17-013/2017	2017-01-23T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1562	FALSE
+A/NewYork/A-WC-LVD-17-014/2017	2017-01-23T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1563	FALSE
+A/NewYork/A-WC-LVD-17-015/2017	2017-01-23T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1564	FALSE
+A/NewYork/A-WC-LVD-17-016/2017	2017-01-25T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1565	FALSE
+A/NewYork/A-WC-LVD-17-017/2017	2017-01-20T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1566	FALSE
+A/NewYork/A-WC-LVD-17-018/2017	2017-01-30T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1567	FALSE
+A/NewYork/A-WC-LVD-17-019/2017	2017-01-31T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1568	FALSE
+A/NewYork/A-WC-LVD-17-021/2017	2017-01-03T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1569	FALSE
+A/NewYork/A-WC-LVD-17-022/2017	2017-01-31T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1570	FALSE
+A/NewYork/A-WC-LVD-17-024/2017	2017-02-02T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1571	FALSE
+A/NewYork/A-WC-LVD-17-025/2017	2017-02-02T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1572	FALSE
+A/NewYork/A-WC-LVD-17-026/2017	2017-01-29T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1573	FALSE
+A/NewYork/A-WC-LVD-17-027/2017	2017-02-07T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1574	FALSE
+A/NewYork/A-WC-LVD-17-028/2017	2017-02-07T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1575	FALSE
+A/NewYork/A-WC-LVD-17-029/2017	2017-02-08T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1576	FALSE
+A/NewYork/A-WC-LVD-17-030/2017	2017-02-11T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1577	FALSE
+A/NewYork/A-WC-LVD-17-031/2017	2017-02-07T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1578	FALSE
+A/NewYork/A-WC-LVD-17-032/2017	2017-02-12T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1579	FALSE
+A/NewYork/A-WC-LVD-17-034/2017	2017-02-27T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1580	FALSE
+A/NewYork/A-WC-LVD-17-035/2017	2017-02-25T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1581	FALSE
+A/NewYork/A-WC-LVD-17-036/2017	2017-03-05T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1582	FALSE
+A/NewYork/A-WC-LVD-17-038/2017	2017-03-13T04:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1583	FALSE
+A/NewYork/A-WC-LVD-17-039/2017	2017-03-08T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1584	FALSE
+A/NewYork/A-WC-LVD-17-040/2017	2017-03-12T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1585	FALSE
+A/NewYork/A-WC-LVD-17-041/2017	2017-02-17T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1586	FALSE
+A/NewYork/A-WC-LVD-17-042/2017	2017-04-02T04:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1587	FALSE
+A/NewYork/A-WC-LVD-17-043/2017	2017-03-30T04:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1588	FALSE
+A/NewYork/A-WC-LVD-17-044/2017	2017-04-08T04:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1589	FALSE
+A/NewYork/A-WC-LVD-17-045/2017	2017-04-08T04:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1590	FALSE
+A/NewYork/A-WC-LVD-17-046/2017	2017-04-06T04:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1591	FALSE
+A/NewYork/A-WC-LVD-17-047/2017	2017-04-25T04:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1592	FALSE
+A/NewYork/A-WC-LVD-17-048/2017	2017-02-21T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1593	FALSE
+A/NewYork/A-WC-LVD-17-049/2017	2017-02-23T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1594	FALSE
+A/NewYork/A-WC-LVD-17-050/2017	2017-02-14T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1595	FALSE
+A/NewYork/A-WC-LVD-17-051/2017	2017-01-09T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1596	FALSE
+A/NewYork/A-WC-LVD-17-052/2017	2017-02-28T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1597	FALSE
+A/NewYork/A-WC-LVD-17-053/2017	2017-03-24T04:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1598	FALSE
+A/NewYork/A-WC-LVD-16-015/2016	2016-04-14T04:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1599	FALSE
+A/NewYork/A-WC-LVD-16-017/2016	2016-03-16T04:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1600	FALSE
+A/NewYork/A-WC-LVD-16-020/2016	2016-03-02T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1601	FALSE
+A/NewYork/A-WC-LVD-16-025/2016	2016-03-20T04:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1602	FALSE
+A/NewYork/A-WC-LVD-15-054/2015	2015-11-03T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1603	FALSE
+A/NewYork/A-WC-LVD-16-038/2016	2016-02-02T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1604	FALSE
+A/NewYork/A-WC-LVD-16-056/2016	2016-02-21T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1605	FALSE
+A/NewYork/A-WC-LVD-16-064/2016	2016-02-17T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1606	FALSE
+A/NewYork/A-WC-LVD-16-065/2016	2016-03-08T05:00:00Z	2017-12-08T05:00:00Z	A/H3N2		  	 Other Database Import	1607	FALSE
+A/NewYork/02/2018	2018-01-17T05:00:00Z	2018-02-06T05:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1608	FALSE
+A/NewYork/58/2017	2017-12-23T05:00:00Z	2018-02-06T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1609	FALSE
+A/NewYork/55/2017	2017-12-16T05:00:00Z	2018-02-06T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1610	FALSE
+A/NewYork/56/2017	2017-12-19T05:00:00Z	2018-02-06T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1611	FALSE
+A/NewYork/53/2017	2017-12-14T05:00:00Z	2018-02-12T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1612	FALSE
+A/NewYork/03/2018	2018-01-08T05:00:00Z	2018-02-21T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1613	FALSE
+A/NewYork/06/2018	2018-01-18T05:00:00Z	2018-02-21T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1614	FALSE
+A/NewYork/07/2018	2018-01-16T05:00:00Z	2018-03-13T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1615	FALSE
+A/NewYork/09/2018	2018-02-02T05:00:00Z	2018-03-13T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1616	FALSE
+A/NewYork/12/2018	2018-02-11T05:00:00Z	2018-03-13T04:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1617	FALSE
+A/NewYork/08/2018	2018-01-30T05:00:00Z	2018-03-13T04:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1618	FALSE
+A/NewYork/13/2018	2018-02-16T05:00:00Z	2018-03-19T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1619	FALSE
+A/NewYork/01/2018	2018-01-10T05:00:00Z	2018-04-09T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1621	FALSE
+A/NewYork/20/2018	2018-01-06T05:00:00Z	2018-05-01T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1623	FALSE
+A/NewYork/32/2018	2018-03-11T05:00:00Z	2018-05-01T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1626	FALSE
+A/NewYork/31/2018	2018-03-10T05:00:00Z	2018-05-01T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1627	FALSE
+A/NewYork/33/2015	2015-03-30T04:00:00Z	2018-05-16T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1629	FALSE
+A/NewYork/39/2018	2018-04-27T04:00:00Z	2018-07-30T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1633	FALSE
+A/NewYork/28/2018	2018-03-16T04:00:00Z	2018-07-30T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1634	FALSE
+A/NewYork/27/2018	2018-03-12T04:00:00Z	2018-07-30T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1635	FALSE
+A/NewYork/38/2018	2018-04-27T04:00:00Z	2018-08-07T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1636	FALSE
+A/NewYork/37/2018	2018-04-26T04:00:00Z	2018-08-13T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1637	FALSE
+A/NewYork/21/2018	2018-02-25T05:00:00Z	2018-08-21T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1638	FALSE
+A/NewYork/34/2018	2018-04-03T04:00:00Z	2018-09-05T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1639	FALSE
+A/NewYork/15/2018	2018-02-21T05:00:00Z	2018-09-12T04:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1640	FALSE
+A/NewYork/6696/2018	2018-01-04T05:00:00Z	2018-08-26T04:00:00Z	A/H3N2		  	 Other Database Import	1744	FALSE
+A/NewYork/6697/2018	2018-01-05T05:00:00Z	2018-08-26T04:00:00Z	A/H3N2		  	 Other Database Import	1745	FALSE
+A/NewYork/6642/2017	2017-12-29T05:00:00Z	2018-08-26T04:00:00Z	A/H3N2		  	 Other Database Import	1746	FALSE
+A/NewYork/6643/2018	2018-01-10T05:00:00Z	2018-08-26T04:00:00Z	A/H3N2		  	 Other Database Import	1747	FALSE
+A/NewYork/6495/2017	2017-12-14T05:00:00Z	2018-05-10T04:00:00Z	A/H3N2		  	 Other Database Import	1748	FALSE
+A/NewYork/6496/2017	2017-12-15T05:00:00Z	2018-05-10T04:00:00Z	A/H3N2		  	 Other Database Import	1749	FALSE
+A/NewYork/40/2018	2018-09-05T04:00:00Z	2018-11-13T05:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1753	FALSE
+A/NewYork/41/2018	2018-09-05T04:00:00Z	2018-11-13T05:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1754	FALSE
+A/NewYork/46/2018	2018-09-18T04:00:00Z	2018-11-29T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1755	FALSE
+A/NewYork/55/2018	2018-12-13T05:00:00Z	2019-02-05T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1759	FALSE
+A/NewYork/59/2018	2018-12-26T05:00:00Z	2019-02-13T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1760	FALSE
+A/NewYork/03/2019	2019-01-05T05:00:00Z	2019-02-13T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1761	FALSE
+A/NewYork/61/2018	2018-12-01T05:00:00Z	2019-02-13T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1762	FALSE
+A/NewYork/06/2015	2015-01-06T05:00:00Z	2019-02-19T05:00:00Z	A/H3N2		 New York City Department of Health 	 Centers for Disease Control and Prevention	1763	FALSE
+A/NewYork/04/2019	2019-01-21T05:00:00Z	2019-02-21T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1764	FALSE
+A/NewYork/05/2019	2019-01-28T05:00:00Z	2019-02-21T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1765	FALSE
+A/NewYork/57/2018	2018-12-15T05:00:00Z	2019-02-21T05:00:00Z	A/H3N2		 New York State Department of Health 	 Centers for Disease Control and Prevention	1766	FALSE

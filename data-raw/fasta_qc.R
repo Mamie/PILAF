@@ -28,6 +28,7 @@ preprocess_fasta <- function(path) {
 
 filter_date <- function(fasta, start_date, field_outpath, data_output) {
   fasta_file <- fasta$fasta_file
+  header_lines <- which(grepl("^>", fasta_file, fixed = F))
   fields <- fasta$fields
   line_ranges <- data.frame(id = seq_along(header_lines), start = header_lines)
   line_ranges$end <- c(line_ranges$start[-1] - 1, length(fasta_file))
@@ -46,9 +47,20 @@ filter_date <- function(fasta, start_date, field_outpath, data_output) {
   return(list(fasta_file = fasta_filtered, fields = fields_filtered))
 }
 
-# H3
-Yamagata <- preprocess_fasta("~/Downloads/20190315_NewYork_B_Yamagata.fasta")
+# H1N1
+H1N1 <- preprocess_fasta("~/Downloads/20180318_NewYork_H1N1.fasta")
+H1N1_filtered <- filter_date(H1N1, "2014-01-01", "inst/extdata/H1N1/NewYork_A_H1N1_20190318_filtered.tsv", "inst/extdata/H1N1/NewYork_A_H1N1_20190318_filtered.fasta") # 265
+H1N1_last_time <- 2019.0931506849315
 
+# B
+Yamagata <- preprocess_fasta("~/Downloads/20190315_NewYork_B_Yamagata.fasta")
+Yamagata_filtered <- filter_date(Yamagata, "2014-01-01", "inst/extdata/Yamagata/NewYork_B_Yamagata_20190318_filtered.tsv", "inst/extdata/Yamagata/NewYork_B_Yamagata_20190318_filtered.fasta") # 69
+Yamagata_last_time <- 2019.0739726027398
+
+# B
+Victoria <- preprocess_fasta("~/Downloads/20190315_NewYork_B_Victoria.fasta")
+Victoria_filtered <- filter_date(Victoria, "2014-01-01", "inst/extdata/Victoria/NewYork_B_Victoria_20190318_filtered.tsv", "inst/extdata/Victoria/NewYork_B_Victoria_20190318_filtered.fasta") # 52
+Victoria_last_time <- 2018.317808219178
 
 # get the header lines
 fasta_file <- readLines("inst/extdata/NewYork_A_H3N2_20190307.fasta")

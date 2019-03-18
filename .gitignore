@@ -6,6 +6,4 @@
 
 # slurm log files
 *.err
-*.log
 *.out
-*.trees

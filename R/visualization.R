@@ -1,6 +1,6 @@
 #' plot real CDC time series data
 #'
-#' @params data A data frame containing year, week and total ILI counts
+#' @param data A data frame containing year, week and total ILI counts
 #' @param value The name of the variable that contains ILI counts
 #' @export
 plot_traj_heatmap <- function(data, value) {
@@ -48,7 +48,7 @@ plot_LOSO_performance <- function(performances) {
 }
 
 
-plot_trajectory <- function(df, estimated_root_height = NULL) {
+plot_trajectory <- function(df) {
   xmin <- c()
   xmax <- c()
   year <- floor(min(df$Time))
@@ -67,24 +67,46 @@ plot_trajectory <- function(df, estimated_root_height = NULL) {
     scale_y_log10() +
     theme_classic() +
     ylab(expression(N["e"])) +
-    theme(axis.text.x = element_text(size = 13), axis.title = element_blank())
-
-  if(!is.null(estimated_root_height)) {
-    p <- p + geom_vline(aes(xintercept = estimated_root_height), linetype = "dotted")
-  }
+    facet_wrap(~Label, ncol = 1) +
+    theme(axis.text.x = element_text(size = 13),
+          axis.title.x = element_blank(),
+          strip.background = element_blank())
   return(p)
 }
 
-plot_MCC_Ne <- function(MCC, root_time, last_time, Ne, breaks) {
+#' Plot MCC tree and skygrid effective population size
+#' @param MCC A nexus object
+#' @param root_time The actual time for the root of the tree
+#' @param last_time The last time to be plotted
+#' @param Ne A list of data frame containing Ne summary statistics
+#' @export
+plot_MCC_Ne <- function(MCC, root_time, last_time, Ne, breaks, ratio = c(1.2, 1)) {
   par(mar = c(2, 3.8, 0, 1))
-  layout(matrix(c(1, 2), ncol = 1), c(4, 4), c(1.2, 1))
-  plot(ape::ladderize(MCC), show.tip.label=F, show.node.label=F)
+  layout(matrix(c(1, 2), ncol = 1), c(4, 4), ratio)
+  plot(ape::ladderize(MCC), show.tip.label = F, show.node.label = F)
   ape::axisPhylo(root.time = root_time, backward = F)
   plot.new()
-  vps <- baseViewports()
-  pushViewport(vps$figure)
-  vp1 <-plotViewport(c(1,0.1,0,0.5))
+  vps <- gridBase::baseViewports()
+  grid::pushViewport(vps$figure)
+  vp1 <- grid::plotViewport(c(1,0.1,0,0.5))
   p <- plot_trajectory(Ne) +
     scale_x_continuous(limits = c(root_time, last_time), breaks = breaks)
   print(p, vp = vp1)
+}
+
+#' Convert BNPR object summary statistics to data frame
+#' @param BNPR_obj A BNPR object
+#' @param label Label to be displayed on the plot
+#' @param last_time Last sampling time
+#' @export
+BNPR_to_df <- function(BNPR_obj, label, last_time) {
+  with(BNPR_obj,
+       data.frame(Time = x,
+                  Mean = effpopmean,
+                  Median = effpop,
+                  Upper = effpop975,
+                  Lower = effpop025,
+                  Label = label,
+                  stringsAsFactors = F)) %>%
+    mutate(Time = last_time - Time)
 }

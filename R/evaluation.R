@@ -140,7 +140,7 @@ find_season_range <- function(task_list) {
 #' @param models A list of INLA model for each task
 #' @param n Number of posterior predictive samples
 #' @return A list containing corresponding peak week and peak ILI for each mode
-#' @exportl
+#' @export
 compute_peak_week <- function(task_list, models, task_season_range, n = 100) {
   peak_week <- data.frame(time = integer(), peak_week = integer(), quant0.025 = double(), quant0.975 = double(), median = double(), mean = double())
   peak_ILI <- data.frame(time = integer(), peak_ILI = integer(), quant0.025 = double(), quant0.975 = double(), median = double(), mean = double())

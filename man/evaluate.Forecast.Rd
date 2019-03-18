@@ -4,7 +4,7 @@
 \alias{evaluate.Forecast}
 \title{Evaluate the Forecast}
 \usage{
-\method{evaluate}{Forecast}(x, truth)
+\method{evaluate}{Forecast}(x, truth, title, color = NULL)
 }
 \arguments{
 \item{x}{A forecast object.}
@@ -15,6 +15,6 @@
 A ggplot object
 }
 \description{
-Evaluate the forecast by pointwise absolute error and BCI
+Evaluate the forecast by  absolute error and BCI
 width. Return a plot of AE and width.
 }

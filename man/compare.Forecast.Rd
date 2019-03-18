@@ -4,7 +4,8 @@
 \alias{compare.Forecast}
 \title{Compare performance of two models by AE and W}
 \usage{
-\method{compare}{Forecast}(x, y, truth, method = c(1, 2))
+\method{compare}{Forecast}(x, y, xlabel, ylabel, truth,
+  color = c("#0083C3", "#EB975F"))
 }
 \arguments{
 \item{x, }{y Two Forecast object.}

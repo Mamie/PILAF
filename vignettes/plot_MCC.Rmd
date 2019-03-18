@@ -1,0 +1,53 @@
+---
+title: "Plot MCC tree"
+author: "Meng Wang"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Plot MCC tree}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(collapse=TRUE, comment="#>")
+library(dplyr)
+```
+
+First, we load The maximum clade credibility tree (MCC) for H3N2 virus sampled from 2014 - 2019. A MCC tree is the tree in the posterior samples with the maximum sum of posterior clade probabilities. We 
+
+```{r load_MCC_tree}
+H3N2_MCC <- system.file("extdata/H3N2/MCC.tree", package = "PILAF")
+H3N2_MCC_tree <- ape::read.nexus(H3N2_MCC)
+H3N2_MCC_phylo <- phylodyn::summarize_phylo(H3N2_MCC_tree)
+last_time <- 2019.0739726027398 # last sampling time
+root_time = last_time - max(H3N2_MCC_phylo$coal_times)
+```
+
+SkyGrid reconstruction was performed in BEAST and we can load the effective population size summary statistics as follows. 
+
+```{r load_skygrid}
+skygrid <- system.file("extdata/H3N2/skygrid_reconstruction.tsv", package = "PILAF")
+skygrid <- readr::read_tsv(skygrid, skip = 1) %>%
+  mutate(Time = last_time - Time) %>% 
+  mutate(Label = "SkyGrid")
+```
+
+We can plot the MCC tree and inferred effective size trajectory as follows. 
+
+```{r}
+PILAF::plot_MCC_Ne(H3N2_MCC_tree, root_time, last_time, skygrid, breaks = seq(2013, 2019))
+```
+
+We can also compare the results of SkyGrid with `BNPR` and `BNPR-PS` from `phylodyn`. 
+
+```{r}
+BNPR_traj <- phylodyn::BNPR(H3N2_MCC_phylo)
+BNPR_PS_traj <- phylodyn::BNPR_PS(H3N2_MCC_phylo)
+all <- dplyr::bind_rows(skygrid, 
+                        BNPR_to_df(BNPR_traj, "BNPR", last_time),
+                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", last_time))
+PILAF::plot_MCC_Ne(H3N2_MCC_tree, root_time, last_time, all, breaks = seq(2013, 2019), c(1, 3))
+```
+

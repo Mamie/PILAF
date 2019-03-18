@@ -13,10 +13,12 @@ Imports:
   phylodyn,
   ggplot2,
   tidyr,
-  dplyr
+  dplyr,
+  grid,
+  gridBase
 Suggests:
   testthat,
   knitr,
   rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 6.1.0.9000
+RoxygenNote: 6.1.1

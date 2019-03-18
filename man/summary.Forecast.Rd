@@ -15,6 +15,6 @@
 A data frame containing the absolute error of forecast.
 }
 \description{
-Summarize the forecast by pointwise mean absolute error and mean relative
+Summarize the forecast by  mean absolute error and mean relative
 width.
 }

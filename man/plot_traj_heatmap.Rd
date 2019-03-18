@@ -7,6 +7,8 @@
 plot_traj_heatmap(data, value)
 }
 \arguments{
+\item{data}{A data frame containing year, week and total ILI counts}
+
 \item{value}{The name of the variable that contains ILI counts}
 }
 \description{

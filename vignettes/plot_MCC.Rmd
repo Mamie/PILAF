@@ -15,14 +15,18 @@ knitr::opts_chunk$set(collapse=TRUE, comment="#>")
 library(dplyr)
 ```
 
+The document reproduced Figure in the manuscript. 
+
+# H3N2
+
 First, we load The maximum clade credibility tree (MCC) for H3N2 virus sampled from 2014 - 2019. A MCC tree is the tree in the posterior samples with the maximum sum of posterior clade probabilities. We 
 
 ```{r load_MCC_tree}
 H3N2_MCC <- system.file("extdata/H3N2/MCC.tree", package = "PILAF")
 H3N2_MCC_tree <- ape::read.nexus(H3N2_MCC)
 H3N2_MCC_phylo <- phylodyn::summarize_phylo(H3N2_MCC_tree)
-last_time <- 2019.0739726027398 # last sampling time
-root_time = last_time - max(H3N2_MCC_phylo$coal_times)
+H3N2_last_time <- 2019.0739726027398 # last sampling time
+H3N2_root_time = H3N2_last_time - max(H3N2_MCC_phylo$coal_times)
 ```
 
 SkyGrid reconstruction was performed in BEAST and we can load the effective population size summary statistics as follows. 
@@ -45,9 +49,86 @@ We can also compare the results of SkyGrid with `BNPR` and `BNPR-PS` from `phylo
 ```{r}
 BNPR_traj <- phylodyn::BNPR(H3N2_MCC_phylo)
 BNPR_PS_traj <- phylodyn::BNPR_PS(H3N2_MCC_phylo)
-all <- dplyr::bind_rows(skygrid, 
-                        BNPR_to_df(BNPR_traj, "BNPR", last_time),
-                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", last_time))
-PILAF::plot_MCC_Ne(H3N2_MCC_tree, root_time, last_time, all, breaks = seq(2013, 2019), c(1, 3))
+H3N2_all <- dplyr::bind_rows(skygrid, 
+                        BNPR_to_df(BNPR_traj, "BNPR", H3N2_last_time),
+                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", H3N2_last_time))
+PILAF::plot_MCC_Ne(H3N2_MCC_tree, H3N2_root_time, H3N2_last_time, H3N2_all, main = "A/H3N2", breaks = seq(2013, 2019), c(1.3, 3))
 ```
 
+# H1N1
+
+The same process was repeated for H1N1. 
+
+```{r H1N1}
+H1N1_MCC <- system.file("extdata/H1N1/MCC.tree", package = "PILAF")
+H1N1_MCC_tree <- ape::read.nexus(H1N1_MCC)
+H1N1_MCC_phylo <- phylodyn::summarize_phylo(H1N1_MCC_tree)
+H1N1_last_time <- 2019.0931506849315 # last sampling time
+H1N1_root_time = H1N1_last_time - max(H1N1_MCC_phylo$coal_times)
+
+skygrid <- system.file("extdata/H1N1/skygrid_reconstruction.tsv", package = "PILAF")
+skygrid <- readr::read_tsv(skygrid, skip = 1) %>%
+  mutate(Time = H1N1_last_time - Time) %>% 
+  mutate(Label = "SkyGrid")
+
+BNPR_traj <- phylodyn::BNPR(H1N1_MCC_phylo)
+BNPR_PS_traj <- phylodyn::BNPR_PS(H1N1_MCC_phylo)
+H1N1_all <- dplyr::bind_rows(skygrid, 
+                        BNPR_to_df(BNPR_traj, "BNPR", H1N1_last_time),
+                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", H1N1_last_time))
+
+PILAF::plot_MCC_Ne(H1N1_MCC_tree, H1N1_root_time, H1N1_last_time, H1N1_all, main = "A/H1N1", breaks = seq(2013, 2019), c(1, 3))
+```
+
+# Victoria
+
+```{r Victoria}
+Victoria_MCC <- system.file("extdata/Victoria/MCC.tree", package = "PILAF")
+Victoria_MCC_tree <- ape::read.nexus(Victoria_MCC)
+Victoria_MCC_phylo <- phylodyn::summarize_phylo(Victoria_MCC_tree)
+Victoria_last_time <- 2018.317808219178 
+Victoria_root_time = Victoria_last_time - max(Victoria_MCC_phylo$coal_times)
+
+skygrid <- system.file("extdata/Victoria/skygrid_reconstruction.tsv", package = "PILAF")
+skygrid <- readr::read_tsv(skygrid, skip = 1) %>%
+  mutate(Time = Victoria_last_time - Time) %>% 
+  mutate(Label = "SkyGrid")
+
+BNPR_traj <- phylodyn::BNPR(Victoria_MCC_phylo)
+BNPR_PS_traj <- phylodyn::BNPR_PS(Victoria_MCC_phylo)
+Victoria_all <- dplyr::bind_rows(skygrid, 
+                        BNPR_to_df(BNPR_traj, "BNPR", Victoria_last_time),
+                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", Victoria_last_time))
+PILAF::plot_MCC_Ne(Victoria_MCC_tree, Victoria_root_time, Victoria_last_time, Victoria_all, main = "B/Victoria", breaks = seq(2013, 2019), c(1, 3))
+```
+
+# Yamagata
+
+```{r Yamagata}
+Yamagata_MCC <- system.file("extdata/Yamagata/MCC.tree", package = "PILAF")
+Yamagata_MCC_tree <- ape::read.nexus(Yamagata_MCC)
+Yamagata_MCC_phylo <- phylodyn::summarize_phylo(Yamagata_MCC_tree)
+Yamagata_last_time <- 2019.0739726027398 
+Yamagata_root_time = Yamagata_last_time - max(Yamagata_MCC_phylo$coal_times)
+
+skygrid <- system.file("extdata/Yamagata/skygrid_reconstruction.tsv", package = "PILAF")
+skygrid <- readr::read_tsv(skygrid, skip = 1) %>%
+  mutate(Time = Yamagata_last_time - Time) %>% 
+  mutate(Label = "SkyGrid")
+
+BNPR_traj <- phylodyn::BNPR(Yamagata_MCC_phylo)
+BNPR_PS_traj <- phylodyn::BNPR_PS(Yamagata_MCC_phylo)
+Yamagata_all <- dplyr::bind_rows(skygrid, 
+                        BNPR_to_df(BNPR_traj, "BNPR", Yamagata_last_time),
+                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", Yamagata_last_time))
+PILAF::plot_MCC_Ne(Yamagata_MCC_tree, Yamagata_root_time, Yamagata_last_time, Yamagata_all, main = "B/Yamagata", breaks = seq(2013, 2019), c(1, 3))
+```
+
+```{r}
+pdf("~/Desktop/H3N2_H1N1_B_Victoria_Yamagata.pdf", width = 5, height = 8)
+print(PILAF::plot_MCC_Ne(H3N2_MCC_tree, H3N2_root_time, H3N2_last_time, H3N2_all, main = "A/H3N2", breaks = seq(2013, 2019), c(1.3, 3)))
+print(PILAF::plot_MCC_Ne(H1N1_MCC_tree, H1N1_root_time, H1N1_last_time, H1N1_all, main = "A/H1N1", breaks = seq(2013, 2019), c(1, 3)))
+print(PILAF::plot_MCC_Ne(Victoria_MCC_tree, Victoria_root_time, Victoria_last_time, Victoria_all, main = "B/Victoria", breaks = seq(2013, 2019), c(1, 3)))
+print(PILAF::plot_MCC_Ne(Yamagata_MCC_tree, Yamagata_root_time, Yamagata_last_time, Yamagata_all, main = "B/Yamagata", breaks = seq(2013, 2019), c(1, 3)))
+dev.off()
+```

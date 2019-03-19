@@ -80,10 +80,10 @@ plot_trajectory <- function(df) {
 #' @param last_time The last time to be plotted
 #' @param Ne A list of data frame containing Ne summary statistics
 #' @export
-plot_MCC_Ne <- function(MCC, root_time, last_time, Ne, breaks, ratio = c(1.2, 1)) {
-  par(mar = c(2, 3.8, 0, 1))
+plot_MCC_Ne <- function(MCC, root_time, last_time, Ne, breaks, main = NULL, ratio = c(1.2, 1)) {
+  par(mar = c(2, 3.8, 2, 1))
   layout(matrix(c(1, 2), ncol = 1), c(4, 4), ratio)
-  plot(ape::ladderize(MCC), show.tip.label = F, show.node.label = F)
+  plot(ape::ladderize(MCC), show.tip.label = F, show.node.label = F, main = main)
   ape::axisPhylo(root.time = root_time, backward = F)
   plot.new()
   vps <- gridBase::baseViewports()

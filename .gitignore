@@ -7,3 +7,9 @@
 # slurm log files
 *.err
 *.out
+
+# system files
+*.DS_Store
+
+# plots
+*.pdf

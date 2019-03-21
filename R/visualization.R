@@ -48,7 +48,7 @@ plot_LOSO_performance <- function(performances) {
 }
 
 
-plot_trajectory <- function(df) {
+plot_trajectory <- function(df, ylimits) {
   xmin <- c()
   xmax <- c()
   year <- floor(min(df$Time))
@@ -60,11 +60,11 @@ plot_trajectory <- function(df) {
   winter_seasons <- data.frame(xmin = xmin, xmax = xmax) %>%
     filter(xmin < max(df$Time) & xmax > min(df$Time))
   p <- ggplot(data = df) +
-    geom_rect(data = winter_seasons, aes(xmin = xmin, xmax = xmax, ymin = min(df$Lower), ymax = max(df$Upper)), fill = 'steelblue', alpha = 0.1) +
+    geom_rect(data = winter_seasons, aes(xmin = xmin, xmax = xmax, ymin = min(ylimits), ymax = max(ylimits)), fill = 'steelblue', alpha = 0.1) +
     geom_line(aes(x = Time, y = Median), size = 1) +
     geom_line(aes(x = Time, y = Upper), size = 0.5) +
     geom_line(aes(x = Time, y = Lower), size = 0.5) +
-    scale_y_log10() +
+    scale_y_log10(limits = ylimits) +
     theme_classic() +
     ylab(expression(N["e"])) +
     facet_wrap(~Label, ncol = 1) +
@@ -74,24 +74,30 @@ plot_trajectory <- function(df) {
   return(p)
 }
 
+
 #' Plot MCC tree and skygrid effective population size
 #' @param MCC A nexus object
 #' @param root_time The actual time for the root of the tree
 #' @param last_time The last time to be plotted
 #' @param Ne A list of data frame containing Ne summary statistics
 #' @export
-plot_MCC_Ne <- function(MCC, root_time, last_time, Ne, breaks, main = NULL, ratio = c(1.2, 1)) {
+plot_MCC_Ne <- function(MCC, root_time, last_time, Ne, breaks, main = NULL,
+                        ratio = c(1.2, 1), mask_range = NULL, ylimits = NULL) {
   par(mar = c(2, 3.8, 2, 1))
   layout(matrix(c(1, 2), ncol = 1), c(4, 4), ratio)
+
   plot(ape::ladderize(MCC), show.tip.label = F, show.node.label = F, main = main)
   ape::axisPhylo(root.time = root_time, backward = F)
   plot.new()
   vps <- gridBase::baseViewports()
   grid::pushViewport(vps$figure)
   vp1 <- grid::plotViewport(c(1,0.1,0,0.5))
-  p <- plot_trajectory(Ne) +
+  if (!is.null(mask_range)) Ne <- Ne[!(Ne$Time < max(mask_range) & Ne$Time > min(mask_range)),]
+  p <- plot_trajectory(Ne, ylimits) +
     scale_x_continuous(limits = c(root_time, last_time), breaks = breaks)
   print(p, vp = vp1)
+  dev.new()
+  dev.off()
 }
 
 #' Convert BNPR object summary statistics to data frame

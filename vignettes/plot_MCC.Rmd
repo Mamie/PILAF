@@ -32,16 +32,16 @@ H3N2_root_time = H3N2_last_time - max(H3N2_MCC_phylo$coal_times)
 SkyGrid reconstruction was performed in BEAST and we can load the effective population size summary statistics as follows. 
 
 ```{r load_skygrid}
-skygrid <- system.file("extdata/H3N2/skygrid_reconstruction.tsv", package = "PILAF")
-skygrid <- readr::read_tsv(skygrid, skip = 1) %>%
-  mutate(Time = last_time - Time) %>% 
+H3N2_skygrid <- system.file("extdata/H3N2/skygrid_reconstruction.tsv", package = "PILAF")
+H3N2_skygrid <- readr::read_tsv(H3N2_skygrid, skip = 1) %>%
+  mutate(Time = H3N2_last_time - Time) %>% 
   mutate(Label = "SkyGrid")
 ```
 
 We can plot the MCC tree and inferred effective size trajectory as follows. 
 
 ```{r}
-PILAF::plot_MCC_Ne(H3N2_MCC_tree, root_time, last_time, skygrid, breaks = seq(2013, 2019))
+PILAF::plot_MCC_Ne(H3N2_MCC_tree, H3N2_root_time, H3N2_last_time, H3N2_skygrid, breaks = seq(2013, 2019))
 ```
 
 We can also compare the results of SkyGrid with `BNPR` and `BNPR-PS` from `phylodyn`. 
@@ -49,7 +49,7 @@ We can also compare the results of SkyGrid with `BNPR` and `BNPR-PS` from `phylo
 ```{r}
 BNPR_traj <- phylodyn::BNPR(H3N2_MCC_phylo)
 BNPR_PS_traj <- phylodyn::BNPR_PS(H3N2_MCC_phylo)
-H3N2_all <- dplyr::bind_rows(skygrid, 
+H3N2_all <- dplyr::bind_rows(H3N2_skygrid, 
                         BNPR_to_df(BNPR_traj, "BNPR", H3N2_last_time),
                         BNPR_to_df(BNPR_PS_traj, "BNPR PS", H3N2_last_time))
 PILAF::plot_MCC_Ne(H3N2_MCC_tree, H3N2_root_time, H3N2_last_time, H3N2_all, main = "A/H3N2", breaks = seq(2013, 2019), c(1.3, 3))
@@ -66,14 +66,14 @@ H1N1_MCC_phylo <- phylodyn::summarize_phylo(H1N1_MCC_tree)
 H1N1_last_time <- 2019.0931506849315 # last sampling time
 H1N1_root_time = H1N1_last_time - max(H1N1_MCC_phylo$coal_times)
 
-skygrid <- system.file("extdata/H1N1/skygrid_reconstruction.tsv", package = "PILAF")
-skygrid <- readr::read_tsv(skygrid, skip = 1) %>%
+H1N1_skygrid <- system.file("extdata/H1N1/skygrid_reconstruction.tsv", package = "PILAF")
+H1N1_skygrid <- readr::read_tsv(H1N1_skygrid, skip = 1) %>%
   mutate(Time = H1N1_last_time - Time) %>% 
   mutate(Label = "SkyGrid")
 
 BNPR_traj <- phylodyn::BNPR(H1N1_MCC_phylo)
 BNPR_PS_traj <- phylodyn::BNPR_PS(H1N1_MCC_phylo)
-H1N1_all <- dplyr::bind_rows(skygrid, 
+H1N1_all <- dplyr::bind_rows(H1N1_skygrid, 
                         BNPR_to_df(BNPR_traj, "BNPR", H1N1_last_time),
                         BNPR_to_df(BNPR_PS_traj, "BNPR PS", H1N1_last_time))
 
@@ -89,14 +89,14 @@ Victoria_MCC_phylo <- phylodyn::summarize_phylo(Victoria_MCC_tree)
 Victoria_last_time <- 2018.317808219178 
 Victoria_root_time = Victoria_last_time - max(Victoria_MCC_phylo$coal_times)
 
-skygrid <- system.file("extdata/Victoria/skygrid_reconstruction.tsv", package = "PILAF")
-skygrid <- readr::read_tsv(skygrid, skip = 1) %>%
+Victoria_skygrid <- system.file("extdata/Victoria/skygrid_reconstruction.tsv", package = "PILAF")
+Victoria_skygrid <- readr::read_tsv(Victoria_skygrid, skip = 1) %>%
   mutate(Time = Victoria_last_time - Time) %>% 
   mutate(Label = "SkyGrid")
 
 BNPR_traj <- phylodyn::BNPR(Victoria_MCC_phylo)
 BNPR_PS_traj <- phylodyn::BNPR_PS(Victoria_MCC_phylo)
-Victoria_all <- dplyr::bind_rows(skygrid, 
+Victoria_all <- dplyr::bind_rows(Victoria_skygrid, 
                         BNPR_to_df(BNPR_traj, "BNPR", Victoria_last_time),
                         BNPR_to_df(BNPR_PS_traj, "BNPR PS", Victoria_last_time))
 PILAF::plot_MCC_Ne(Victoria_MCC_tree, Victoria_root_time, Victoria_last_time, Victoria_all, main = "B/Victoria", breaks = seq(2013, 2019), c(1, 3))
@@ -111,24 +111,30 @@ Yamagata_MCC_phylo <- phylodyn::summarize_phylo(Yamagata_MCC_tree)
 Yamagata_last_time <- 2019.0739726027398 
 Yamagata_root_time = Yamagata_last_time - max(Yamagata_MCC_phylo$coal_times)
 
-skygrid <- system.file("extdata/Yamagata/skygrid_reconstruction.tsv", package = "PILAF")
-skygrid <- readr::read_tsv(skygrid, skip = 1) %>%
+Yamagata_skygrid <- system.file("extdata/Yamagata/skygrid_reconstruction.tsv", package = "PILAF")
+Yamagata_skygrid <- readr::read_tsv(Yamagata_skygrid, skip = 1) %>%
   mutate(Time = Yamagata_last_time - Time) %>% 
   mutate(Label = "SkyGrid")
 
 BNPR_traj <- phylodyn::BNPR(Yamagata_MCC_phylo)
 BNPR_PS_traj <- phylodyn::BNPR_PS(Yamagata_MCC_phylo)
-Yamagata_all <- dplyr::bind_rows(skygrid, 
+Yamagata_all <- dplyr::bind_rows(Yamagata_skygrid, 
                         BNPR_to_df(BNPR_traj, "BNPR", Yamagata_last_time),
                         BNPR_to_df(BNPR_PS_traj, "BNPR PS", Yamagata_last_time))
 PILAF::plot_MCC_Ne(Yamagata_MCC_tree, Yamagata_root_time, Yamagata_last_time, Yamagata_all, main = "B/Yamagata", breaks = seq(2013, 2019), c(1, 3))
 ```
 
 ```{r}
-pdf("~/Desktop/H3N2_H1N1_B_Victoria_Yamagata.pdf", width = 5, height = 8)
-print(PILAF::plot_MCC_Ne(H3N2_MCC_tree, H3N2_root_time, H3N2_last_time, H3N2_all, main = "A/H3N2", breaks = seq(2013, 2019), c(1.3, 3)))
-print(PILAF::plot_MCC_Ne(H1N1_MCC_tree, H1N1_root_time, H1N1_last_time, H1N1_all, main = "A/H1N1", breaks = seq(2013, 2019), c(1, 3)))
-print(PILAF::plot_MCC_Ne(Victoria_MCC_tree, Victoria_root_time, Victoria_last_time, Victoria_all, main = "B/Victoria", breaks = seq(2013, 2019), c(1, 3)))
-print(PILAF::plot_MCC_Ne(Yamagata_MCC_tree, Yamagata_root_time, Yamagata_last_time, Yamagata_all, main = "B/Yamagata", breaks = seq(2013, 2019), c(1, 3)))
+ylimits <- c(0.5e-2, 3e2)
+pdf("~/Desktop/H3N2.pdf", width = 4, height = 8)
+PILAF::plot_MCC_Ne(H3N2_MCC_tree, H3N2_root_time, H3N2_last_time, H3N2_all, main = "A/H3N2", breaks = seq(2013, 2019, by = 2), c(1.3, 3), ylimits = ylimits)
+dev.off()
+pdf("~/Desktop/H1N1.pdf", width = 4, height = 8)
+PILAF::plot_MCC_Ne(H1N1_MCC_tree, H1N1_root_time, H1N1_last_time, H1N1_all, main = "A/H1N1", breaks = seq(2013, 2019, by = 2), c(1.3, 3), ylimits = ylimits)
+pdf("~/Desktop/Victoria.pdf", width = 4, height = 8)
+PILAF::plot_MCC_Ne(Victoria_MCC_tree, Victoria_root_time, Victoria_last_time, Victoria_all, main = "B/Victoria", breaks = seq(2014, 2018), c(1.3, 3), ylimits = ylimits)
+dev.off()
+pdf("~/Desktop/Yamagata.pdf", width = 4, height = 8)
+PILAF::plot_MCC_Ne(Yamagata_MCC_tree, Yamagata_root_time, Yamagata_last_time, Yamagata_all, main = "B/Yamagata", breaks = seq(2014, 2019), c(1.3, 3), mask_range = c(2018.3, 2020), ylimits = ylimits)
 dev.off()
 ```

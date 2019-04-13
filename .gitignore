@@ -13,3 +13,7 @@
 
 # plots
 *.pdf
+
+..Rcheck/
+PILAF.Rcheck/        
+*.tar.gz 

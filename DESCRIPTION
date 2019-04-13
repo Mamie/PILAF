@@ -15,7 +15,11 @@ Imports:
   tidyr,
   dplyr,
   grid,
-  gridBase
+  gridBase,
+  ape,
+  cowplot,
+  hashmap,
+  lubridate
 Suggests:
   testthat,
   knitr,

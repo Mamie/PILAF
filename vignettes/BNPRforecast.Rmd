@@ -10,8 +10,9 @@ library(phylodyn)
 library(dplyr)
 library(ggplot2)
 
-H3N2_tree <- ape::read.nexus("inst/extdata/H3N2/MCC.tree")
-plot(ladderize(H3N2_tree),show.tip.label=FALSE)
+H3N2_tree <- ape::read.nexus(system.file("inst/extdata/H3N2/MCC.tree",
+                                         package = "PILAF"))
+plot(ape::ladderize(H3N2_tree),show.tip.label=FALSE)
 H3N2_last_time <- 2019.0739726027398
 ar2crw1_formula <- y ~ -1 + f(time, model = "ar", order = 2) +
       f(week, model = "rw1", cyclic = T, constr = F)
@@ -37,12 +38,13 @@ winter_seasons <- data.frame(xmin = xmin, xmax = xmax) %>%
 
 p_ar2crw1 <- ggplot() +
   geom_rect(data = winter_seasons, aes(xmin = xmin, xmax = xmax, ymin = min(p_ar2crw1_data$lwr), ymax = max(p_ar2crw1_data$upr)), fill = 'steelblue', alpha = 0.1) +
-  geom_ribbon(data = p_ar2crw1_data, aes(x = time, y = mean, ymin = lwr, ymax = upr), fill = 'gray', alpha = 0.3) +
+  geom_ribbon(data = p_ar2crw1_data, aes(x = time, ymin = lwr, ymax = upr), fill = 'gray', alpha = 0.3) +
   geom_line(data = p_ar2crw1_data, aes(x = time, y = mean), size = 0.1) +
   theme_classic() +
   scale_y_log10() +
   geom_vline(aes(xintercept = H3N2_last_time - H3N2_Ne_forecast$result$summary.random$time$ID[21]), linetype = 'dotdash') +
   ylab('Ne')
+p_ar2crw1
 ```
 
 ```{r}
@@ -69,11 +71,12 @@ winter_seasons <- data.frame(xmin = xmin, xmax = xmax) %>%
 
 p_rw1 <-  ggplot() +
   geom_rect(data = winter_seasons, aes(xmin = xmin, xmax = xmax, ymin = min(p_rw1_data$lwr), ymax = max(p_rw1_data$upr)), fill = 'steelblue', alpha = 0.1) +
-  geom_ribbon(data = p_rw1_data, aes(x = time, y = mean, ymin = lwr, ymax = upr), fill = 'gray', alpha = 0.3) +
+  geom_ribbon(data = p_rw1_data, aes(x = time, ymin = lwr, ymax = upr), fill = 'gray', alpha = 0.3) +
   geom_line(data = p_rw1_data, aes(x = time, y = mean), size = 0.1) +
   theme_classic() +
   scale_y_log10() +
   ylab('Ne')
+p_rw1
 ```
 
 ```{r}
@@ -82,5 +85,6 @@ p_all <- cowplot::plot_grid(
   cowplot::plot_grid(ggdraw() + draw_label('RW(1)'), p_rw1, ncol = 1, rel_heights = c(0.1, 1)), 
   cowplot::plot_grid(ggdraw() + draw_label('AR(2) + cRW(1)'), p_ar2crw1 + theme(axis.title.y = element_blank()),  rel_heights = c(0.1, 1), ncol = 1), 
   ncol = 2)
-ggsave(p_all, file = '../../projectingvirus/manuscript/Figures/Ne/forecast_Ne.pdf', width = 6, height = 3)
+p_all
+#ggsave(p_all, file = '../../projectingvirus/manuscript/Figures/Ne/forecast_Ne.pdf', width = 6, height = 3)
 ```

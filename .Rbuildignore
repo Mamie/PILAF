@@ -1,2 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+\.DS_Store
+\.Rhistory  
+\.gitignore  
+data-raw
+\.gitattributes 
+\.\.Rcheck
+\.git               

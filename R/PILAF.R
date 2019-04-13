@@ -123,7 +123,6 @@ forecast.PILAF = function(x, time.forecast, week.forecast, method='count', formu
 #'
 #' @param x A PILAF object with NA for values to forecast.
 #' @return A PILAF object with forecasted ILI counts and 95 % BCI.
-#' @export
 forecast.PILAF.count = function(x, formula=NULL) {
   link <- rep(1, nrow(x))
   if(is.null(formula)) {
@@ -140,7 +139,6 @@ forecast.PILAF.count = function(x, formula=NULL) {
 #' @param x A PILAF object with NA for values to forecast.
 #' @param formula A INLA formula.
 #' @return A PILAF object with forecasted ILI counts and 95 % BCI.
-#' @export
 forecast.PILAF.joint = function(x, formula=NULL, verbose = F) {
   n <- nrow(x)
   link <- c(rep(1, n), rep(2, n))

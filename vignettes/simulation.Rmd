@@ -13,7 +13,7 @@ vignette: >
 knitr::opts_chunk$set(collapse=TRUE, comment="#>")
 library(ggplot2)
 library(dplyr)
-load('~/Desktop/Inbox/simulation.RData')
+#load('~/Desktop/Inbox/simulation.RData')
 ```
 
 
@@ -25,7 +25,16 @@ flu.Ne = function(...) phylodyn::logistic_traj(..., period = 52, offset = 26)
 flu.sampNum = 100 # average # of flu samples in a year
 ILI.sampNum = 1000 # average # of ILI cases in a year
 sim.data = PILAF::SimulateILISampCoalCountsN(n, lim, flu.Ne, flu.sampNum, ILI.sampNum)
-# ggsave(p, file='../../manuscript/Figures/simulation/simulatedTraj.pdf', width = 5,   height = 5)
+p <- sim.data %>%
+  select(time, coal, samp, ILI, iter) %>%
+  rename(`coalescent events` = coal, `sampling events` = samp, `ILI counts` = ILI) %>%
+  tidyr::gather(stat, value, -c(time, iter)) %>%
+  ggplot(data = .) +
+  geom_line(aes(x = time, y = value, group = iter, color = iter), alpha = 0.5, size = 0.1) +
+  facet_wrap(~stat, scale = "free", ncol = 1) +
+  scale_color_gradient(low = "gray", high = "steelblue") +
+  theme_classic() + theme(strip.background = element_blank(), legend.position = "none")
+ggsave(p, file='../../projectingvirus/manuscript/figures/simulation/simulatedTraj.pdf', width = 5, height = 5)
 
 train.time = seq(0, 156) # given 101 weeks before and including present
 test.time = seq(-10, -1) # predict 10  weeks ahead
@@ -33,17 +42,21 @@ sim.train = sim.data[sim.data$time %in% train.time,]
 sim.test = sim.data[!sim.data$time %in% train.time,]
 ```
 
+# plot the tree?
+
+
 ```{r}
 formula <- 'ILI ~ -1 + f(time, model = "ar", order = 2) + f(week, model = "rw1", cyclic = T, constr = F)'
-# time-consuming to run 
-# count_fit_week <- forecast(sim.train, test.time, PILAF:::Convert2Week(test.time), formula = formula, return_model = T, verbose = T)
+# takes about 5 minutes to run
+count_fit_week <- forecast(sim.train, test.time, PILAF:::Convert2Week(test.time), formula = formula, return_model = T, verbose = T) 
 ```
 
 - each iteration 0 - 156 train - week -1 to -10 (statistics), boxplot (first) - count, joint, PS
 
 ```{r}
 formula <- "Y ~ -1 + beta0 + f(time, w0, model='ar', order = 2) + f(week, w0, model='rw1', cyclic = T, constr = F) + f(time2, w, copy = 'time') + f(week2, w, copy = 'week')"
-# joint_fit_week = forecast(sim.train, test.time, PILAF:::Convert2Week(test.time), formula = formula, return_model = T, method = 'joint', verbose=F)
+# takes about 10 minutes to run 
+joint_fit_week <- forecast(sim.train, test.time, PILAF:::Convert2Week(test.time), formula = formula, return_model = T, method = 'joint', verbose = T)
 ```
 
 ```{r}

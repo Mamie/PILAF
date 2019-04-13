@@ -2,13 +2,46 @@
 % Please edit documentation in R/BNPR_forecast.R
 \name{BNPR_forecast}
 \alias{BNPR_forecast}
-\title{BNPR forecast}
+\title{Forecast using Bayesian Nonparametric phylodynamics}
 \usage{
 BNPR_forecast(data, last_time, formula, lengthout = 100, pref = FALSE,
   prec_alpha = 0.01, prec_beta = 0.01, beta1_prec = 0.001,
   fns = NULL, log_fns = TRUE, simplify = TRUE, derivative = FALSE,
   forward = TRUE, pred = 4)
 }
+\arguments{
+\item{data}{An ape phylo object}
+
+\item{last_time}{The time of last sampling point}
+
+\item{formula}{INLA formula to model Ne (y) with respect to time and week}
+
+\item{lengthout}{numeric specifying number of grid points.}
+
+\item{pref}{logical. Should the preferential sampling model be used?}
+
+\item{prec_alpha}{numerics specifying gamma prior for precision 
+\eqn{\kappa}.}
+
+\item{prec_beta}{numerics specifying gamma prior for precision 
+\eqn{\kappa}.}
+
+\item{beta1_prec}{numeric specifying precision for normal prior on 
+\eqn{\beta_1}.}
+
+\item{fns}{list containing functions of covariates.}
+
+\item{log_fns}{logical whether or not to to apply a log-transformation to
+the output of the functions in \code{fns}.}
+
+\item{simplify}{logical whether to fully bucket all Poisson points.}
+
+\item{derivative}{logical whether to calculate estimates of the 
+log-derivative.}
+
+\item{forward}{logical whether to use the finite difference approximations of
+the log-derivative as a forward or backward derivative.}
+}
 \description{
-BNPR forecast
+Forecast using Bayesian Nonparametric phylodynamics
 }

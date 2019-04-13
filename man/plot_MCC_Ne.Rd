@@ -4,7 +4,8 @@
 \alias{plot_MCC_Ne}
 \title{Plot MCC tree and skygrid effective population size}
 \usage{
-plot_MCC_Ne(MCC, root_time, last_time, Ne, breaks, ratio = c(1.2, 1))
+plot_MCC_Ne(MCC, root_time, last_time, Ne, breaks, main = NULL,
+  ratio = c(1.2, 1), mask_range = NULL, ylimits = NULL)
 }
 \arguments{
 \item{MCC}{A nexus object}

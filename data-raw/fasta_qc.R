@@ -92,5 +92,6 @@ dev.off()
 # ILI index
 ny_data <- cdcfluview::ilinet(region = "state") %>%
   filter(region == 'New York')
-cdc_data <- select(ny_data, year, week, ilitotal)
-cdc_data$Time <-
+cdc_data <- select(ny_data, year, week, ilitotal) %>%
+  rename(Time = )
+head(cdc_data)

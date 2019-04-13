@@ -1,4 +1,10 @@
-#' BNPR forecast
+#' Forecast using Bayesian Nonparametric phylodynamics
+#'
+#' @param data An ape phylo object
+#' @param last_time The time of last sampling point
+#' @param formula INLA formula to model Ne (y) with respect to time and week
+#' @inheritParams phylodyn::BNPR
+#' @export
 BNPR_forecast <- function (data, last_time, formula, lengthout = 100, pref = FALSE, prec_alpha = 0.01,
           prec_beta = 0.01, beta1_prec = 0.001, fns = NULL, log_fns = TRUE,
           simplify = TRUE, derivative = FALSE, forward = TRUE, pred = 4)

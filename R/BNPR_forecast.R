@@ -26,14 +26,32 @@ BNPR_forecast <- function (data, last_time, formula, lengthout = 100, pref = FAL
   result$samp_times <- phy$samp_times
   result$n_sampled <- phy$n_sampled
   result$coal_times <- phy$coal_times
-  result$effpop <- exp(-result$result$summary.random$time$`0.5quant`)
-  result$effpopmean <- exp(-result$result$summary.random$time$mean)
-  result$effpop975 <- exp(-result$result$summary.random$time$`0.025quant`)
-  result$effpop025 <- exp(-result$result$summary.random$time$`0.975quant`)
-  result$summary <- with(result$result$summary.random$time,
-                         data.frame(time = ID, mean = exp(-mean), sd = sd * exp(-mean),
-                                    quant0.025 = exp(-`0.975quant`), quant0.5 = exp(-`0.5quant`),
-                                    quant0.975 = exp(-`0.025quant`)))
+
+  weeks <- with(result$grid_week, c(train$week, test$week))
+
+  effpop_map <- with(result$result$summary.random$week,
+                     hashmap::hashmap(ID, `0.5quant`))
+  effpopmean_map <- with(result$result$summary.random$week,
+                     hashmap::hashmap(ID, mean))
+  effpop975_map <- with(result$result$summary.random$week,
+                     hashmap::hashmap(ID, `0.975quant`))
+  effpop025_map <- with(result$result$summary.random$week,
+                     hashmap::hashmap(ID, `0.025quant`))
+  effpop_map <- with(result$result$summary.random$week,
+                     hashmap::hashmap(ID, `0.5quant`))
+
+  result$effpop <- exp(-(result$result$summary.random$time$`0.5quant` +
+                           purrr::map_dbl(weeks, ~effpop_map[[.x]])))
+  result$effpopmean <- exp(-(result$result$summary.random$time$mean +
+                               purrr::map_dbl(weeks, ~effpopmean_map[[.x]])))
+  result$effpop975 <- exp(-(result$result$summary.random$time$`0.025quant` +
+                              purrr::map_dbl(weeks, ~effpop025_map[[.x]])))
+  result$effpop025 <- exp(-(result$result$summary.random$time$`0.975quant` +
+                              purrr::map_dbl(weeks, ~effpop975_map[[.x]])))
+  # result$summary <- with(result,
+  #                        data.frame(time = ID, mean = effpopmean, sd = sd * effpopmean,
+  #                                   quant0.025 = exp(-`0.975quant`), quant0.5 = exp(-`0.5quant`),
+  #                                   quant0.975 = exp(-`0.025quant`)))
 
   if (derivative) {
     if (forward)
@@ -179,5 +197,5 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
                     lincomb = lc_many, offset = data$E_log,
                     control.predictor = list(compute = TRUE),
                     control.inla = list(lincomb.derived.only = FALSE))
-  return(list(result = mod, data = data, grid = grid, x = coal_data$time))
+  return(list(result = mod, data = data, grid = grid, x = coal_data$time, grid_week = grid_week))
 }

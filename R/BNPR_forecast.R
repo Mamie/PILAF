@@ -27,7 +27,9 @@ BNPR_forecast <- function (data, last_time, formula, lengthout = 100, pref = FAL
   result$n_sampled <- phy$n_sampled
   result$coal_times <- phy$coal_times
 
-  weeks <- with(result$grid_week, c(train$week, test$week))
+  weeks <- result$grid_week$train$week
+  if (pred > 0) weeks <- c(weeks, result$grid_week$test$week)
+  result$weeks <- weeks
 
   effpop_map <- with(result$result$summary.random$week,
                      hashmap::hashmap(ID, `0.5quant`))

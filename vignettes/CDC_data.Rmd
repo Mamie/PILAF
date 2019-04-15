@@ -23,37 +23,95 @@ library(phylodyn)
 
 NY_ILI <- ilinet("state") %>%
   filter(region == "New York") %>%
-  select("year", "week", "ilitotal", "week_start") 
+  select("year", "week", "ilitotal", "week_start") %>%
+  rename(ILI_total = ilitotal)
 
-p_ILI <- visualize_flu_season(NY_ILI, "ilitotal")
+p_ILI <- visualize_flu_season(NY_ILI, time_series_names = "ILI_total")
 p_ILI
 ```
 
 We can also visualize the inferred trajectory. 
 
-```{r}
+```{r H3N2_tree}
 H3N2_tree <- ape::read.nexus(system.file("extdata/H3N2/MCC.tree",
                                          package = "PILAF"))
 H3N2_last_time <- 2019.0739726027398
 ar2crw1_formula <- y ~ -1 + f(time, model = "ar", order = 2) +
       f(week, model = "rw1", cyclic = T, constr = F)
 H3N2_Ne_forecast <- BNPR_forecast(H3N2_tree, last_time = H3N2_last_time, formula = ar2crw1_formula, pred = 0)
-Ne_data <- with(H3N2_Ne_forecast, data.frame(time = H3N2_last_time - result$summary.random$time$ID,
+H3N2_Ne_data <- with(H3N2_Ne_forecast, data.frame(time = H3N2_last_time - result$summary.random$time$ID,
                                              week = weeks,
-                                             Ne = effpopmean))
-Ne_data$year <- floor(Ne_data$time)
-p_Ne <- visualize_flu_season(Ne_data, "Ne")
-p_Ne
+                                             H3N2_Ne = effpopmean))
+H3N2_Ne_data$year <- floor(H3N2_Ne_data$time)
+p_H3N2_Ne <- visualize_flu_season(H3N2_Ne_data, time_series_names = "H3N2_Ne")
+p_H3N2_Ne
+```
+
+```{r H1N1_tree}
+H1N1_tree <- ape::read.nexus(system.file("extdata/H1N1/MCC.tree",
+                                         package = "PILAF"))
+H1N1_last_time <- 2019.0931506849315
+ar2crw1_formula <- y ~ -1 + f(time, model = "ar", order = 2) +
+      f(week, model = "rw1", cyclic = T, constr = F)
+H1N1_Ne_forecast <- BNPR_forecast(H1N1_tree, last_time = H1N1_last_time, formula = ar2crw1_formula, pred = 0)
+H1N1_Ne_data <- with(H1N1_Ne_forecast, data.frame(time = H1N1_last_time - result$summary.random$time$ID,
+                                             week = weeks,
+                                             H1N1_Ne = effpopmean))
+H1N1_Ne_data$year <- floor(H1N1_Ne_data$time)
+p_H1N1_Ne <- visualize_flu_season(H1N1_Ne_data, time_series_names = "H1N1_Ne")
+p_H1N1_Ne
 ```
 
 ```{r}
-cowplot::plot_grid(p_ILI, p_Ne)
+Yamagata_tree <- ape::read.nexus(system.file("extdata/Yamagata/MCC.tree",
+                                         package = "PILAF"))
+Yamagata_last_time <- 2019.0739726027398
+ar2crw1_formula <- y ~ -1 + f(time, model = "ar", order = 2) +
+      f(week, model = "rw1", cyclic = T, constr = F)
+Yamagata_Ne_forecast <- BNPR_forecast(Yamagata_tree, last_time = Yamagata_last_time, formula = ar2crw1_formula, pred = 0)
+Yamagata_Ne_data <- with(Yamagata_Ne_forecast, data.frame(time = Yamagata_last_time - result$summary.random$time$ID,
+                                             week = weeks,
+                                             Yamagata_Ne = effpopmean))
+Yamagata_Ne_data$year <- floor(Yamagata_Ne_data$time)
+p_Yamagata_Ne <- visualize_flu_season(Yamagata_Ne_data, "Yamagata_Ne")
+p_Yamagata_Ne
 ```
 
-We can also explore individual seasons. 
+```{r}
+Victoria_tree <- ape::read.nexus(system.file("extdata/Victoria/MCC.tree",
+                                         package = "PILAF"))
+Victoria_last_time <- 2018.317808219178
+ar2crw1_formula <- y ~ -1 + f(time, model = "ar", order = 2) +
+      f(week, model = "rw1", cyclic = T, constr = F)
+Victoria_Ne_forecast <- BNPR_forecast(Victoria_tree, last_time = Victoria_last_time, formula = ar2crw1_formula, pred = 0)
+Victoria_Ne_data <- with(Victoria_Ne_forecast, data.frame(time = Victoria_last_time - result$summary.random$time$ID,
+                                             week = weeks,
+                                             Victoria_Ne = effpopmean))
+Victoria_Ne_data$year <- floor(Victoria_Ne_data$time)
+p_Victoria_Ne <- visualize_flu_season(Victoria_Ne_data, time_series_names = "Victoria_Ne")
+p_Victoria_Ne
+```
+
+We can alsoview each season separately. 
+
+```{r include = F}
+p_list <- purrr::map(c("2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019"), ~ visualize_flu_season(NY_ILI, H3N2_Ne_data, H1N1_Ne_data, 
+                     time_series_names = c("ILI_total", "H3N2_Ne", "H1N1_Ne"),
+                     subset_seasons = .x, no_y_axis = T))
+#pdf(file = "../../projectingvirus/manuscript/Figures/data/Ne_ILI.pdf", width = 16, height = 6)
+cowplot::plot_grid(plotlist = p_list, ncol = 5)
+#dev.off()
+```
+
+Quantify the similarity between time series using Spearman correlation.
 
 ```{r}
-subset_seasons <- c("2014-2015", "2015-2016")
-cowplot::plot_grid(plotlist = purrr::imap(list(ilitotal = NY_ILI, Ne = Ne_data), 
-                               ~ visualize_flu_season(.x, .y, subset_season = subset_seasons)))
+joined_ts1 <- select(NY_ILI, year, week, "ILI_total") %>%
+  dplyr::inner_join(select(H3N2_Ne_data, year, week, H3N2_Ne), by = c("year", "week"))  %>%
+  select(ILI_total, H3N2_Ne) 
+cor.test(joined_ts1$ILI_total, joined_ts1$H3N2_Ne)
+joined_ts2 <- select(NY_ILI, year, week, "ILI_total") %>%
+  dplyr::inner_join(select(H1N1_Ne_data, year, week, H1N1_Ne), by = c("year", "week")) %>%
+  select(ILI_total, H1N1_Ne) 
+cor.test(joined_ts2$ILI_total, joined_ts2$H1N1_Ne)
 ```

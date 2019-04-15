@@ -1,0 +1,278 @@
+---
+title: "Forecasting Influenza from New York"
+output: html_notebook
+---
+
+Prediction Ne using BNPR from H1N1, H3N2, Victoria and Yamagata.
+ 
+```{r}
+library(phylodyn)
+library(dplyr)
+library(ggplot2)
+
+
+H3N2_tree <- ape::read.nexus(system.file("extdata/H3N2/MCC.tree", package = "PILAF"))
+plot(ape::ladderize(H3N2_tree),show.tip.label=FALSE)
+H3N2_last_time <- 2019.0739726027398
+
+#dt<-lubridate::ymd("20190221")
+#lubridate::decimal_date(dt)
+
+2019-02-21
+##This is the standard phylodyn
+res1a<-BNPR(data=H3N2_tree,lengthout=200,prec_alpha=.1)
+par(mfrow=c(1,2))
+plot (H3N2_last_time - res1a$summary$time,res1a$summary$quant0.5,log="y",ylab="Ne", xlab="Time",type="l",ylim=c(0.1,50),main="H3N2 Ne(t), New York")
+graphics::polygon(c(H3N2_last_time - res1a$summary$time, rev(H3N2_last_time - res1a$summary$time)), c(res1a$summary$quant0.975, rev(res1a$summary$quant0.025)), col="lightgray", border=NA)
+lines(H3N2_last_time - res1a$summary$time,res1a$summary$quant0.5,lwd=2)
+
+###plot different seasons
+time<-H3N2_last_time - res1a$summary$time
+
+plot(seq(0,.64,by=.02),rep(1,33),xaxt='n',col="white",ylim=c(1,70),ylab="Ne",xlab="Week",main="H3N2 Ne(t), New York")
+Axis(side=1, at=seq(0,.7,by=.02), labels=seq(1,36))
+year<-2013;
+col1="gray"
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.5[time>(year+.748) & time<=(year+1+.403)],type="l",col="gray")
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.975[time>(year+.748) & time<=(year+1+.403)],type="l",col="gray",lty=2)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.025[time>(year+.748) & time<=(year+1+.403)],type="l",col="gray",lty=2)
+text(.45,2,"13-14",col="gray")
+
+
+year<-2014;
+col1="green"
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.5[time>(year+.748) & time<=(year+1+.403)],type="l",col="green")
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.975[time>(year+.748) & time<=(year+1+.403)],type="l",col="green",lty=2)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.025[time>(year+.748) & time<=(year+1+.403)],type="l",col="green",lty=2)
+text(.25,30,"14-15",col="green")
+
+year<-2015;
+col1="blue"
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.5[time>(year+.748) & time<=(year+1+.403)],type="l",col="blue")
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.975[time>(year+.748) & time<=(year+1+.403)],type="l",col="blue",lty=2)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.025[time>(year+.748) & time<=(year+1+.403)],type="l",col="blue",lty=2)
+text(.48,5,"15-16",col="blue")
+
+
+year<-2016;
+col1="purple"
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.5[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.975[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1,lty=2)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.025[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1,lty=2)
+text(.22,8,"16-17",col=col1)
+
+year<-2017;
+col1="red"
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.5[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.975[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1,lty=2)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.025[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1,lty=2)
+text(.28,14,"17-18",col=col1)
+
+
+year<-2018;
+col1="brown"
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.5[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.975[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1,lty=2)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.025[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1,lty=2)
+text(.28,4,"18-19",col=col1)
+
+
+################This is for H1N1
+
+H1N1_tree <- ape::read.nexus(system.file("extdata/H1N1/MCC.tree", package = "PILAF"))
+plot(ape::ladderize(H1N1_tree),show.tip.label=FALSE)
+H1N1_last_time <- 2019.208
+
+#dt<-lubridate::ymd("201903-18")
+#lubridate::decimal_date(dt)
+
+##This is the standard phylodyn
+res2a<-BNPR(data=H1N1_tree,lengthout=200,prec_alpha=.1)
+par(mfrow=c(1,2))
+plot(H1N1_last_time - res2a$summary$time,res1a$summary$quant0.5,log="y",ylab="Ne", xlab="Time",type="l",ylim=c(0.1,50),main="H1N1 Ne(t), New York")
+graphics::polygon(c(H3N2_last_time - res1a$summary$time, rev(H3N2_last_time - res1a$summary$time)), c(res1a$summary$quant0.975, rev(res1a$summary$quant0.025)), col="lightgray", border=NA)
+lines(H3N2_last_time - res1a$summary$time,res1a$summary$quant0.5,lwd=2)
+
+###plot different seasons
+time<-H3N2_last_time - res1a$summary$time
+
+plot(seq(0,.64,by=.02),rep(1,33),xaxt='n',col="white",ylim=c(1,70),ylab="Ne",xlab="Week",main="H3N2 Ne(t), New York")
+Axis(side=1, at=seq(0,.7,by=.02), labels=seq(1,36))
+year<-2013;
+col1="gray"
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.5[time>(year+.748) & time<=(year+1+.403)],type="l",col="gray")
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.975[time>(year+.748) & time<=(year+1+.403)],type="l",col="gray",lty=2)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.025[time>(year+.748) & time<=(year+1+.403)],type="l",col="gray",lty=2)
+text(.45,2,"13-14",col="gray")
+
+
+year<-2014;
+col1="green"
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.5[time>(year+.748) & time<=(year+1+.403)],type="l",col="green")
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.975[time>(year+.748) & time<=(year+1+.403)],type="l",col="green",lty=2)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.025[time>(year+.748) & time<=(year+1+.403)],type="l",col="green",lty=2)
+text(.25,30,"14-15",col="green")
+
+year<-2015;
+col1="blue"
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.5[time>(year+.748) & time<=(year+1+.403)],type="l",col="blue")
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.975[time>(year+.748) & time<=(year+1+.403)],type="l",col="blue",lty=2)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.025[time>(year+.748) & time<=(year+1+.403)],type="l",col="blue",lty=2)
+text(.48,5,"15-16",col="blue")
+
+
+year<-2016;
+col1="purple"
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.5[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.975[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1,lty=2)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.025[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1,lty=2)
+text(.22,8,"16-17",col=col1)
+
+year<-2017;
+col1="red"
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.5[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.975[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1,lty=2)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.025[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1,lty=2)
+text(.28,14,"17-18",col=col1)
+
+
+year<-2018;
+col1="brown"
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.5[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.975[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1,lty=2)
+lines(time[time<=(year+1.403) & time>=(year+.748)]-(year+.748),res1a$summary$quant0.025[time>(year+.748) & time<=(year+1+.403)],type="l",col=col1,lty=2)
+text(.28,4,"18-19",col=col1)
+
+
+
+
+
+##We now use the seasonality
+ar2crw1_formula <- y ~ -1 + f(time, model = "ar", order = 2) +
+      f(week, model = "rw1", cyclic = T, constr = F)
+
+H3N2_Ne_forecast <- BNPR_forecast(H3N2_tree, last_time = H3N2_last_time, formula = ar2crw1_formula, pred = 20)
+
+```
+
+```{r}
+
+
+points(H3N2_last_time - H3N2_Ne_forecast$result$summary.random$time$ID,H3N2_Ne_forecast$effpopmean,type="l",col="red")
+
+plot(H3N2_last_time - H3N2_Ne_forecast$summary$time,exp(H3N2_Ne_forecast$result$summary.fitted.values$`0.5quant`),type="l",col="red",log="y")
+
+plot (H3N2_last_time - H3N2_Ne_forecast$summary$time,H3N2_Ne_forecast$summary$quant0.5,log="y",ylab="log Ne", xlab="time")
+for (j in c(2013,2014,2015,2016,2017,2018,2019)){
+  abline(v=j)
+}
+
+p_ar2crw1_data <- with(H3N2_Ne_forecast, data.frame(time = H3N2_last_time - result$summary.random$time$ID,
+                                  mean = effpopmean, 
+                                  lwr = H3N2_Ne_forecast$effpop025,
+                                  upr = H3N2_Ne_forecast$effpop975)) 
+  
+xmin <- c()
+xmax <- c()
+year <- floor(min(p_ar2crw1_data$time))
+while (year < max(p_ar2crw1_data$time)) {
+  xmin <- c(xmin, year + 0.9)
+  xmax <- c(xmax, year + 1.2)
+  year = year + 1
+}
+winter_seasons <- data.frame(xmin = xmin, xmax = xmax) %>%
+  filter(xmin < max(p_ar2crw1_data$time) & xmax > min(p_ar2crw1_data$time))
+
+p_ar2crw1 <- ggplot() +
+  geom_rect(data = winter_seasons, aes(xmin = xmin, xmax = xmax, ymin = min(p_ar2crw1_data$lwr), ymax = max(p_ar2crw1_data$upr)), fill = 'steelblue', alpha = 0.1) +
+  geom_ribbon(data = p_ar2crw1_data, aes(x = time, ymin = lwr, ymax = upr), fill = 'gray', alpha = 0.3) +
+  geom_line(data = p_ar2crw1_data, aes(x = time, y = mean), size = 0.1) +
+  theme_classic() +
+  scale_y_log10() +
+  geom_vline(aes(xintercept = H3N2_last_time - H3N2_Ne_forecast$result$summary.random$time$ID[21]), linetype = 'dotdash') +
+  ylab('Ne')
+p_ar2crw1
+```
+
+```{r}
+rw1_formula <- y ~ -1 + f(time, model = "rw1", constr = F) 
+rw1_H3N2_Ne_forecast <- BNPR_forecast(H3N2_tree, last_time = H3N2_last_time, formula = ar2crw1_formula, pred = 0)
+``` 
+
+```{r}
+p_rw1_data <- with(rw1_H3N2_Ne_forecast, data.frame(time = H3N2_last_time - result$summary.random$time$ID,
+                                  mean = effpopmean, 
+                                  lwr = effpop025,
+                                  upr = effpop975)) 
+
+xmin <- c()
+xmax <- c()
+year <- floor(min(p_rw1_data$time))
+while (year < max(p_rw1_data$time)) {
+  xmin <- c(xmin, year + 0.9)
+  xmax <- c(xmax, year + 1.2)
+  year = year + 1
+}
+winter_seasons <- data.frame(xmin = xmin, xmax = xmax) %>%
+  filter(xmin < max(p_rw1_data$time) & xmax > min(p_rw1_data$time))
+
+p_rw1 <-  ggplot() +
+  geom_rect(data = winter_seasons, aes(xmin = xmin, xmax = xmax, ymin = min(p_rw1_data$lwr), ymax = max(p_rw1_data$upr)), fill = 'steelblue', alpha = 0.1) +
+  geom_ribbon(data = p_rw1_data, aes(x = time, ymin = lwr, ymax = upr), fill = 'gray', alpha = 0.3) +
+  geom_line(data = p_rw1_data, aes(x = time, y = mean), size = 0.1) +
+  theme_classic() +
+  scale_y_log10() +
+  ylab('Ne')
+p_rw1
+```
+
+```{r}
+library(cowplot)
+p_all <- cowplot::plot_grid(
+  cowplot::plot_grid(ggdraw() + draw_label('RW(1)'), p_rw1, ncol = 1, rel_heights = c(0.1, 1)), 
+  cowplot::plot_grid(ggdraw() + draw_label('AR(2) + cRW(1)'), p_ar2crw1 + theme(axis.title.y = element_blank()),  rel_heights = c(0.1, 1), ncol = 1), 
+  ncol = 2)
+p_all
+#ggsave(p_all, file = '../../projectingvirus/manuscript/Figures/Ne/forecast_Ne.pdf', width = 6, height = 3)
+```
+
+
+```{r}
+devtools::install_github("hrbrmstr/cdcfluview")
+library(cdcfluview)
+state_ili<-ilinet("state")
+state_ili<-state_ili[state_ili$region=="New York City",c("year","week","weighted_ili",                                                  "ilitotal","week_start")]
+
+data_temp<-state_ili[state_ili$year==2014 & state_ili$week>=40, ]
+data_temp<-rbind(data_temp,state_ili[state_ili$year==2015 & state_ili$week<=21, ])
+
+plot(seq(1,35),data_temp$ilitotal,type="l",xlab="Week",ylab="ILI total",col="green",ylim=c(1000,10000),main="ILI Total, New York City",xaxt="n")
+Axis(side=1, at=seq(1,35), labels=seq(1,35))
+
+text(18,3600,"14-15",col="green")
+
+data_temp<-state_ili[state_ili$year==2015 & state_ili$week>=40, ]
+data_temp<-rbind(data_temp,state_ili[state_ili$year==2016 & state_ili$week<=21, ])
+lines(seq(1,34),data_temp$ilitotal,type="l",xlab="Week",ylab="ILI total",col="blue")
+text(24,4400,"15-16",col="blue")
+
+data_temp<-state_ili[state_ili$year==2016 & state_ili$week>=40, ]
+data_temp<-rbind(data_temp,state_ili[state_ili$year==2017 & state_ili$week<=21, ])
+
+lines(seq(1,34),data_temp$ilitotal,type="l",xlab="Week",ylab="ILI total",col="purple")
+text(13,4900,"16-17",col="purple")
+
+data_temp<-state_ili[state_ili$year==2017 & state_ili$week>=40, ]
+data_temp<-rbind(data_temp,state_ili[state_ili$year==2018 & state_ili$week<=21, ])
+
+lines(seq(1,34),data_temp$ilitotal,type="l",xlab="Week",ylab="ILI total",col="red")
+text(19,10000,"17-18",col="red")
+
+data_temp<-state_ili[state_ili$year==2018 & state_ili$week>=40, ]
+data_temp<-rbind(data_temp,state_ili[state_ili$year==2019 & state_ili$week<=21, ])
+
+lines(seq(1,27),data_temp$ilitotal,type="l",xlab="Week",ylab="ILI total",col="brown")
+text(19,4000,"18-19",col="brown")
+
+
+```

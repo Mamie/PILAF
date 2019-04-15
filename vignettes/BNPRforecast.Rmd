@@ -25,7 +25,7 @@ BNPR <- BNPR(H3N2_tree)
 p_ar2crw1_data <- with(H3N2_Ne_forecast, data.frame(time = H3N2_last_time - result$summary.random$time$ID,
                                   mean = effpopmean, 
                                   lwr = effpop025,
-                                  upr = effpop975)) 
+                                  upr = effpop975))
 BNPR_data <- with(BNPR, data.frame(time = H3N2_last_time - result$summary.random$time$ID,
                                   mean = effpopmean, 
                                   lwr = effpop025,

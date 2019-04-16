@@ -4,14 +4,34 @@
 \alias{visualize_flu_season}
 \title{Visualize the time series for each Flu Season}
 \usage{
-visualize_flu_season(data, time_series_name, subset_seasons = NULL)
+visualize_flu_season(..., time_series_names, datalist = NULL,
+  subset_seasons = NULL, ncol = 1, no_y_axis = FALSE,
+  season_label = T, title = NULL, scales = "fixed", log_y = T,
+  error_band_names = NULL)
 }
 \arguments{
-\item{data}{A data frame contain three columns (year, week, name_of_time_series)}
+\item{time_series_names}{The column name for the time series (same in length as data + datalist)}
 
-\item{time_series_name}{The column name for the time series}
+\item{datalist}{A list of data frame to plot multiple time series (alternative to data)}
 
 \item{subset_seasons}{Seasons to keep}
+
+\item{ncol}{Number of columns}
+
+\item{no_y_axis}{Whether to emove y axis label}
+
+\item{season_label}{Whether to remove season label}
+
+\item{title}{The title of the plot}
+
+\item{scales}{Parameter for facet_wrap ("free_x", "free_y", "fixed")}
+
+\item{log_y}{Whether to log y axis}
+
+\item{error_band_names}{The variable names for error band}
+
+\item{data}{A data frame contain three columns (year, week, the time series);
+the column names for year and week must be "year" and "week"}
 }
 \value{
 A ggplot object visualizing from week 40 to week 21

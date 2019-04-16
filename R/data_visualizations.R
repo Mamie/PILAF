@@ -15,20 +15,34 @@ paste_dash <- function(...) paste(..., sep = "-")
 #' @param title The title of the plot
 #' @param scales Parameter for facet_wrap ("free_x", "free_y", "fixed")
 #' @param log_y Whether to log y axis
-#' @param error_band_names The variable names for error band
+#' @param error_band_names A data frame that record the variable names for lower and upper bound
 #' @return A ggplot object visualizing from week 40 to week 21
 #' @export
 #' @import ggplot2
 visualize_flu_season <- function(..., time_series_names, datalist = NULL,
-                                 subset_seasons = NULL, ncol = 1, no_y_axis = FALSE,
+                                 subset_seasons = NULL, ncol = 1, no_y_axis = TRUE,
                                  season_label = T, title = NULL, scales = "fixed",
                                  log_y = T, error_band_names = NULL) {
   datalist <- c(list(...), datalist)
   stopifnot(length(time_series_names) == length(datalist))
-  data <- purrr::map2(datalist, time_series_names, ~ mutate(.x, name = .y) %>%
-                         rename_(.dots = list("time_series" = .y)) %>%
-                         select(year, week, time_series, name)) %>%
-    dplyr::bind_rows() %>%
+  if (is.null(error_band_names)) {
+    data <- purrr::map2(datalist, time_series_names, ~ mutate(.x, name = .y) %>%
+                          rename_(.dots = list("time_series" = .y)) %>%
+                          select(year, week, time_series, name))
+  } else {
+    stopifnot(ncol(error_band_names) == 2 & nrow(error_band_names) == length(datalist))
+    data <- purrr::pmap(list(data = datalist, ts = time_series_names,
+                             lwr = error_band_names[,1], upr = error_band_names[,2]),
+                        ~ mutate(..1, name = ..2) %>%
+                          rename_(.dots = list("time_series" = ..2,
+                                               "quant025" = ..3,
+                                               "quant975" = ..4)) %>%
+                          select(year, week, time_series, name, quant025, quant975)
+                        )
+
+  }
+  # print(head(data[[1]]))
+  data <- dplyr::bind_rows(data) %>%
     mutate(name = factor(name, levels = time_series_names))
 
   flu_season <- data %>%
@@ -41,12 +55,14 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
   if (!is.null(subset_seasons))
     flu_season <- dplyr::filter(flu_season, season %in% subset_seasons)
 
-  p <- ggplot(data = flu_season, aes(x = week, y = time_series, group = season)) +
-    geom_line() +
+  p <- ggplot(data = flu_season, aes(x = week, y = time_series, group = season))
+  if (!is.null(error_band_names)) p <- p + geom_ribbon(aes(ymin = quant025, ymax = quant975), fill = "lightgray")
+  p <- p + geom_line() +
     scale_x_discrete(breaks = c(40, 45, 50, 1, 5, 10, 15, 20)) +
     theme_classic() +
     theme(legend.position = "none", strip.background = element_blank())
   if (log_y) p <- p + scale_y_log10()
+
   if (length(unique(flu_season$name)) > 1)
     p <- p + facet_wrap(~name + season, ncol = ncol, scales = scales)
   else

@@ -20,13 +20,15 @@ library(cdcfluview)
 library(dplyr)
 library(ggplot2)
 library(phylodyn)
+selected_seasons <- c("2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019")
 
 NY_ILI <- ilinet("state") %>%
   filter(region == "New York") %>%
   select("year", "week", "ilitotal", "week_start") %>%
   rename(ILI_total = ilitotal)
 
-p_ILI <- visualize_flu_season(NY_ILI, time_series_names = "ILI_total")
+p_ILI <- visualize_flu_season(NY_ILI, time_series_names = "ILI_total", 
+                              subset_seasons = selected_seasons, ncol = 5, season_label = F)
 p_ILI
 ```
 
@@ -39,12 +41,31 @@ H3N2_last_time <- 2019.0739726027398
 ar2crw1_formula <- y ~ -1 + f(time, model = "ar", order = 2) +
       f(week, model = "rw1", cyclic = T, constr = F)
 H3N2_Ne_forecast <- BNPR_forecast(H3N2_tree, last_time = H3N2_last_time, formula = ar2crw1_formula, pred = 0)
-H3N2_Ne_data <- with(H3N2_Ne_forecast, data.frame(time = H3N2_last_time - result$summary.random$time$ID,
-                                             week = weeks,
-                                             H3N2_Ne = effpopmean))
+
+H3N2_Ne_data <- with(H3N2_Ne_forecast, 
+                     data.frame(time = H3N2_last_time - result$summary.random$time$ID,
+                                week = weeks,
+                                H3N2_Ne = effpopmean,
+                                lwr = effpop025,
+                                upr = effpop975))
 H3N2_Ne_data$year <- floor(H3N2_Ne_data$time)
-p_H3N2_Ne <- visualize_flu_season(H3N2_Ne_data, time_series_names = "H3N2_Ne")
+p_H3N2_Ne <- visualize_flu_season(H3N2_Ne_data, time_series_names = "H3N2_Ne", 
+                                  subset_seasons = selected_seasons, ncol = 5, season_label = F,
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
 p_H3N2_Ne
+
+H3N2_BNPR <- BNPR(H3N2_tree, lengthout = 300)
+H3N2_BNPR_data <- with(H3N2_BNPR, 
+                     data.frame(time = H3N2_last_time - result$summary.random$time$ID,
+                                H3N2_Ne = effpopmean,
+                                lwr = effpop025,
+                                upr = effpop975))
+H3N2_BNPR_data$week <- lubridate::week(lubridate::date_decimal(H3N2_BNPR_data$time))
+H3N2_BNPR_data$year <- floor(H3N2_BNPR_data$time)
+p_H3N2_BNPR <- visualize_flu_season(H3N2_BNPR_data, time_series_names = "H3N2_Ne", 
+                                  subset_seasons = selected_seasons, ncol = 5, season_label = F,
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
+p_H3N2_BNPR
 ```
 
 ```{r H1N1_tree}
@@ -56,10 +77,29 @@ ar2crw1_formula <- y ~ -1 + f(time, model = "ar", order = 2) +
 H1N1_Ne_forecast <- BNPR_forecast(H1N1_tree, last_time = H1N1_last_time, formula = ar2crw1_formula, pred = 0)
 H1N1_Ne_data <- with(H1N1_Ne_forecast, data.frame(time = H1N1_last_time - result$summary.random$time$ID,
                                              week = weeks,
-                                             H1N1_Ne = effpopmean))
+                                             H1N1_Ne = effpopmean,
+                                             lwr = effpop025,
+                                             upr = effpop975
+                                             ))
 H1N1_Ne_data$year <- floor(H1N1_Ne_data$time)
-p_H1N1_Ne <- visualize_flu_season(H1N1_Ne_data, time_series_names = "H1N1_Ne")
+p_H1N1_Ne <- visualize_flu_season(H1N1_Ne_data, time_series_names = "H1N1_Ne",
+                                  subset_seasons = selected_seasons, ncol = 5, season_label = F,
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
 p_H1N1_Ne
+
+
+H1N1_BNPR <- BNPR(H1N1_tree, lengthout = 300)
+H1N1_BNPR_data <- with(H1N1_BNPR, 
+                     data.frame(time = H1N1_last_time - result$summary.random$time$ID,
+                                H1N1_Ne = effpopmean,
+                                lwr = effpop025,
+                                upr = effpop975))
+H1N1_BNPR_data$week <- lubridate::week(lubridate::date_decimal(H1N1_BNPR_data$time))
+H1N1_BNPR_data$year <- floor(H1N1_BNPR_data$time)
+p_H1N1_BNPR <- visualize_flu_season(H1N1_BNPR_data, time_series_names = "H1N1_Ne", 
+                                  subset_seasons = selected_seasons, ncol = 5, season_label = F,
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
+p_H1N1_BNPR
 ```
 
 ```{r}
@@ -71,9 +111,14 @@ ar2crw1_formula <- y ~ -1 + f(time, model = "ar", order = 2) +
 Yamagata_Ne_forecast <- BNPR_forecast(Yamagata_tree, last_time = Yamagata_last_time, formula = ar2crw1_formula, pred = 0)
 Yamagata_Ne_data <- with(Yamagata_Ne_forecast, data.frame(time = Yamagata_last_time - result$summary.random$time$ID,
                                              week = weeks,
-                                             Yamagata_Ne = effpopmean))
+                                             Yamagata_Ne = effpopmean,
+                                             lwr = effpop025,
+                                             upr = effpop975))
+
 Yamagata_Ne_data$year <- floor(Yamagata_Ne_data$time)
-p_Yamagata_Ne <- visualize_flu_season(Yamagata_Ne_data, time_series_names = "Yamagata_Ne")
+p_Yamagata_Ne <- visualize_flu_season(Yamagata_Ne_data, time_series_names = "Yamagata_Ne",
+                                  subset_seasons = selected_seasons, ncol = 5, season_label = F,
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
 p_Yamagata_Ne
 ```
 
@@ -86,29 +131,37 @@ ar2crw1_formula <- y ~ -1 + f(time, model = "ar", order = 2) +
 Victoria_Ne_forecast <- BNPR_forecast(Victoria_tree, last_time = Victoria_last_time, formula = ar2crw1_formula, pred = 0)
 Victoria_Ne_data <- with(Victoria_Ne_forecast, data.frame(time = Victoria_last_time - result$summary.random$time$ID,
                                              week = weeks,
-                                             Victoria_Ne = effpopmean))
+                                             Victoria_Ne = effpopmean,
+                                             lwr = effpop025,
+                                             upr = effpop975))
 Victoria_Ne_data$year <- floor(Victoria_Ne_data$time)
-p_Victoria_Ne <- visualize_flu_season(Victoria_Ne_data, time_series_names = "Victoria_Ne")
+p_Victoria_Ne <- visualize_flu_season(Victoria_Ne_data, time_series_names = "Victoria_Ne",
+                                      subset_seasons = selected_seasons, ncol = 5, season_label = F,
+                                      error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
 p_Victoria_Ne
 ```
 
 We can alsoview each season separately. 
 
 ```{r include = F}
-selected_seasons <- c("2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019")
-theme_no_x <-  theme(axis.title.x = element_blank(), 
-        axis.line.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.x = element_blank())
-p_ILI <- visualize_flu_season(NY_ILI, time_series_names = "ILI_total", subset_seasons = selected_seasons, season_label = F, ncol = 5) + ylab("ILI total") + theme_no_x
-p_H3N2 <- visualize_flu_season(H3N2_Ne_data, time_series_names = "H3N2_Ne", subset_seasons = selected_seasons, season_label = F, ncol = 5) + ylab("H3N2 Ne") + theme_no_x + theme(strip.text = element_blank())
+theme_no_x <-  theme(
+  axis.title.x = element_blank(), 
+  axis.line.x = element_blank(),
+  axis.ticks.x = element_blank(),
+  axis.text.x = element_blank())
+p_ILI <- p_ILI + ylab("ILI total") + theme_no_x
+p_H3N2_Ne <- p_H3N2_Ne + ylab("H3N2 Ne") + theme_no_x + theme(strip.text = element_blank())
+p_H1N1_Ne <- p_H1N1_Ne + ylab("H1N1 Ne") + theme(strip.text = element_blank())
+p2 <- cowplot::plot_grid(p_ILI, p_H3N2_Ne, p_H1N1_Ne, ncol = 1, align = "v")
+ggsave(p2, file = "../../projectingvirus/manuscript/Figures/data/Ne_ILI.pdf", width = 9, height = 5)
 
-p_H1N1 <- visualize_flu_season(H1N1_Ne_data, time_series_names = "H1N1_Ne", subset_seasons = selected_seasons, season_label = F, ncol = 5) + ylab("H1N1 Ne") + theme(strip.text = element_blank())
-cowplot::plot_grid(p_ILI, p_H3N2, p_H1N1, ncol = 1, align = "v")
-# saved as ../projectingvirus/manuscript/Figures/data/Ne_ILI.eps
+p_H3N2_BNPR <- p_H3N2_BNPR + ylab("H3N2 Ne") + theme_no_x + theme(strip.text = element_blank())
+p_H1N1_BNPR <- p_H1N1_BNPR + ylab("H1N1 Ne") + theme(strip.text = element_blank())
+p3 <- cowplot::plot_grid(p_ILI, p_H3N2_BNPR, p_H1N1_BNPR, ncol = 1, align = "v")
+ggsave(p2, file = "../../projectingvirus/manuscript/Figures/data/Ne_ILI_BNPR.pdf", width = 9, height = 5)
 ```
 
-Quantify the similarity between time series using Spearman correlation.
+cRW(1) + AR(2): Quantify the similarity between time series using Spearman correlation.
 
 ```{r}
 joined_ts1 <- select(NY_ILI, year, week, "ILI_total") %>%
@@ -119,4 +172,29 @@ joined_ts2 <- select(NY_ILI, year, week, "ILI_total") %>%
   dplyr::inner_join(select(H1N1_Ne_data, year, week, H1N1_Ne), by = c("year", "week")) %>%
   select(ILI_total, H1N1_Ne) 
 cor.test(joined_ts2$ILI_total, joined_ts2$H1N1_Ne)
+joined_all <- select(NY_ILI, year, week, "ILI_total") %>%
+  dplyr::inner_join(select(H3N2_Ne_data, year, week, H3N2_Ne), by = c("year", "week")) %>%
+  dplyr::inner_join(select(H1N1_Ne_data, year, week, H1N1_Ne), by = c("year", "week")) %>%
+  select(ILI_total, H3N2_Ne, H1N1_Ne)
+lm_res <- lm(ILI_total ~ H3N2_Ne + H1N1_Ne, data = joined_all)
+summary(lm_res)
+```
+
+BNPR: Regression analysis between ILI and the two virus time series.
+
+```{r}
+joined_ts1 <- select(NY_ILI, year, week, "ILI_total") %>%
+  dplyr::inner_join(select(H3N2_BNPR_data, year, week, H3N2_Ne), by = c("year", "week"))  %>%
+  select(ILI_total, H3N2_Ne) 
+cor.test(joined_ts1$ILI_total, joined_ts1$H3N2_Ne)
+joined_ts2 <- select(NY_ILI, year, week, "ILI_total") %>%
+  dplyr::inner_join(select(H1N1_BNPR_data, year, week, H1N1_Ne), by = c("year", "week")) %>%
+  select(ILI_total, H1N1_Ne) 
+cor.test(joined_ts2$ILI_total, joined_ts2$H1N1_Ne)
+joined_all <- select(NY_ILI, year, week, "ILI_total") %>%
+  dplyr::inner_join(select(H3N2_BNPR_data, year, week, H3N2_Ne), by = c("year", "week")) %>%
+  dplyr::inner_join(select(H1N1_BNPR_data, year, week, H1N1_Ne), by = c("year", "week")) %>%
+  select(ILI_total, H3N2_Ne, H1N1_Ne)
+lm_res <- lm(ILI_total ~ H3N2_Ne + H1N1_Ne, data = joined_all)
+summary(lm_res)
 ```

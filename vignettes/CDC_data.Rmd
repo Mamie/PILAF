@@ -73,7 +73,7 @@ Yamagata_Ne_data <- with(Yamagata_Ne_forecast, data.frame(time = Yamagata_last_t
                                              week = weeks,
                                              Yamagata_Ne = effpopmean))
 Yamagata_Ne_data$year <- floor(Yamagata_Ne_data$time)
-p_Yamagata_Ne <- visualize_flu_season(Yamagata_Ne_data, "Yamagata_Ne")
+p_Yamagata_Ne <- visualize_flu_season(Yamagata_Ne_data, time_series_names = "Yamagata_Ne")
 p_Yamagata_Ne
 ```
 
@@ -95,12 +95,17 @@ p_Victoria_Ne
 We can alsoview each season separately. 
 
 ```{r include = F}
-p_list <- purrr::map(c("2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019"), ~ visualize_flu_season(NY_ILI, H3N2_Ne_data, H1N1_Ne_data, 
-                     time_series_names = c("ILI_total", "H3N2_Ne", "H1N1_Ne"),
-                     subset_seasons = .x, no_y_axis = T))
-#pdf(file = "../../projectingvirus/manuscript/Figures/data/Ne_ILI.pdf", width = 16, height = 6)
-cowplot::plot_grid(plotlist = p_list, ncol = 5)
-#dev.off()
+selected_seasons <- c("2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019")
+theme_no_x <-  theme(axis.title.x = element_blank(), 
+        axis.line.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank())
+p_ILI <- visualize_flu_season(NY_ILI, time_series_names = "ILI_total", subset_seasons = selected_seasons, season_label = F, ncol = 5) + ylab("ILI total") + theme_no_x
+p_H3N2 <- visualize_flu_season(H3N2_Ne_data, time_series_names = "H3N2_Ne", subset_seasons = selected_seasons, season_label = F, ncol = 5) + ylab("H3N2 Ne") + theme_no_x + theme(strip.text = element_blank())
+
+p_H1N1 <- visualize_flu_season(H1N1_Ne_data, time_series_names = "H1N1_Ne", subset_seasons = selected_seasons, season_label = F, ncol = 5) + ylab("H1N1 Ne") + theme(strip.text = element_blank())
+cowplot::plot_grid(p_ILI, p_H3N2, p_H1N1, ncol = 1, align = "v")
+# saved as ../projectingvirus/manuscript/Figures/data/Ne_ILI.eps
 ```
 
 Quantify the similarity between time series using Spearman correlation.

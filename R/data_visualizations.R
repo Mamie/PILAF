@@ -10,12 +10,19 @@ paste_dash <- function(...) paste(..., sep = "-")
 #' @param time_series_names The column name for the time series (same in length as data + datalist)
 #' @param subset_seasons Seasons to keep
 #' @param ncol Number of columns
-#' @param
+#' @param no_y_axis Whether to emove y axis label
+#' @param season_label Whether to remove season label
+#' @param title The title of the plot
+#' @param scales Parameter for facet_wrap ("free_x", "free_y", "fixed")
+#' @param log_y Whether to log y axis
+#' @param error_band_names The variable names for error band
 #' @return A ggplot object visualizing from week 40 to week 21
 #' @export
 #' @import ggplot2
 visualize_flu_season <- function(..., time_series_names, datalist = NULL,
-                                 subset_seasons = NULL, ncol = 1, no_y_axis = FALSE) {
+                                 subset_seasons = NULL, ncol = 1, no_y_axis = FALSE,
+                                 season_label = T, title = NULL, scales = "fixed",
+                                 log_y = T, error_band_names = NULL) {
   datalist <- c(list(...), datalist)
   stopifnot(length(time_series_names) == length(datalist))
   data <- purrr::map2(datalist, time_series_names, ~ mutate(.x, name = .y) %>%
@@ -34,15 +41,20 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
   if (!is.null(subset_seasons))
     flu_season <- dplyr::filter(flu_season, season %in% subset_seasons)
 
-  p <- ggplot(data = flu_season, aes(x = week, y = time_series, group = season, color = season)) +
+  p <- ggplot(data = flu_season, aes(x = week, y = time_series, group = season)) +
     geom_line() +
-    geom_text(data = group_by(flu_season, season, name) %>%
-                top_n(1, time_series), aes(label = season)) +
-    scale_y_log10() +
     scale_x_discrete(breaks = c(40, 45, 50, 1, 5, 10, 15, 20)) +
     theme_classic() +
     theme(legend.position = "none", strip.background = element_blank())
+  if (log_y) p <- p + scale_y_log10()
+  if (length(unique(flu_season$name)) > 1)
+    p <- p + facet_wrap(~name + season, ncol = ncol, scales = scales)
+  else
+    p <- p + facet_wrap(~season, ncol = ncol, scales = scales)
+
+  if (season_label) p <- p + geom_text(data = group_by(flu_season, season, name) %>%
+                                top_n(1, time_series), aes(label = season)) +
   if (no_y_axis) p <- p + theme(axis.title.y = element_blank())
-  if (length(datalist) > 1) p <- p + facet_wrap(~name, ncol = ncol, scale = "free_y")
+  if (!is.null(title)) p <- p + ggtitle(title)
   return(p)
 }

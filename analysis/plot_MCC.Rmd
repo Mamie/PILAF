@@ -47,11 +47,12 @@ PILAF::plot_MCC_Ne(H3N2_MCC_tree, H3N2_root_time, H3N2_last_time, H3N2_skygrid, 
 We can also compare the results of SkyGrid with `BNPR` and `BNPR-PS` from `phylodyn`. 
 
 ```{r}
-BNPR_traj <- phylodyn::BNPR(H3N2_MCC_phylo)
-BNPR_PS_traj <- phylodyn::BNPR_PS(H3N2_MCC_phylo)
+BNPR_traj <- phylodyn::BNPR(H3N2_MCC_phylo, lengthout = 300)
+BNPR_PS_traj <- phylodyn::BNPR_PS(H3N2_MCC_phylo, lengthout = 300)
 H3N2_all <- dplyr::bind_rows(H3N2_skygrid, 
                         BNPR_to_df(BNPR_traj, "BNPR", H3N2_last_time),
-                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", H3N2_last_time))
+                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", H3N2_last_time)) %>%
+  mutate(Label = factor(Label, levels = c("SkyGrid", "BNPR", "BNPR PS")))
 PILAF::plot_MCC_Ne(H3N2_MCC_tree, H3N2_root_time, H3N2_last_time, H3N2_all, main = "A/H3N2", breaks = seq(2013, 2019), c(1.3, 3))
 ```
 
@@ -71,11 +72,12 @@ H1N1_skygrid <- readr::read_tsv(H1N1_skygrid, skip = 1) %>%
   mutate(Time = H1N1_last_time - Time) %>% 
   mutate(Label = "SkyGrid")
 
-BNPR_traj <- phylodyn::BNPR(H1N1_MCC_phylo)
-BNPR_PS_traj <- phylodyn::BNPR_PS(H1N1_MCC_phylo)
+BNPR_traj <- phylodyn::BNPR(H1N1_MCC_phylo, lengthout = 300)
+BNPR_PS_traj <- phylodyn::BNPR_PS(H1N1_MCC_phylo, lengthout = 300)
 H1N1_all <- dplyr::bind_rows(H1N1_skygrid, 
                         BNPR_to_df(BNPR_traj, "BNPR", H1N1_last_time),
-                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", H1N1_last_time))
+                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", H1N1_last_time)) %>%
+  mutate(Label = factor(Label, levels = c("SkyGrid", "BNPR", "BNPR PS")))
 
 PILAF::plot_MCC_Ne(H1N1_MCC_tree, H1N1_root_time, H1N1_last_time, H1N1_all, main = "A/H1N1", breaks = seq(2013, 2019), c(1, 3))
 ```
@@ -94,11 +96,12 @@ Victoria_skygrid <- readr::read_tsv(Victoria_skygrid, skip = 1) %>%
   mutate(Time = Victoria_last_time - Time) %>% 
   mutate(Label = "SkyGrid")
 
-BNPR_traj <- phylodyn::BNPR(Victoria_MCC_phylo)
-BNPR_PS_traj <- phylodyn::BNPR_PS(Victoria_MCC_phylo)
+BNPR_traj <- phylodyn::BNPR(Victoria_MCC_phylo, lengthout = 300)
+BNPR_PS_traj <- phylodyn::BNPR_PS(Victoria_MCC_phylo, lengthout = 300)
 Victoria_all <- dplyr::bind_rows(Victoria_skygrid, 
                         BNPR_to_df(BNPR_traj, "BNPR", Victoria_last_time),
-                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", Victoria_last_time))
+                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", Victoria_last_time)) %>%
+  mutate(Label = factor(Label, levels = c("SkyGrid", "BNPR", "BNPR PS")))
 PILAF::plot_MCC_Ne(Victoria_MCC_tree, Victoria_root_time, Victoria_last_time, Victoria_all, main = "B/Victoria", breaks = seq(2013, 2019), c(1, 3))
 ```
 
@@ -116,11 +119,12 @@ Yamagata_skygrid <- readr::read_tsv(Yamagata_skygrid, skip = 1) %>%
   mutate(Time = Yamagata_last_time - Time) %>% 
   mutate(Label = "SkyGrid")
 
-BNPR_traj <- phylodyn::BNPR(Yamagata_MCC_phylo)
-BNPR_PS_traj <- phylodyn::BNPR_PS(Yamagata_MCC_phylo)
+BNPR_traj <- phylodyn::BNPR(Yamagata_MCC_phylo, lengthout = 300)
+BNPR_PS_traj <- phylodyn::BNPR_PS(Yamagata_MCC_phylo, lengthout = 300)
 Yamagata_all <- dplyr::bind_rows(Yamagata_skygrid, 
                         BNPR_to_df(BNPR_traj, "BNPR", Yamagata_last_time),
-                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", Yamagata_last_time))
+                        BNPR_to_df(BNPR_PS_traj, "BNPR PS", Yamagata_last_time)) %>%
+  mutate(Label = factor(Label, levels = c("SkyGrid", "BNPR", "BNPR PS")))
 PILAF::plot_MCC_Ne(Yamagata_MCC_tree, Yamagata_root_time, Yamagata_last_time, Yamagata_all, main = "B/Yamagata", breaks = seq(2013, 2019), c(1, 3))
 ```
 

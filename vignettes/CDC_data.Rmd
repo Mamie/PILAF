@@ -20,12 +20,27 @@ library(cdcfluview)
 library(dplyr)
 library(ggplot2)
 library(phylodyn)
+
 selected_seasons <- c("2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019")
 
 NY_ILI <- ilinet("state") %>%
   filter(region == "New York") %>%
   select("year", "week", "ilitotal", "week_start") %>%
   rename(ILI_total = ilitotal)
+
+dates <- readr::read_tsv(system.file("extdata/H3N2/NewYork_A_H3N2_20190307_filtered.tsv",
+                            package = "PILAF"))
+min(dates$collection_date)
+max(dates$collection_date)
+
+dates <- readr::read_tsv(system.file("extdata/H1N1/NewYork_A_H1N1_20190318_filtered.tsv",
+                                     package = "PILAF"))
+min(dates$collection_date)
+max(dates$collection_date)
+
+# use 2019-02-04 as end date
+NY_ILI <- NY_ILI %>%
+  filter(week_start <= as.Date("2019-02-04"))
 
 p_ILI <- visualize_flu_season(NY_ILI, time_series_names = "ILI_total", 
                               subset_seasons = selected_seasons, ncol = 5, season_label = F)
@@ -158,7 +173,7 @@ ggsave(p2, file = "../../projectingvirus/manuscript/Figures/data/Ne_ILI.pdf", wi
 p_H3N2_BNPR <- p_H3N2_BNPR + ylab("H3N2 Ne") + theme_no_x + theme(strip.text = element_blank())
 p_H1N1_BNPR <- p_H1N1_BNPR + ylab("H1N1 Ne") + theme(strip.text = element_blank())
 p3 <- cowplot::plot_grid(p_ILI, p_H3N2_BNPR, p_H1N1_BNPR, ncol = 1, align = "v")
-ggsave(p2, file = "../../projectingvirus/manuscript/Figures/data/Ne_ILI_BNPR.pdf", width = 9, height = 5)
+ggsave(p3, file = "../../projectingvirus/manuscript/Figures/data/Ne_ILI_BNPR.pdf", width = 9, height = 5)
 ```
 
 cRW(1) + AR(2): Quantify the similarity between time series using Spearman correlation.

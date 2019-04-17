@@ -5,7 +5,7 @@
 \title{Visualize the time series for each Flu Season}
 \usage{
 visualize_flu_season(..., time_series_names, datalist = NULL,
-  subset_seasons = NULL, ncol = 1, no_y_axis = FALSE,
+  subset_seasons = NULL, ncol = 1, no_y_axis = TRUE,
   season_label = T, title = NULL, scales = "fixed", log_y = T,
   error_band_names = NULL)
 }
@@ -28,7 +28,7 @@ visualize_flu_season(..., time_series_names, datalist = NULL,
 
 \item{log_y}{Whether to log y axis}
 
-\item{error_band_names}{The variable names for error band}
+\item{error_band_names}{A data frame that record the variable names for lower and upper bound}
 
 \item{data}{A data frame contain three columns (year, week, the time series);
 the column names for year and week must be "year" and "week"}

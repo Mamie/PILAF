@@ -48,29 +48,32 @@ plot_LOSO_performance <- function(performances) {
 }
 
 
-plot_trajectory <- function(df, ylimits) {
+plot_trajectory <- function(df, ylimits, breaks, root_time) {
   xmin <- c()
   xmax <- c()
   year <- floor(min(df$Time))
   while (year < max(df$Time)) {
-    xmin <- c(xmin, year + 0.9)
-    xmax <- c(xmax, year + 1.2)
+    xmin <- c(xmin, year + 0.77)
+    xmax <- c(xmax, year + 1.40)
     year <- year + 1
   }
   winter_seasons <- data.frame(xmin = xmin, xmax = xmax) %>%
+    mutate(ymin = min(ylimits), ymax = max(ylimits)) %>%
     filter(xmin < max(df$Time) & xmax > min(df$Time))
+  print(winter_seasons)
   p <- ggplot(data = df) +
-    geom_rect(data = winter_seasons, aes(xmin = xmin, xmax = xmax, ymin = min(ylimits), ymax = max(ylimits)), fill = 'steelblue', alpha = 0.1) +
-    geom_line(aes(x = Time, y = Median), size = 1) +
-    geom_line(aes(x = Time, y = Upper), size = 0.5) +
-    geom_line(aes(x = Time, y = Lower), size = 0.5) +
+    geom_rect(data = winter_seasons, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = 'steelblue', alpha = 0.2) +
+    geom_ribbon(aes(x = Time, ymin = Lower, ymax = Upper), fill = "lightgray", alpha = 0.9) +
+    geom_line(aes(x = Time, y = Median)) +
     scale_y_log10(limits = ylimits) +
     theme_classic() +
     ylab(expression(N["e"])) +
     facet_wrap(~Label, ncol = 1) +
     theme(axis.text.x = element_text(size = 13),
           axis.title.x = element_blank(),
-          strip.background = element_blank())
+          strip.background = element_blank()) +
+    scale_x_continuous(limits = c(root_time, max(winter_seasons$xmax, df$Time)),
+                       breaks = breaks)
   return(p)
 }
 
@@ -93,8 +96,8 @@ plot_MCC_Ne <- function(MCC, root_time, last_time, Ne, breaks, main = NULL,
   grid::pushViewport(vps$figure)
   vp1 <- grid::plotViewport(c(1,0.1,0,0.5))
   if (!is.null(mask_range)) Ne <- Ne[!(Ne$Time < max(mask_range) & Ne$Time > min(mask_range)),]
-  p <- plot_trajectory(Ne, ylimits) +
-    scale_x_continuous(limits = c(root_time, last_time), breaks = breaks)
+  if (is.null(ylimits)) ylimits <- c(min(Ne$Lower), max(Ne$Upper))
+  p <- plot_trajectory(Ne, ylimits, breaks, root_time)
   print(p, vp = vp1)
   dev.new()
   dev.off()

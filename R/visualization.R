@@ -53,8 +53,8 @@ plot_trajectory <- function(df, ylimits, breaks, root_time) {
   xmax <- c()
   year <- floor(min(df$Time))
   while (year < max(df$Time)) {
-    xmin <- c(xmin, year + 0.9)
-    xmax <- c(xmax, year + 1.2)
+    xmin <- c(xmin, year + 0.77)
+    xmax <- c(xmax, year + 1.40)
     year <- year + 1
   }
   winter_seasons <- data.frame(xmin = xmin, xmax = xmax) %>%

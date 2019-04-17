@@ -20,12 +20,27 @@ library(cdcfluview)
 library(dplyr)
 library(ggplot2)
 library(phylodyn)
+
 selected_seasons <- c("2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019")
 
 NY_ILI <- ilinet("state") %>%
   filter(region == "New York") %>%
   select("year", "week", "ilitotal", "week_start") %>%
   rename(ILI_total = ilitotal)
+
+dates <- readr::read_tsv(system.file("extdata/H3N2/NewYork_A_H3N2_20190307_filtered.tsv",
+                            package = "PILAF"))
+min(dates$collection_date)
+max(dates$collection_date)
+
+dates <- readr::read_tsv(system.file("extdata/H1N1/NewYork_A_H1N1_20190318_filtered.tsv",
+                                     package = "PILAF"))
+min(dates$collection_date)
+max(dates$collection_date)
+
+# use 2019-02-04 as end date
+NY_ILI <- NY_ILI %>%
+  filter(week_start <= as.Date("2019-02-04"))
 
 p_ILI <- visualize_flu_season(NY_ILI, time_series_names = "ILI_total", 
                               subset_seasons = selected_seasons, ncol = 5, season_label = F)

@@ -20,6 +20,7 @@ library(cdcfluview)
 library(dplyr)
 library(ggplot2)
 library(phylodyn)
+library(PILAF)
 
 selected_seasons <- c("2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019")
 
@@ -182,11 +183,14 @@ cRW(1) + AR(2): Quantify the similarity between time series using Spearman corre
 joined_ts1 <- select(NY_ILI, year, week, "ILI_total") %>%
   dplyr::inner_join(select(H3N2_Ne_data, year, week, H3N2_Ne), by = c("year", "week"))  %>%
   select(ILI_total, H3N2_Ne) 
-cor.test(joined_ts1$ILI_total, joined_ts1$H3N2_Ne)
+cor.test(joined_ts1$ILI_total, joined_ts1$H3N2_Ne, method = "pearson")
 joined_ts2 <- select(NY_ILI, year, week, "ILI_total") %>%
   dplyr::inner_join(select(H1N1_Ne_data, year, week, H1N1_Ne), by = c("year", "week")) %>%
   select(ILI_total, H1N1_Ne) 
-cor.test(joined_ts2$ILI_total, joined_ts2$H1N1_Ne)
+cor.test(joined_ts2$ILI_total, joined_ts2$H1N1_Ne, method = "pearson")
+joined_ts <- select(H3N2_Ne_data, year, week, H3N2_Ne) %>%
+  inner_join(select(H1N1_Ne_data, year, week, H1N1_Ne), by = c("year", "week"))
+cor.test(joined_ts$H3N2_Ne, joined_ts$H1N1_Ne, method = "pearson")
 joined_all <- select(NY_ILI, year, week, "ILI_total") %>%
   dplyr::inner_join(select(H3N2_Ne_data, year, week, H3N2_Ne), by = c("year", "week")) %>%
   dplyr::inner_join(select(H1N1_Ne_data, year, week, H1N1_Ne), by = c("year", "week")) %>%
@@ -201,15 +205,48 @@ BNPR: Regression analysis between ILI and the two virus time series.
 joined_ts1 <- select(NY_ILI, year, week, "ILI_total") %>%
   dplyr::inner_join(select(H3N2_BNPR_data, year, week, H3N2_Ne), by = c("year", "week"))  %>%
   select(ILI_total, H3N2_Ne) 
-cor.test(joined_ts1$ILI_total, joined_ts1$H3N2_Ne)
+cor.test(joined_ts1$ILI_total, joined_ts1$H3N2_Ne, method = "pearson")
 joined_ts2 <- select(NY_ILI, year, week, "ILI_total") %>%
   dplyr::inner_join(select(H1N1_BNPR_data, year, week, H1N1_Ne), by = c("year", "week")) %>%
   select(ILI_total, H1N1_Ne) 
-cor.test(joined_ts2$ILI_total, joined_ts2$H1N1_Ne)
+cor.test(joined_ts2$ILI_total, joined_ts2$H1N1_Ne, method = "pearson")
+joined_ts <- select(H3N2_BNPR_data, year, week, H3N2_Ne) %>%
+  inner_join(select(H1N1_BNPR_data, year, week, H1N1_Ne), by = c("year", "week"))
+cor.test(joined_ts$H3N2_Ne, joined_ts$H1N1_Ne, method = "pearson")
 joined_all <- select(NY_ILI, year, week, "ILI_total") %>%
   dplyr::inner_join(select(H3N2_BNPR_data, year, week, H3N2_Ne), by = c("year", "week")) %>%
   dplyr::inner_join(select(H1N1_BNPR_data, year, week, H1N1_Ne), by = c("year", "week")) %>%
   select(ILI_total, H3N2_Ne, H1N1_Ne)
 lm_res <- lm(ILI_total ~ H3N2_Ne + H1N1_Ne, data = joined_all)
 summary(lm_res)
+```
+
+# composition of ILI 
+
+```{r}
+clinical_data <- cdcfluview::who_nrevss("state")
+NY_public_lab <- clinical_data$public_health_labs %>%
+  filter(region == "New York") # a summary for each season
+NY_clinical <- clinical_data$clinical_labs %>%
+  filter(region == "New York") %>% # available for each week
+  mutate(percent_a = as.numeric(percent_a),
+         percent_b = as.numeric(percent_b))
+sd(NY_clinical$percent_a)
+range(NY_clinical$percent_a)
+sd(NY_clinical$percent_b)
+range(NY_clinical$percent_b)
+NY_clinical_percent <- NY_clinical %>%
+  select(wk_date, percent_a, percent_b) %>%
+  mutate(wk_date = lubridate::decimal_date(wk_date)) %>%
+  tidyr::gather(type, percent, -c(wk_date)) %>%
+  mutate(type = toupper(gsub("percent_", "", type))) %>%
+  mutate(percent = as.numeric(percent)) 
+p <- ggplot(data = NY_clinical_percent, aes(x = wk_date, y = percent)) +
+  geom_area(aes(fill = type), position = "stack") +
+  ylab("% positive") +
+  theme_classic() +
+  theme(legend.title = element_blank(), axis.title.x = element_blank()) +
+  scale_fill_viridis_d() 
+ggsave(p, file = "../../projectingvirus/manuscript/Figures/data/percent_positive.pdf",
+       width = 6, height = 3)
 ```

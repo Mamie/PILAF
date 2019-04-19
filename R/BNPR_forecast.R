@@ -9,6 +9,7 @@ BNPR_forecast <- function (data, last_time, formula, lengthout = 100, pref = FAL
           prec_beta = 0.01, beta1_prec = 0.001, fns = NULL, log_fns = TRUE,
           simplify = TRUE, derivative = FALSE, forward = TRUE, pred = 4)
 {
+  #browser()
   if (class(data) == "phylo") {
     phy <- phylodyn::summarize_phylo(data)
   }
@@ -23,6 +24,7 @@ BNPR_forecast <- function (data, last_time, formula, lengthout = 100, pref = FAL
                             prec_alpha = prec_alpha, prec_beta = prec_beta, beta1_prec = beta1_prec,
                             use_samp = pref, log_fns = log_fns, simplify = simplify,
                             derivative = derivative, pred = pred)
+
   result$samp_times <- phy$samp_times
   result$n_sampled <- phy$n_sampled
   result$coal_times <- phy$coal_times
@@ -31,25 +33,43 @@ BNPR_forecast <- function (data, last_time, formula, lengthout = 100, pref = FAL
   if (pred > 0) weeks <- c(weeks, result$grid_week$test$week)
   result$weeks <- weeks
 
-  effpop_map <- with(result$result$summary.random$week,
-                     hashmap::hashmap(ID, `0.5quant`))
-  effpopmean_map <- with(result$result$summary.random$week,
-                     hashmap::hashmap(ID, mean))
-  effpop975_map <- with(result$result$summary.random$week,
-                     hashmap::hashmap(ID, `0.975quant`))
-  effpop025_map <- with(result$result$summary.random$week,
-                     hashmap::hashmap(ID, `0.025quant`))
-  effpop_map <- with(result$result$summary.random$week,
-                     hashmap::hashmap(ID, `0.5quant`))
+  result$effpop <- result$result$summary.random$time$`0.5quant`
+  result$effpopmean <- result$result$summary.random$time$mean
+  result$effpop975 <- result$result$summary.random$time$`0.025quant`
+  result$effpop025 <- result$result$summary.random$time$`0.975quant`
 
-  result$effpop <- exp(-(result$result$summary.random$time$`0.5quant` +
-                           purrr::map_dbl(weeks, ~effpop_map[[.x]])))
-  result$effpopmean <- exp(-(result$result$summary.random$time$mean +
-                               purrr::map_dbl(weeks, ~effpopmean_map[[.x]])))
-  result$effpop975 <- exp(-(result$result$summary.random$time$`0.025quant` +
-                              purrr::map_dbl(weeks, ~effpop025_map[[.x]])))
-  result$effpop025 <- exp(-(result$result$summary.random$time$`0.975quant` +
-                              purrr::map_dbl(weeks, ~effpop975_map[[.x]])))
+
+  if (grepl("week", as.character(formula)[3])) {
+    effpop_map <- with(result$result$summary.random$week,
+                       hashmap::hashmap(ID, `0.5quant`))
+    effpopmean_map <- with(result$result$summary.random$week,
+                           hashmap::hashmap(ID, mean))
+    effpop975_map <- with(result$result$summary.random$week,
+                          hashmap::hashmap(ID, `0.975quant`))
+    effpop025_map <- with(result$result$summary.random$week,
+                          hashmap::hashmap(ID, `0.025quant`))
+    effpop_map <- with(result$result$summary.random$week,
+                       hashmap::hashmap(ID, `0.5quant`))
+
+    result$effpop <- result$effpop + purrr::map_dbl(weeks, ~effpop_map[[.x]])
+    result$effpopmean <- result$effpopmean + purrr::map_dbl(weeks, ~effpopmean_map[[.x]])
+    result$effpop975 <- result$effpop975 + purrr::map_dbl(weeks, ~effpop025_map[[.x]])
+    result$effpop025 <- result$effpop025 + purrr::map_dbl(weeks, ~effpop975_map[[.x]])
+  }
+
+  if (grepl("seasonal", as.character(formula)[3])) {
+    result$effpop <- result$effpop + result$result$summary.random$seasonal$`0.5quant`
+    result$effpopmean <- result$effpopmean + result$result$summary.random$seasonal$mean
+    result$effpop975 <- result$effpop975 + result$result$summary.random$seasonal$`0.025quant`
+    result$effpop025 <- result$effpop025 + result$result$summary.random$seasonal$`0.975quant`
+  }
+
+  result$effpop <- exp(-result$effpop)
+  result$effpopmean <- exp(-result$effpopmean)
+  result$effpop975 <- exp(-result$effpop975)
+  result$effpop025 <- exp(-result$effpop025)
+
+
   # result$summary <- with(result,
   #                        data.frame(time = ID, mean = effpopmean, sd = sd * effpopmean,
   #                                   quant0.025 = exp(-`0.975quant`), quant0.5 = exp(-`0.5quant`),
@@ -145,16 +165,16 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
                                                 event = event, E = E))
   hyper <- list(prec = list(param = c(prec_alpha, prec_beta)))
   if (!use_samp) {
-    data <- with(coal_data, data.frame(y = event, time = time,
-                                       E_log = E_log))
-    data <- cbind(data, week = week)
+    data <- with(coal_data, data.frame(y = event, time = time, E_log = E_log))
+    data$week <- week
+    data$seasonal <- data$time
     if (pred != 0) {
       data <- rbind(data, data.frame(y = rep(NA, pred),
                                      time = time_pred,
+                                     E_log = rep(NA, pred),
                                      week = week_pred,
-                                     E_log = rep(NA, pred)))
+                                     seasonal = time_pred))
     }
-
     family <- "poisson"
   }
   else if (use_samp) {

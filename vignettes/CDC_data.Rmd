@@ -81,8 +81,26 @@ H3N2_BNPR_data$week <- lubridate::week(lubridate::date_decimal(H3N2_BNPR_data$ti
 H3N2_BNPR_data$year <- floor(H3N2_BNPR_data$time)
 p_H3N2_BNPR <- visualize_flu_season(H3N2_BNPR_data, time_series_names = "H3N2_Ne", 
                                   subset_seasons = selected_seasons, ncol = 5, season_label = F,
-                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F),
+                                  correlate_ts = NY_ILI[,1:3],
+                                  label_x = 30, label_y = 100)
 p_H3N2_BNPR
+
+
+# BNPR PS model
+H3N2_BNPR_PS <- BNPR_PS(H3N2_tree, lengthout = 300)
+H3N2_BNPR_PS_data <- with(H3N2_BNPR_PS, 
+                     data.frame(time = H3N2_last_time - result$summary.random$time$ID,
+                                H3N2_Ne = effpopmean,
+                                lwr = effpop025,
+                                upr = effpop975))
+H3N2_BNPR_PS_data$week <- lubridate::week(lubridate::date_decimal(H3N2_BNPR_PS_data$time))
+H3N2_BNPR_PS_data$year <- floor(H3N2_BNPR_PS_data$time)
+p_H3N2_BNPR_PS <- visualize_flu_season(H3N2_BNPR_PS_data, time_series_names = "H3N2_Ne", 
+                                  subset_seasons = selected_seasons, ncol = 5, season_label = F,
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F), correlate_ts = NY_ILI[,1:3],
+                                  label_x = 30, label_y = 30)
+p_H3N2_BNPR_PS
 
 # seaonal model
 seasonal_formula <- y ~ f(time, model="ar", order = 2) + f(seasonal, model="seasonal",
@@ -133,8 +151,26 @@ H1N1_BNPR_data$week <- lubridate::week(lubridate::date_decimal(H1N1_BNPR_data$ti
 H1N1_BNPR_data$year <- floor(H1N1_BNPR_data$time)
 p_H1N1_BNPR <- visualize_flu_season(H1N1_BNPR_data, time_series_names = "H1N1_Ne", 
                                   subset_seasons = selected_seasons, ncol = 5, season_label = F,
-                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F),
+                                  correlate_ts = NY_ILI[,1:3],
+                                  label_x = 30, label_y = 100)
 p_H1N1_BNPR
+
+# BNPR-PS
+H1N1_BNPR_PS <- BNPR_PS(H1N1_tree, lengthout = 300)
+H1N1_BNPR_PS_data <- with(H1N1_BNPR_PS, 
+                     data.frame(time = H1N1_last_time - result$summary.random$time$ID,
+                                H1N1_Ne = effpopmean,
+                                lwr = effpop025,
+                                upr = effpop975))
+H1N1_BNPR_PS_data$week <- lubridate::week(lubridate::date_decimal(H1N1_BNPR_PS_data$time))
+H1N1_BNPR_PS_data$year <- floor(H1N1_BNPR_PS_data$time)
+p_H1N1_BNPR_PS <- visualize_flu_season(H1N1_BNPR_PS_data, time_series_names = "H1N1_Ne", 
+                                  subset_seasons = selected_seasons, ncol = 5, season_label = F,
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F),
+                                  correlate_ts = NY_ILI[,1:3],
+                                  label_x = 30, label_y = 30)
+p_H1N1_BNPR_PS
 
 # seasonal model
 seasonal_formula <- y ~ f(time, model="ar", order = 2) + f(seasonal, model="seasonal",
@@ -192,7 +228,7 @@ p_Victoria_Ne <- visualize_flu_season(Victoria_Ne_data, time_series_names = "Vic
 p_Victoria_Ne
 ```
 
-We can alsoview each season separately. 
+We can also view each season separately. 
 
 ```{r include = F}
 theme_no_x <-  theme(
@@ -201,10 +237,13 @@ theme_no_x <-  theme(
   axis.ticks.x = element_blank(),
   axis.text.x = element_blank())
 p_ILI <- p_ILI + ylab("ILI total") + theme_no_x
-p_H3N2_Ne <- p_H3N2_Ne + ylab("H3N2 Ne") + theme_no_x + theme(strip.text = element_blank())
-p_H1N1_Ne <- p_H1N1_Ne + ylab("H1N1 Ne") + theme(strip.text = element_blank())
-p2 <- cowplot::plot_grid(p_ILI, p_H3N2_Ne, p_H1N1_Ne, ncol = 1, align = "v")
-ggsave(p2, file = "../../projectingvirus/manuscript/Figures/data/Ne_ILI.pdf", width = 9, height = 5)
+p_H3N2_BNPR <- p_H3N2_BNPR + ylab("H3N2 Ne") + theme_no_x + theme(strip.text = element_blank())
+p_H1N1_BNPR <- p_H1N1_BNPR + ylab("H1N1 Ne") + theme_no_x + theme(strip.text = element_blank())
+p_H3N2_BNPR_PS <- p_H3N2_BNPR_PS + ylab("H3N2 Ne (PS)") + theme_no_x + theme(strip.text = element_blank())
+p_H1N1_BNPR_PS <- p_H1N1_BNPR_PS + ylab("H1N1 Ne (PS)") + theme(strip.text = element_blank())
+
+p2 <- cowplot::plot_grid(p_ILI, p_H3N2_BNPR, p_H3N2_BNPR_PS, p_H1N1_BNPR, p_H1N1_BNPR_PS, ncol = 1, align = "v")
+ggsave(p2, file = "../../projectingvirus/manuscript/Figures/data/Ne_ILI.pdf", width = 9, height = 8)
 
 p_H3N2_BNPR <- p_H3N2_BNPR + ylab("H3N2 Ne") + theme_no_x + theme(strip.text = element_blank())
 p_H1N1_BNPR <- p_H1N1_BNPR + ylab("H1N1 Ne") + theme(strip.text = element_blank())
@@ -264,6 +303,28 @@ lm_res <- lm(ILI_total ~ H3N2_Ne + H1N1_Ne, data = joined_all)
 summary(lm_res)
 ```
 
+Comparison with BNPR PS
+
+```{r}
+joined_ts1 <- select(NY_ILI, year, week, "ILI_total") %>%
+  dplyr::inner_join(select(H3N2_BNPR_PS_data, year, week, H3N2_Ne), by = c("year", "week"))  %>%
+  select(ILI_total, H3N2_Ne) 
+cor.test(joined_ts1$ILI_total, joined_ts1$H3N2_Ne, method = "pearson")
+joined_ts2 <- select(NY_ILI, year, week, "ILI_total") %>%
+  dplyr::inner_join(select(H1N1_BNPR_PS_data, year, week, H1N1_Ne), by = c("year", "week")) %>%
+  select(ILI_total, H1N1_Ne) 
+cor.test(joined_ts2$ILI_total, joined_ts2$H1N1_Ne, method = "pearson")
+joined_ts <- select(H3N2_BNPR_PS_data, year, week, H3N2_Ne) %>%
+  inner_join(select(H1N1_BNPR_PS_data, year, week, H1N1_Ne), by = c("year", "week"))
+cor.test(joined_ts$H3N2_Ne, joined_ts$H1N1_Ne, method = "pearson")
+joined_all <- select(NY_ILI, year, week, "ILI_total") %>%
+  dplyr::inner_join(select(H3N2_BNPR_PS_data, year, week, H3N2_Ne), by = c("year", "week")) %>%
+  dplyr::inner_join(select(H1N1_BNPR_PS_data, year, week, H1N1_Ne), by = c("year", "week")) %>%
+  select(ILI_total, H3N2_Ne, H1N1_Ne)
+lm_res <- lm(ILI_total ~ H3N2_Ne + H1N1_Ne, data = joined_all)
+summary(lm_res)
+```
+
 # composition of ILI 
 
 ```{r}
@@ -298,8 +359,11 @@ public_lab <- NY_public_lab %>%
   select(-c(region_type, region, wk_date)) %>%
   tidyr::gather(type, count, -c(season_description, total_specimens)) %>%
   mutate(count = as.numeric(count), total_specimens = as.numeric(total_specimens)) %>%
+  group_by(season_description) %>%
+  mutate(total_positive_specimen = sum(count)) %>%
   mutate(percent = count / total_specimens*100) %>%
   filter(type != "h3n2v")
+
 public_lab$season <- purrr::map_chr(public_lab$season_description, 
                                     ~strsplit(.x, split = " ")[[1]][[2]])
 public_lab$season = factor(public_lab$season, levels = c("2015-16", "2016-17", "2017-18", "2018-19")) 
@@ -308,19 +372,31 @@ rename_virus <- Vectorize(function(x) {
   switch(x, 
          a_2009_h1n1 = "A/H1N1",
          a_h3 = "A/H3",
-         a_subtyping_not_performed = "A",
-         b = "B",
+         a_subtyping_not_performed = "A (unknown)",
+         b = "B (unknown)",
          bvic = "B/Victoria",
          byam = "B/Yamagata"
          )
 })
 public_lab$type = rename_virus(public_lab$type)
 
+
 p <- ggplot(data = public_lab) +
   geom_area(aes(x = season, y = percent, group = type, fill = type), position = 'stack') +
   theme_classic() +
-  ylab("% positive")
+  ylab("% positive") +
+  theme(legend.title = element_blank())
+#ggsave(p, file = "../../projectingvirus/manuscript/Figures/data/NY_subtype.pdf",
+#       width = 6, height = 3)
 ```
+
+
+Summary statistics for New York Public Health Lab information
+
+```{r}
+head(NY_public_lab)
+```
+
 
 
 National level subtype data
@@ -343,14 +419,22 @@ p_national <- ggplot(data = national_public_health) +
 ```
 
 ```{r}
-p_all <- cowplot::plot_grid(p_NY, p_national, labels = c("a", "b"), ncol = 1)
+p_all <- cowplot::plot_grid(p_NY, p, labels = c("a", "b"), ncol = 1)
 ggsave(p_all, file = "../../projectingvirus/manuscript/Figures/data/NY_national_subtype.pdf",
        width = 6, height = 6)
 ```
 
 
-
+Summary statistics of the seasonal data. NREVSS data - A, B subtypes 
 
 ```{r}
+test <- NY_clinical %>%
+  filter(wk_date < "2018-09-30") 
+(sum(as.numeric(test$total_a)) + sum(as.numeric(test$total_b))) / sum(as.numeric(test$total_specimens))
 
+sum(as.numeric(test$total_a))/ (sum(as.numeric(test$total_a)) + sum(as.numeric(test$total_b))) 
+
+test <- NY_clinical %>%
+  filter(wk_date >= "2018-09-30") 
+sum(as.numeric(test$total_a))/ (sum(as.numeric(test$total_a)) + sum(as.numeric(test$total_b))) 
 ```

@@ -94,24 +94,21 @@ p_ar2crw1
 # BNPR PS forecast
 
 ```{r}
-rw1_PS <- Y ~ -1 + beta0 + 
-  f(time, model = "ar", order = 2, constr = F) +
-  f(time2, copy = "time", fixed = F)
-H3N2_Ne_forecast <- BNPR_forecast(H3N2_tree, last_time = H3N2_last_time, formula = rw1_PS, pred = 20, pref = T)
-```
+H3N2_tree <- ape::read.nexus(system.file("extdata/H3N2/MCC.tree",
+                                         package = "PILAF"))
+H3N2_last_time <- 2019.0739726027398
+truncation_time <- 0.08 # about 4 weeks
+BNPR_PS_formula <- Y ~ -1 + beta0 +
+        f(time, model="rw1", hyper = hyper, constr = FALSE) +
+        f(time2, w, copy="time", fixed=FALSE, param=c(0, beta1_prec))
+H3N2_truncated <- truncate_data(H3N2_tree, truncation_time)
+H3N2_Ne_forecast <- BNPR_forecast(H3N2_truncated, last_time = H3N2_last_time - truncation_time, formula = BNPR_PS_formula, pred = 4, pref = T)
 
-```{r}
-p_PS_data <- with(H3N2_Ne_forecast, 
-                  data.frame(time = H3N2_last_time - result$summary.random$time$ID,
-                             AR2_PS_Ne = effpopmean, 
-                             lwr = effpop025,
-                             upr = effpop975)) 
-selected_seasons <- c("2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019")
-p_PS_data$week <- lubridate::week(lubridate::date_decimal(p_PS_data$time))
-p_PS_data$year <- floor(p_PS_data$time)
-visualize_flu_season(p_PS_data, time_series_names = "AR2_PS_Ne",
-                                      subset_seasons = selected_seasons, ncol = 5, season_label = F,
-                                      error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
+# plot the forecast
+H3N2_MCC_phylo <- phylodyn::summarize_phylo(H3N2_tree)
+H3N2_root_time <- H3N2_last_time - max(H3N2_MCC_phylo$coal_times)
+H3N2_PS_df <- BNPR_to_df(H3N2_Ne_forecast, label = "H3N2 BNPR PS", H3N2_last_time - truncation_time)
+plot_trajectory(H3N2_PS_df, c(min(H3N2_PS_df$Lower), max(H3N2_PS_df$Upper)), seq(2014, 2019), H3N2_root_time, vline = H3N2_last_time - truncation_time - H3N2_Ne_forecast$result$summary.random$time$ID[4])
 ```
 
 ```{r}

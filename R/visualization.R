@@ -47,8 +47,16 @@ plot_LOSO_performance <- function(performances) {
   return(list(p_MRE = p_MRE, p_MRW = p_MRW, p_MCV = p_MCV))
 }
 
-
-plot_trajectory <- function(df, ylimits, breaks, root_time) {
+#' Plot a Ne trajectory
+#'
+#' @param df A data frame containing six columns (Time, Mean, Median, Upper, Lower, Label)
+#' @param ylimits range of y axis
+#' @param breaks Breaks for x axis
+#' @param root_time Minimum for x axis
+#' @param vline x intercept for a dashed line to denote start of forecast
+#' @return A ggplot object of the trajectory
+#' @export
+plot_trajectory <- function(df, ylimits, breaks, root_time, vline = NULL) {
   xmin <- c()
   xmax <- c()
   year <- floor(min(df$Time))
@@ -74,6 +82,9 @@ plot_trajectory <- function(df, ylimits, breaks, root_time) {
           strip.background = element_blank()) +
     scale_x_continuous(limits = c(root_time, max(winter_seasons$xmax, df$Time)),
                        breaks = breaks)
+  if (!is.null(vline)) {
+    p <- p + geom_vline(aes(xintercept = vline), linetype = 'dotdash')
+  }
   return(p)
 }
 
@@ -110,7 +121,7 @@ plot_MCC_Ne <- function(MCC, root_time, last_time, Ne, breaks, main = NULL,
 #' @export
 BNPR_to_df <- function(BNPR_obj, label, last_time) {
   with(BNPR_obj,
-       data.frame(Time = x,
+       data.frame(Time = result$summary.random$time$ID,
                   Mean = effpopmean,
                   Median = effpop,
                   Upper = effpop975,

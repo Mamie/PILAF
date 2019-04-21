@@ -45,7 +45,7 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
                         )
 
   }
-  # print(head(data[[1]]))
+
   data <- dplyr::bind_rows(data) %>%
     mutate(name = factor(name, levels = time_series_names))
   if(!is.null(correlate_ts)) {
@@ -97,3 +97,5 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
   if (!is.null(title)) p <- p + ggtitle(title)
   return(p)
 }
+
+

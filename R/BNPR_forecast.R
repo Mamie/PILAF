@@ -233,8 +233,8 @@ truncate_data<-function(tree,truncation_time){
   totalsampls<-sum(tree_data$n_sampled[tree_data$samp_times<truncation_time])
   totalcoals<-sum(tree_data$coal_times<truncation_time)
   tree_data$n_sampled<-tree_data$n_sampled[tree_data$samp_times>truncation_time]
-  tree_data$n_sampled[1]<-totalsampls-totalcoals
-  tree_data$samp_times<-tree_data$samp_times[tree_data$samp_times>truncation_time]
-  tree_data$coal_times<-tree_data$coal_times[tree_data$coal_times>truncation_time]
+  tree_data$n_sampled[1]<- tree_data$n_sampled[1]+totalsampls-totalcoals
+  tree_data$samp_times<-tree_data$samp_times[tree_data$samp_times>truncation_time]-truncation_time
+  tree_data$coal_times<-tree_data$coal_times[tree_data$coal_times>truncation_time]-truncation_time
   return(tree_data)
 }

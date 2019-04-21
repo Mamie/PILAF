@@ -155,7 +155,6 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
   week <- grid_week$train$week
   time_pred <- grid_week$test$time
   week_pred <- grid_week$test$week
-  # grid <- seq(min(samp_times), max(coal_times), length.out = lengthout + 1)
 
   if (is.null(n_sampled))
     n_sampled <- rep(1, length(samp_times))
@@ -180,27 +179,9 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
   else if (use_samp) {
     if (events_only)
       samp_data <- phylodyn:::samp_stats(grid = grid, samp_times = samp_times)
-    else samp_data <- phylodyn:::samp_stats(grid = grid, samp_times = samp_times,
-                                 n_sampled = n_sampled)
-    data <- phylodyn:::joint_stats(coal_data = coal_data, samp_data = samp_data)
-    if (is.null(fns)) {
-      formula <- Y ~ -1 + beta0 + f(time, model = "rw1",
-                                    hyper = hyper, constr = FALSE) + f(time2, w,
-                                                                       copy = "time", fixed = FALSE, param = c(0, beta1_prec))
-    }
-    else {
-      vals <- NULL
-      bins <- sum(data$beta0 == 0)
-      for (fni in fns) {
-        if (log_fns)
-          vals <- cbind(vals, c(rep(0, bins), log(fni(samp_data$time))))
-        else vals <- cbind(vals, c(rep(0, bins), fni(samp_data$time)))
-      }
-      data$fn <- vals
-      formula <- Y ~ -1 + beta0 + fn + f(time, model = "rw1",
-                                         hyper = hyper, constr = FALSE) + f(time2, w,
-                                                                            copy = "time", fixed = FALSE, param = c(0, beta1_prec))
-    }
+    else samp_data <- phylodyn:::samp_stats(grid = grid, samp_times = samp_times, n_sampled = n_sampled)
+    data <- joint_stats(coal_data = coal_data, samp_data = samp_data, pred = pred, time_pred = time_pred)
+
     family <- c("poisson", "poisson")
   }
   else stop("Invalid use_samp value, should be boolean.")
@@ -215,9 +196,26 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
   else {
     lc_many <- NULL
   }
+
   mod <- INLA::inla(formula, family = family, data = data,
                     lincomb = lc_many, offset = data$E_log,
                     control.predictor = list(compute = TRUE),
                     control.inla = list(lincomb.derived.only = FALSE))
   return(list(result = mod, data = data, grid = grid, x = coal_data$time, grid_week = grid_week))
+}
+
+joint_stats <- function (coal_data, samp_data, pred = 0, time_pred = NULL) {
+  n1 <- length(coal_data$time)
+  n2 <- length(samp_data$time)
+  beta0 <- c(rep(0, n1 + pred), rep(1, n2))
+  E_log <- c(coal_data$E_log, rep(NA, pred),
+             samp_data$E_log)
+  Y <- matrix(c(coal_data$event, rep(NA, pred), rep(NA, n2),
+                rep(NA, n1 + pred), samp_data$count),
+              nrow = n1 + n2 + pred, byrow = FALSE)
+  w <- c(rep(1, n1 + pred), rep(-1, n2))
+  time <- c(coal_data$time, time_pred, rep(NA, n2))
+  time2 <- c(rep(NA, n1 + pred), samp_data$time)
+  return(list(Y = Y, beta0 = beta0, time = time, time2 = time2,
+              w = w, E_log = E_log))
 }

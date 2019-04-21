@@ -54,6 +54,16 @@ p_ar2crw1 <- ggplot() +
 p_ar2crw1
 ```
 
+# BNPR PS forecast
+
+```{r}
+rw1_PS <- Y ~ -1 + beta0 + 
+  f(time, model = "ar", order = 2, constr = F) +
+  f(time2, copy = "time", fixed = F)
+H3N2_Ne_forecast <- BNPR_forecast(H3N2_tree, last_time = H3N2_last_time, formula = rw1_PS, pred = 20, pref = T)
+```
+
+
 
 ```{r}
 rw1_formula <- y ~ -1 + f(time, model = "rw1", constr = F) 

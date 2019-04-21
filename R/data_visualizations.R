@@ -16,13 +16,17 @@ paste_dash <- function(...) paste(..., sep = "-")
 #' @param scales Parameter for facet_wrap ("free_x", "free_y", "fixed")
 #' @param log_y Whether to log y axis
 #' @param error_band_names A data frame that record the variable names for lower and upper bound
+#' @param correlate_ts A data frame containing three columns (time, week, time series) for annotation; must be in order
+#' @param label_x x coordinate of correlation annotation
+#' @param label_y y coordinate of correlation annotation
 #' @return A ggplot object visualizing from week 40 to week 21
 #' @export
 #' @import ggplot2
 visualize_flu_season <- function(..., time_series_names, datalist = NULL,
                                  subset_seasons = NULL, ncol = 1, no_y_axis = TRUE,
                                  season_label = T, title = NULL, scales = "fixed",
-                                 log_y = T, error_band_names = NULL) {
+                                 log_y = T, error_band_names = NULL, correlate_ts = NULL,
+                                 label_x = NULL, label_y = NULL) {
   datalist <- c(list(...), datalist)
   stopifnot(length(time_series_names) == length(datalist))
   if (is.null(error_band_names)) {
@@ -44,6 +48,10 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
   # print(head(data[[1]]))
   data <- dplyr::bind_rows(data) %>%
     mutate(name = factor(name, levels = time_series_names))
+  if(!is.null(correlate_ts)) {
+    colnames(correlate_ts) <- c("year", "week", "ts")
+    data <- left_join(data, correlate_ts, by = c("year", "week"))
+  }
 
   flu_season <- data %>%
     filter(week >= 40 | week <= 21)
@@ -61,6 +69,21 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
     scale_x_discrete(breaks = c(40, 45, 50, 1, 5, 10, 15, 20)) +
     theme_classic() +
     theme(legend.position = "none", strip.background = element_blank())
+
+  if (!is.null(correlate_ts)) {
+    annot <- flu_season %>%
+      select(name, season, year, week, ts, time_series) %>%
+      group_by(name, season) %>%
+      summarize(rho = cor.test(ts, time_series)$estimate,
+             p = cor.test(ts, time_series)$p.value,
+             max_y = max(time_series))
+
+    if (is.null(label_x)) label_x <- 0
+    if (is.null(label_y)) label_y <- max(annot$max_y)
+    p <- p +
+      geom_text(data = annot, aes(x = label_x, y = label_y, label = round(rho, 2)),
+                colour="black", inherit.aes=FALSE, parse=FALSE)
+  }
   if (log_y) p <- p + scale_y_log10()
 
   if (length(unique(flu_season$name)) > 1)

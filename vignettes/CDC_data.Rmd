@@ -81,7 +81,9 @@ H3N2_BNPR_data$week <- lubridate::week(lubridate::date_decimal(H3N2_BNPR_data$ti
 H3N2_BNPR_data$year <- floor(H3N2_BNPR_data$time)
 p_H3N2_BNPR <- visualize_flu_season(H3N2_BNPR_data, time_series_names = "H3N2_Ne", 
                                   subset_seasons = selected_seasons, ncol = 5, season_label = F,
-                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F),
+                                  correlate_ts = NY_ILI[,1:3],
+                                  label_x = 30, label_y = 100)
 p_H3N2_BNPR
 
 
@@ -96,7 +98,8 @@ H3N2_BNPR_PS_data$week <- lubridate::week(lubridate::date_decimal(H3N2_BNPR_PS_d
 H3N2_BNPR_PS_data$year <- floor(H3N2_BNPR_PS_data$time)
 p_H3N2_BNPR_PS <- visualize_flu_season(H3N2_BNPR_PS_data, time_series_names = "H3N2_Ne", 
                                   subset_seasons = selected_seasons, ncol = 5, season_label = F,
-                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F), correlate_ts = NY_ILI[,1:3],
+                                  label_x = 30, label_y = 30)
 p_H3N2_BNPR_PS
 
 # seaonal model
@@ -148,7 +151,9 @@ H1N1_BNPR_data$week <- lubridate::week(lubridate::date_decimal(H1N1_BNPR_data$ti
 H1N1_BNPR_data$year <- floor(H1N1_BNPR_data$time)
 p_H1N1_BNPR <- visualize_flu_season(H1N1_BNPR_data, time_series_names = "H1N1_Ne", 
                                   subset_seasons = selected_seasons, ncol = 5, season_label = F,
-                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F),
+                                  correlate_ts = NY_ILI[,1:3],
+                                  label_x = 30, label_y = 100)
 p_H1N1_BNPR
 
 # BNPR-PS
@@ -162,7 +167,9 @@ H1N1_BNPR_PS_data$week <- lubridate::week(lubridate::date_decimal(H1N1_BNPR_PS_d
 H1N1_BNPR_PS_data$year <- floor(H1N1_BNPR_PS_data$time)
 p_H1N1_BNPR_PS <- visualize_flu_season(H1N1_BNPR_PS_data, time_series_names = "H1N1_Ne", 
                                   subset_seasons = selected_seasons, ncol = 5, season_label = F,
-                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F),
+                                  correlate_ts = NY_ILI[,1:3],
+                                  label_x = 30, label_y = 30)
 p_H1N1_BNPR_PS
 
 # seasonal model
@@ -221,7 +228,7 @@ p_Victoria_Ne <- visualize_flu_season(Victoria_Ne_data, time_series_names = "Vic
 p_Victoria_Ne
 ```
 
-We can alsoview each season separately. 
+We can also view each season separately. 
 
 ```{r include = F}
 theme_no_x <-  theme(
@@ -354,7 +361,7 @@ public_lab <- NY_public_lab %>%
   mutate(count = as.numeric(count), total_specimens = as.numeric(total_specimens)) %>%
   group_by(season_description) %>%
   mutate(total_positive_specimen = sum(count)) %>%
-  mutate(percent = count / total_positive_specimen*100) %>%
+  mutate(percent = count / total_specimens*100) %>%
   filter(type != "h3n2v")
 
 public_lab$season <- purrr::map_chr(public_lab$season_description, 
@@ -365,8 +372,8 @@ rename_virus <- Vectorize(function(x) {
   switch(x, 
          a_2009_h1n1 = "A/H1N1",
          a_h3 = "A/H3",
-         a_subtyping_not_performed = "A",
-         b = "B",
+         a_subtyping_not_performed = "A (unknown)",
+         b = "B (unknown)",
          bvic = "B/Victoria",
          byam = "B/Yamagata"
          )
@@ -417,3 +424,17 @@ ggsave(p_all, file = "../../projectingvirus/manuscript/Figures/data/NY_national_
        width = 6, height = 6)
 ```
 
+
+Summary statistics of the seasonal data. NREVSS data - A, B subtypes 
+
+```{r}
+test <- NY_clinical %>%
+  filter(wk_date < "2018-09-30") 
+(sum(as.numeric(test$total_a)) + sum(as.numeric(test$total_b))) / sum(as.numeric(test$total_specimens))
+
+sum(as.numeric(test$total_a))/ (sum(as.numeric(test$total_a)) + sum(as.numeric(test$total_b))) 
+
+test <- NY_clinical %>%
+  filter(wk_date >= "2018-09-30") 
+sum(as.numeric(test$total_a))/ (sum(as.numeric(test$total_a)) + sum(as.numeric(test$total_b))) 
+```

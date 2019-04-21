@@ -54,6 +54,43 @@ p_ar2crw1 <- ggplot() +
 p_ar2crw1
 ```
 
+This will be the same as above but we will truncate our tree 
+```{r}
+H3N2_tree <- ape::read.nexus(system.file("extdata/H3N2/MCC.tree",
+                                         package = "PILAF"))
+H3N2_last_time <- 2019.0739726027398
+
+truncation_time<-.08 #about 4 weeks
+H3N2_truncated<-truncate_data(H3N2_tree,truncation_time)
+H3N2_Ne_forecast <- BNPR_forecast(H3N2_truncated, last_time = H3N2_last_time-truncation_time, formula = ar2crw1_formula, pred = 20)
+
+p_ar2crw1_data <- with(H3N2_Ne_forecast, data.frame(time = H3N2_last_time-truncation_time - result$summary.random$time$ID,
+                                  mean = effpopmean, 
+                                  lwr = effpop025,
+                                  upr = effpop975))
+xmin <- c()
+xmax <- c()
+year <- floor(min(p_ar2crw1_data$time))
+while (year < max(p_ar2crw1_data$time)) {
+  xmin <- c(xmin, year + 0.9)
+  xmax <- c(xmax, year + 1.2)
+  year = year + 1
+}
+winter_seasons <- data.frame(xmin = xmin, xmax = xmax) %>%
+  filter(xmin < max(p_ar2crw1_data$time) & xmax > min(p_ar2crw1_data$time))
+
+p_ar2crw1 <- ggplot() +
+  geom_rect(data = winter_seasons, aes(xmin = xmin, xmax = xmax, ymin = min(p_ar2crw1_data$lwr), ymax = max(p_ar2crw1_data$upr)), fill = 'steelblue', alpha = 0.1) +
+  geom_ribbon(data = p_ar2crw1_data, aes(x = time, ymin = lwr, ymax = upr), fill = 'gray', alpha = 0.3) +
+  geom_line(data = p_ar2crw1_data, aes(x = time, y = mean)) +
+  theme_classic() +
+  scale_y_log10() +
+  geom_vline(aes(xintercept = H3N2_last_time - H3N2_Ne_forecast$result$summary.random$time$ID[21]), linetype = 'dotdash') +
+  ylab('Ne') + 
+  geom_line(data = BNPR_data, aes(x = time, y = mean), col = "red") 
+p_ar2crw1
+```
+
 # BNPR PS forecast
 
 ```{r}

@@ -63,7 +63,17 @@ rw1_PS <- Y ~ -1 + beta0 +
 H3N2_Ne_forecast <- BNPR_forecast(H3N2_tree, last_time = H3N2_last_time, formula = rw1_PS, pred = 20, pref = T)
 ```
 
-
+```{r}
+p_PS_data <- with(H3N2_Ne_forecast, 
+                  data.frame(time = H3N2_last_time - result$summary.random$time$ID,
+                             AR2_PS_Ne = effpopmean, 
+                             lwr = effpop025,
+                             upr = effpop975)) 
+selected_seasons <- c("2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019")
+visualize_flu_season(p_PS_data, time_series_names = "AR2_PS_Ne",
+                                      subset_seasons = selected_seasons, ncol = 5, season_label = F,
+                                      error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))
+```
 
 ```{r}
 rw1_formula <- y ~ -1 + f(time, model = "rw1", constr = F) 

@@ -162,11 +162,14 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
                           n_sampled = n_sampled, coal_times = coal_times)
   coal_data <- with(coal_data, phylodyn:::condense_stats(time = time,
                                                 event = event, E = E))
+  coal_data$week <- week
+  coal_data$seasonal <- coal_data$time
   hyper <- list(prec = list(param = c(prec_alpha, prec_beta)))
   if (!use_samp) {
-    data <- with(coal_data, data.frame(y = event, time = time, E_log = E_log))
-    data$week <- week
-    data$seasonal <- data$time
+    data <- with(coal_data,
+                 data.frame(y = event, time = time, E_log = E_log,
+                            week = week, seasonal = seasonal))
+
     if (pred != 0) {
       data <- rbind(data, data.frame(y = rep(NA, pred),
                                      time = time_pred,

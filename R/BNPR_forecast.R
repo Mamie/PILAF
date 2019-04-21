@@ -222,3 +222,19 @@ joint_stats <- function (coal_data, samp_data, pred = 0, time_pred = NULL) {
   return(list(Y = Y, beta0 = beta0, time = time, time2 = time2,
               w = w, E_log = E_log))
 }
+
+#' Truncates a phylogentic tree
+#'
+#' @param tree a phylo object
+#' @param truncation_time The time of last sampling point
+#' @export
+truncate_data<-function(tree,truncation_time){
+  tree_data<-phylodyn::summarize_phylo(tree)
+  totalsampls<-sum(tree_data$n_sampled[tree_data$samp_times<truncation_time])
+  totalcoals<-sum(tree_data$coal_times<truncation_time)
+  tree_data$n_sampled<-tree_data$n_sampled[tree_data$samp_times>truncation_time]
+  tree_data$n_sampled[1]<-totalsampls-totalcoals
+  tree_data$samp_times<-tree_data$samp_times[tree_data$samp_times>truncation_time]
+  tree_data$coal_times<-tree_data$coal_times[tree_data$coal_times>truncation_time]
+  return(tree_data)
+}

@@ -15,7 +15,9 @@ H3N2_tree <- ape::read.nexus(system.file("extdata/H3N2/MCC.tree", package = "PIL
 plot(ape::ladderize(H3N2_tree),show.tip.label=FALSE)
 H3N2_last_time <- 2019.0739726027398
 
-#dt<-lubridate::ymd("20190221")
+2019.0739726027398
+
+#dt<-lubridate::ymd("20190128")
 #lubridate::decimal_date(dt)
 
 2019-02-21

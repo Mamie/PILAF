@@ -319,8 +319,20 @@ public_lab$type = rename_virus(public_lab$type)
 p <- ggplot(data = public_lab) +
   geom_area(aes(x = season, y = percent, group = type, fill = type), position = 'stack') +
   theme_classic() +
-  ylab("% positive")
+  ylab("% positive") +
+  theme(legend.title = element_blank())
+#ggsave(p, file = "../../projectingvirus/manuscript/Figures/data/NY_subtype.pdf",
+#       width = 6, height = 3)
 ```
+
+
+Summary statistics for New York Public Health Lab information
+
+```{r}
+head(NY_public_lab)
+
+```
+
 
 
 National level subtype data
@@ -343,14 +355,8 @@ p_national <- ggplot(data = national_public_health) +
 ```
 
 ```{r}
-p_all <- cowplot::plot_grid(p_NY, p_national, labels = c("a", "b"), ncol = 1)
+p_all <- cowplot::plot_grid(p_NY, p, labels = c("a", "b"), ncol = 1)
 ggsave(p_all, file = "../../projectingvirus/manuscript/Figures/data/NY_national_subtype.pdf",
        width = 6, height = 6)
 ```
 
-
-
-
-```{r}
-
-```

@@ -85,7 +85,7 @@ p_ar2crw1 <- ggplot() +
   geom_line(data = p_ar2crw1_data, aes(x = time, y = mean)) +
   theme_classic() +
   scale_y_log10() +
-  geom_vline(aes(xintercept = H3N2_last_time - H3N2_Ne_forecast$result$summary.random$time$ID[21]), linetype = 'dotdash') +
+  geom_vline(aes(xintercept = H3N2_last_time-truncation_time - H3N2_Ne_forecast$result$summary.random$time$ID[21]), linetype = 'dotdash') +
   ylab('Ne') + 
   geom_line(data = BNPR_data, aes(x = time, y = mean), col = "red") 
 p_ar2crw1

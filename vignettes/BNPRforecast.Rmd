@@ -70,6 +70,8 @@ p_PS_data <- with(H3N2_Ne_forecast,
                              lwr = effpop025,
                              upr = effpop975)) 
 selected_seasons <- c("2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019")
+p_PS_data$week <- lubridate::week(lubridate::date_decimal(p_PS_data$time))
+p_PS_data$year <- floor(p_PS_data$time)
 visualize_flu_season(p_PS_data, time_series_names = "AR2_PS_Ne",
                                       subset_seasons = selected_seasons, ncol = 5, season_label = F,
                                       error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F))

@@ -181,10 +181,10 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
   }
   else if (use_samp) {
     if (events_only)
-      samp_data <- phylodyn:::samp_stats(grid = grid, samp_times = samp_times)
-    else samp_data <- phylodyn:::samp_stats(grid = grid, samp_times = samp_times, n_sampled = n_sampled)
-    data <- joint_stats(coal_data = coal_data, samp_data = samp_data, pred = pred, time_pred = time_pred)
-
+      samp_data <- samp_stats(grid = grid, samp_times = samp_times)
+    else samp_data <- samp_stats(grid = grid, samp_times = samp_times, n_sampled = n_sampled)
+    data <- joint_stats(coal_data = coal_data, samp_data = samp_data, pred = pred, time_pred = time_pred, week_pred = week_pred)
+    View(data)
     family <- c("poisson", "poisson")
   }
   else stop("Invalid use_samp value, should be boolean.")
@@ -207,7 +207,29 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
   return(list(result = mod, data = data, grid = grid, x = coal_data$time, grid_week = grid_week))
 }
 
-joint_stats <- function (coal_data, samp_data, pred = 0, time_pred = NULL) {
+samp_stats <- function (grid, samp_times, n_sampled = NULL, trim_end = FALSE) {
+  lengthout <- length(grid) - 1
+  field <- grid[-1] - diff(grid)/2
+  E <- diff(grid)
+  bins <- cut(x = samp_times, breaks = grid, include.lowest = TRUE)
+  if (is.null(n_sampled))
+    count <- as.vector(table(bins))
+  else {
+    tab <- stats::aggregate(n_sampled ~ bins, FUN = sum,
+                            labels = FALSE)
+    count <- rep(0, lengthout)
+    count[as.numeric(tab$bins)] <- tab$n_sampled
+  }
+  count[utils::head(grid, -1) >= max(samp_times)] <- NA
+  result <- data.frame(time = field, count = count, E = E,
+                       E_log = log(E))
+  if (trim_end)
+    result <- result[stats::complete.cases(result), ]
+  return(result)
+}
+
+joint_stats <- function (coal_data, samp_data, pred = 0,
+                         time_pred = NULL, week_pred = NULL) {
   n1 <- length(coal_data$time)
   n2 <- length(samp_data$time)
   beta0 <- c(rep(0, n1 + pred), rep(1, n2))
@@ -219,8 +241,10 @@ joint_stats <- function (coal_data, samp_data, pred = 0, time_pred = NULL) {
   w <- c(rep(1, n1 + pred), rep(-1, n2))
   time <- c(coal_data$time, time_pred, rep(NA, n2))
   time2 <- c(rep(NA, n1 + pred), samp_data$time)
+  week <- c(coal_data$week, week_pred, rep(NA, n2))
+  week2 <- c(rep(NA, n1 + pred), coal_data$week)
   return(list(Y = Y, beta0 = beta0, time = time, time2 = time2,
-              w = w, E_log = E_log))
+              week = week, week2 = week2, w = w, E_log = E_log))
 }
 
 #' Truncates a phylogentic tree

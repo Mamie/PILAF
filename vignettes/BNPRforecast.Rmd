@@ -94,26 +94,41 @@ p_ar2crw1
 
 # BNPR PS forecast
 
+In both cases H1N1 and H3N2, effective population size estimated with preferential sampling correlates more with ILI Counts. We will forecast H3N2 and H1N1 effective population size trajectories with preferential sampling. In Figure 6, we show that different seasons have different epidemic peaks. Using a weekly cyclic component may not be helpful in this case. The goal is to forecast the next 4 weeks. 
+
 ```{r}
 H3N2_tree <- ape::read.nexus(system.file("extdata/H3N2/MCC.tree",
                                          package = "PILAF"))
 H3N2_last_time <- 2019.0739726027398
+
+#plot regular BNPR_PS
+bnpr_ps_H3N2<-BNPR_PS(H3N2_tree)
+plot_BNPR(bnpr_ps_H3N2) 
+###Here I really would like to visualize only the seasons like Figure (6) third row 
+##It would be helpful if you can add your code for generating the seasons per year like row 3 in figure 6 with the plot() function so that I can overlay the forecasts of weeks 46-50, 2-5 and 11-15 per season
+
+
 truncation_time <- 0.08 # about 4 weeks
+
+BNPR_PS_formula <- Y ~ -1 + beta0 +
+        f(time, model="ar", order = 2, constr = FALSE) +
+        f(time2, w, copy="time", fixed=FALSE) 
+
 # BNPR_PS_formula <- Y ~ -1 + beta0 +
 #         f(time, model="rw1", hyper = hyper, constr = FALSE) +
 #         f(time2, w, copy="time", fixed=FALSE, param=c(0, beta1_prec))
-BNPR_PS_formula <- Y ~ -1 + beta0 +
-        f(time, model="ar", order = 2, constr = FALSE) +
-        f(time2, w, copy="time", fixed=FALSE) +
-  f(week, model = "rw1", cyclic = T) +
-  f(week2, w, copy = "week", fixed = F)
+# BNPR_PS_formula <- Y ~ -1 + beta0 +
+#         f(time, model="ar", order = 2, constr = FALSE) +
+#         f(time2, w, copy="time", fixed=FALSE) +
+#   f(week, model = "rw1", cyclic = T) +
+#   f(week2, w, copy = "week", fixed = F)
 
-forecast_2015week40 <- forecast_starting(H3N2_tree, last_time = H3N2_last_time, week_start = 40, 
-                  year_start = 2015, formula = BNPR_PS_formula)
+forecast_2019week46 <- forecast_starting(H3N2_tree, last_time = H3N2_last_time, week_start = 46, 
+                  year_start = 2017, formula = BNPR_PS_formula,pred=4)
 
 # plot the forecast
-H3N2_PS_df <- BNPR_to_df(forecast_2015week40, label = "H3N2 BNPR PS", forecast_2015week40$truncation_time)
-plot_trajectory(H3N2_PS_df, c(min(H3N2_PS_df$Lower), max(H3N2_PS_df$Upper)), seq(2014, 2015), H3N2_root_time, vline = forecast_2015week40$truncation_time - H3N2_Ne_forecast$result$summary.random$time$ID[4])
+H3N2_PS_df <- BNPR_to_df(forecast_2019week46, label = "H3N2 BNPR PS", forecast_2019week46$truncation_time)
+plot_trajectory(H3N2_PS_df, c(min(H3N2_PS_df$Lower), max(H3N2_PS_df$Upper)), seq(2014, 2019), H3N2_root_time, vline = forecast_2019week46$truncation_time - forecast_2019week46$result$summary.random$time$ID[4])
 ```
 
 ```{r}

@@ -107,14 +107,13 @@ BNPR_PS_formula <- Y ~ -1 + beta0 +
         f(time2, w, copy="time", fixed=FALSE) +
   f(week, model = "rw1", cyclic = T) +
   f(week2, w, copy = "week", fixed = F)
-H3N2_truncated <- truncate_data(H3N2_tree, truncation_time)
-H3N2_Ne_forecast <- BNPR_forecast(H3N2_truncated, last_time = H3N2_last_time - truncation_time, formula = BNPR_PS_formula, pred = 4, pref = T)
+
+forecast_2015week40 <- forecast_starting(H3N2_tree, last_time = H3N2_last_time, week_start = 40, 
+                  year_start = 2015, formula = BNPR_PS_formula)
 
 # plot the forecast
-H3N2_MCC_phylo <- phylodyn::summarize_phylo(H3N2_tree)
-H3N2_root_time <- H3N2_last_time - max(H3N2_MCC_phylo$coal_times)
-H3N2_PS_df <- BNPR_to_df(H3N2_Ne_forecast, label = "H3N2 BNPR PS", H3N2_last_time - truncation_time)
-plot_trajectory(H3N2_PS_df, c(min(H3N2_PS_df$Lower), max(H3N2_PS_df$Upper)), seq(2014, 2019), H3N2_root_time, vline = H3N2_last_time - truncation_time - H3N2_Ne_forecast$result$summary.random$time$ID[4])
+H3N2_PS_df <- BNPR_to_df(forecast_2015week40, label = "H3N2 BNPR PS", forecast_2015week40$truncation_time)
+plot_trajectory(H3N2_PS_df, c(min(H3N2_PS_df$Lower), max(H3N2_PS_df$Upper)), seq(2014, 2015), H3N2_root_time, vline = forecast_2015week40$truncation_time - H3N2_Ne_forecast$result$summary.random$time$ID[4])
 ```
 
 ```{r}

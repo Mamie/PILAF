@@ -184,7 +184,7 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
       samp_data <- samp_stats(grid = grid, samp_times = samp_times)
     else samp_data <- samp_stats(grid = grid, samp_times = samp_times, n_sampled = n_sampled)
     data <- joint_stats(coal_data = coal_data, samp_data = samp_data, pred = pred, time_pred = time_pred, week_pred = week_pred)
-    View(data)
+    #View(data)
     family <- c("poisson", "poisson")
   }
   else stop("Invalid use_samp value, should be boolean.")
@@ -261,4 +261,25 @@ truncate_data<-function(tree,truncation_time){
   tree_data$samp_times<-tree_data$samp_times[tree_data$samp_times>truncation_time]-truncation_time
   tree_data$coal_times<-tree_data$coal_times[tree_data$coal_times>truncation_time]-truncation_time
   return(tree_data)
+}
+
+#' Forecast starting at given time
+#' @param tree A phylo object
+#' @param last_time The last sampling time in the tree
+#' @param week_start The week of last timepoint for training
+#' @param year_start The year of last timepoint for training
+#' @param formula The formula for BNPR forecast
+#' @param pred The number of weeks to forecast
+#' @param pref Whether using preferential sampling
+#' @return A INLA object for forecast
+#' @export
+forecast_starting <- function(tree, last_time, week_start, year_start,
+                              formula, pred = 4, pref = TRUE) {
+  truncation_time <- lubridate::decimal_date(as.Date(paste0(year_start, "-01-01")) + lubridate::dweeks(week_start))
+  tree_trunc <- truncate_data(tree, last_time - truncation_time)
+  forecast_res <- BNPR_forecast(tree_trunc, last_time = truncation_time,
+                                formula = formula, pred = pred, pref = pref)
+  forecast_res$truncation_time <- truncation_time
+  print(forecast_res$truncation_time)
+  return(forecast_res)
 }

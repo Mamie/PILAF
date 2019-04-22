@@ -252,14 +252,20 @@ joint_stats <- function (coal_data, samp_data, pred = 0,
 #' @param tree a phylo object
 #' @param truncation_time The time of last sampling point
 #' @export
-truncate_data<-function(tree,truncation_time){
-  tree_data<-phylodyn::summarize_phylo(tree)
-  totalsampls<-sum(tree_data$n_sampled[tree_data$samp_times<truncation_time])
-  totalcoals<-sum(tree_data$coal_times<truncation_time)
-  tree_data$n_sampled<-tree_data$n_sampled[tree_data$samp_times>truncation_time]
-  tree_data$n_sampled[1]<- tree_data$n_sampled[1]+totalsampls-totalcoals
-  tree_data$samp_times<-tree_data$samp_times[tree_data$samp_times>truncation_time]-truncation_time
-  tree_data$coal_times<-tree_data$coal_times[tree_data$coal_times>truncation_time]-truncation_time
+truncate_data <- function(tree, truncation_time){
+  tree_data <- phylodyn::summarize_phylo(tree)
+  samps_before_trunc <- tree_data$samp_times > truncation_time
+  tree_data$samp_times <- tree_data$samp_times[samps_before_trunc]
+  coals_before_trunc <- tree_data$coal_times > min(tree_data$samp_times)
+  totalcoals <- length(tree_data$coal_times[!coals_before_trunc])
+  tree_data$coal_times <- tree_data$coal_times[coals_before_trunc]
+  totalsampls <- sum(tree_data$n_sampled[!samps_before_trunc])
+
+  tree_data$n_sampled <- tree_data$n_sampled[samps_before_trunc]
+  tree_data$n_sampled[1] <- tree_data$n_sampled[1] + totalsampls - totalcoals
+
+  tree_data$samp_times <- tree_data$samp_times - truncation_time
+  tree_data$coal_times <- tree_data$coal_times - truncation_time
   return(tree_data)
 }
 
@@ -277,6 +283,7 @@ forecast_starting <- function(tree, last_time, week_start, year_start,
                               formula, pred = 4, pref = TRUE) {
   truncation_time <- lubridate::decimal_date(as.Date(paste0(year_start, "-01-01")) + lubridate::dweeks(week_start))
   tree_trunc <- truncate_data(tree, last_time - truncation_time)
+
   forecast_res <- BNPR_forecast(tree_trunc, last_time = truncation_time,
                                 formula = formula, pred = pred, pref = pref)
   forecast_res$truncation_time <- truncation_time

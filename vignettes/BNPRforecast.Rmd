@@ -99,9 +99,14 @@ H3N2_tree <- ape::read.nexus(system.file("extdata/H3N2/MCC.tree",
                                          package = "PILAF"))
 H3N2_last_time <- 2019.0739726027398
 truncation_time <- 0.08 # about 4 weeks
+# BNPR_PS_formula <- Y ~ -1 + beta0 +
+#         f(time, model="rw1", hyper = hyper, constr = FALSE) +
+#         f(time2, w, copy="time", fixed=FALSE, param=c(0, beta1_prec))
 BNPR_PS_formula <- Y ~ -1 + beta0 +
-        f(time, model="rw1", hyper = hyper, constr = FALSE) +
-        f(time2, w, copy="time", fixed=FALSE, param=c(0, beta1_prec))
+        f(time, model="ar", order = 2, constr = FALSE) +
+        f(time2, w, copy="time", fixed=FALSE) +
+  f(week, model = "rw1", cyclic = T) +
+  f(week2, w, copy = "week", fixed = F)
 H3N2_truncated <- truncate_data(H3N2_tree, truncation_time)
 H3N2_Ne_forecast <- BNPR_forecast(H3N2_truncated, last_time = H3N2_last_time - truncation_time, formula = BNPR_PS_formula, pred = 4, pref = T)
 

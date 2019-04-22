@@ -21,6 +21,7 @@ H3N2_Ne_forecast <- BNPR_forecast(H3N2_tree, last_time = H3N2_last_time, formula
 BNPR <- BNPR(H3N2_tree)
 ```
 
+The next figure compares estimation with the AR(2)+CRW(1) (black curve) to BNPR (red curve)
 ```{r}
 p_ar2crw1_data <- with(H3N2_Ne_forecast, data.frame(time = H3N2_last_time - result$summary.random$time$ID,
                                   mean = effpopmean, 

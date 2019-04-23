@@ -275,12 +275,13 @@ truncate_data <- function(tree, truncation_time){
 #' @param week_start The week of last timepoint for training
 #' @param year_start The year of last timepoint for training
 #' @param formula The formula for BNPR forecast
+#' @param label A character string as label for the time series
 #' @param pred The number of weeks to forecast
 #' @param pref Whether using preferential sampling
 #' @return A INLA object for forecast
 #' @export
 forecast_starting <- function(tree, last_time, week_start, year_start,
-                              formula, pred = 4, pref = TRUE) {
+                              formula, label, pred = 4, pref = TRUE) {
   truncation_time <- lubridate::decimal_date(as.Date(paste0(year_start, "-01-01")) + lubridate::dweeks(week_start))
   tree_trunc <- truncate_data(tree, last_time - truncation_time)
 
@@ -288,5 +289,6 @@ forecast_starting <- function(tree, last_time, week_start, year_start,
                                 formula = formula, pred = pred, pref = pref)
   forecast_res$truncation_time <- truncation_time
   print(forecast_res$truncation_time)
-  return(forecast_res)
+  forecast_df <- BNPR_to_df(forecast_res, label = label, truncation_time)
+  return(list(res = forecast_res, df = forecast_df, pred = pred))
 }

@@ -19,6 +19,7 @@ paste_dash <- function(...) paste(..., sep = "-")
 #' @param correlate_ts A data frame containing three columns (time, week, time series) for annotation; must be in order
 #' @param label_x x coordinate of correlation annotation
 #' @param label_y y coordinate of correlation annotation
+#' @param add_forecasts A data frame containing the forecast values (output df from forecast_starting)
 #' @return A ggplot object visualizing from week 40 to week 21
 #' @export
 #' @import ggplot2
@@ -26,7 +27,7 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
                                  subset_seasons = NULL, ncol = 1, no_y_axis = TRUE,
                                  season_label = T, title = NULL, scales = "fixed",
                                  log_y = T, error_band_names = NULL, correlate_ts = NULL,
-                                 label_x = NULL, label_y = NULL) {
+                                 label_x = NULL, label_y = NULL, add_forecasts = NULL) {
   datalist <- c(list(...), datalist)
   stopifnot(length(time_series_names) == length(datalist))
   if (is.null(error_band_names)) {
@@ -58,17 +59,38 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
 
   flu_season$season <- purrr::pmap_chr(flu_season[, c("year", "week")],
                                         ~ ifelse(..2 <= 21, paste_dash(..1 - 1, ..1), paste_dash(..1, ..1 + 1)))
-  flu_season$week <- factor(flu_season$week, levels = c(40:53, 1:21))
+  #flu_season$week <- factor(flu_season$week, levels = c(40:53, 1:21))
 
+
+  if (!is.null(add_forecasts)) {
+    input <- data.frame(year = floor(add_forecasts$Time),
+                        week = add_forecasts$week,
+                        time_series = add_forecasts$Mean,
+                        name = add_forecasts$Label,
+                        quant025 = add_forecasts$Lower,
+                        quant975 = add_forecasts$Upper,
+                        forecast = add_forecasts$forecast)
+    input$season <- purrr::pmap_chr(input[, c("year", "week")],
+                                    ~ ifelse(..2 <= 21, paste_dash(..1 - 1, ..1), paste_dash(..1, ..1 + 1)))
+    View(input)
+    flu_season$forecast <- "0"
+
+    flu_season <- rbind(flu_season, input)
+    flu_season$is_forecast <- as.character(flu_season$forecast) != "0"
+
+  }
+
+  flu_season$week <- factor(flu_season$week, levels = c(40:53, 1:21))
   if (!is.null(subset_seasons))
     flu_season <- dplyr::filter(flu_season, season %in% subset_seasons)
 
-  p <- ggplot(data = flu_season, aes(x = week, y = time_series, group = season))
-  if (!is.null(error_band_names)) p <- p + geom_ribbon(aes(ymin = quant025, ymax = quant975), fill = "lightgray")
-  p <- p + geom_line() +
-    scale_x_discrete(breaks = c(40, 45, 50, 1, 5, 10, 15, 20)) +
-    theme_classic() +
-    theme(legend.position = "none", strip.background = element_blank())
+  if (!is.null(add_forecasts)) {
+    p <- ggplot(data = flu_season, aes(x = week, y = time_series, group = forecast, color = is_forecast)) +
+      scale_color_manual(values = c("black", "olivedrab3"))
+  }
+  else p <- ggplot(data = flu_season, aes(x = week, y = time_series, group = season))
+  if (!is.null(error_band_names)) p <- p + geom_ribbon(aes(ymin = quant025, ymax = quant975), fill = "lightgray", size = 0, alpha = 0.7)
+  p <- p + geom_line()
 
   if (!is.null(correlate_ts)) {
     annot <- flu_season %>%
@@ -84,6 +106,8 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
       geom_text(data = annot, aes(x = label_x, y = label_y, label = round(rho, 2)),
                 colour="black", inherit.aes=FALSE, parse=FALSE)
   }
+
+
   if (log_y) p <- p + scale_y_log10()
 
   if (length(unique(flu_season$name)) > 1)
@@ -95,6 +119,11 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
                                 top_n(1, time_series), aes(label = season)) +
   if (no_y_axis) p <- p + theme(axis.title.y = element_blank())
   if (!is.null(title)) p <- p + ggtitle(title)
+
+  p <- p +
+    scale_x_discrete(breaks = c(40, 45, 50, 1, 5, 10, 15, 20)) +
+    theme_classic() +
+    theme(legend.position = "none", strip.background = element_blank())
   return(p)
 }
 

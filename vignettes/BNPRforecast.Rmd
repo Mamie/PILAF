@@ -96,6 +96,8 @@ p_ar2crw1
 
 In both cases H1N1 and H3N2, effective population size estimated with preferential sampling correlates more with ILI Counts. We will forecast H3N2 and H1N1 effective population size trajectories with preferential sampling. In Figure 6, we show that different seasons have different epidemic peaks. Using a weekly cyclic component may not be helpful in this case. The goal is to forecast the next 4 weeks. 
 
+# H3N2
+
 ```{r}
 H3N2_tree <- ape::read.nexus(system.file("extdata/H3N2/MCC.tree",
                                          package = "PILAF"))
@@ -107,23 +109,87 @@ plot_BNPR(bnpr_ps_H3N2)
 ###Here I really would like to visualize only the seasons like Figure (6) third row 
 ##It would be helpful if you can add your code for generating the seasons per year like row 3 in figure 6 with the plot() function so that I can overlay the forecasts of weeks 46-50, 2-5 and 11-15 per season
 
-
-
 BNPR_PS_formula <- Y ~ -1 + beta0 +
         f(time, model="ar", order = 2, constr = FALSE) +
         f(time2, w, copy="time", fixed=FALSE) 
 
-forecast_2017week46 <- forecast_starting(H3N2_tree, last_time = H3N2_last_time, week_start = 45, 
-                  year_start = 2015, formula = BNPR_PS_formula, pred = 5)
-forecast_2018week2 <- forecast_starting(H3N2_tree, last_time = H3N2_last_time, week_start = 1, 
-                  year_start = 2018, formula = BNPR_PS_formula, pred = 4)
-forecast_2018week11 <- forecast_starting(H3N2_tree, last_time = H3N2_last_time, week_start = 10, 
-                  year_start = 2018, formula = BNPR_PS_formula, pred = 5)
+# example usage of forecast_starting
+forecast_2015week46 <- forecast_starting(H3N2_tree, last_time = H3N2_last_time, week_start = 45, 
+                  year_start = 2015, label = "H3N2 BNPR PS", formula = BNPR_PS_formula, pred = 5)
+plot_trajectory(forecast_2015week46$df, 
+                range(c(forecast_2015week46$df$Lower, forecast_2015week46$df$Upper)), 
+                seq(2014, 2019), 
+                H3N2_last_time - max(phylodyn::summarize_phylo(H3N2_tree)$coal_times), 
+                vline = forecast_2015week46$res$truncation_time - forecast_2015week46$res$result$summary.random$time$ID[forecast_2015week46$pred + 1])
 
-# plot the forecast
-H3N2_PS_df <- BNPR_to_df(forecast_2019week46, label = "H3N2 BNPR PS", forecast_2019week46$truncation_time)
-plot_trajectory(H3N2_PS_df, c(min(H3N2_PS_df$Lower), max(H3N2_PS_df$Upper)), seq(2014, 2019), H3N2_root_time, vline = forecast_2019week46$truncation_time - forecast_2019week46$result$summary.random$time$ID[4])
+# run forecasts on a grid
+seasons <- seq(2014, 2018)
+week_start <- c(45, 1, 10)
+preds <- rep(5, 3)
+tasks <- expand.grid(year = seasons, wk_start = week_start) %>%
+  arrange(year, wk_start) %>%
+  filter(!(year == 2014 & wk_start < 40)) %>%
+  rbind(c(2019, 1)) %>%
+  mutate(pred = 5)
+
+forecasts <- purrr::pmap(tasks, ~forecast_starting(H3N2_tree, last_time = H3N2_last_time, week_start = ..2, 
+                  year_start = ..1, label = "H3N2_Ne", formula = BNPR_PS_formula, pred = ..3)$df[seq(..3),])
+H3N2_forecasts <- purrr::imap(forecasts, ~mutate(.x, forecast = .y)) %>%
+  dplyr::bind_rows() %>%
+  mutate(week = unlist(purrr::map(tasks$wk_start, ~.x + 5:1)))
 ```
+
+Overlaying the visualization on BNPR PS (no forecast)
+
+```{r}
+selected_seasons <- c("2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019")
+H3N2_Ne_forecast <- BNPR_forecast(H3N2_tree, last_time = H3N2_last_time, formula = BNPR_PS_formula, pred = 0, pref = T)
+H3N2_Ne_data <- with(H3N2_Ne_forecast, 
+                     data.frame(time = H3N2_last_time - result$summary.random$time$ID,
+                                week = weeks,
+                                H3N2_Ne = effpopmean,
+                                lwr = effpop025,
+                                upr = effpop975))
+H3N2_Ne_data$year <- floor(H3N2_Ne_data$time)
+p_H3N2_Ne_forecast <- visualize_flu_season(H3N2_Ne_data, time_series_names = "H3N2_Ne", 
+                                  subset_seasons = selected_seasons, ncol = 5, season_label = F,
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F),
+                                  add_forecasts = H3N2_forecasts)
+p_H3N2_Ne_forecast
+```
+
+# H1N1
+
+```{r}
+H1N1_tree <- ape::read.nexus(system.file("extdata/H1N1/MCC.tree",
+                                         package = "PILAF"))
+H1N1_last_time <- 2019.0931506849315
+
+forecasts <- purrr::pmap(tasks, 
+                         ~forecast_starting(H1N1_tree, last_time = H1N1_last_time, week_start = ..2, 
+                  year_start = ..1, label = "H1N1_Ne", formula = BNPR_PS_formula, pred = ..3)$df[seq(..3),])
+H1N1_forecasts <- purrr::imap(forecasts, ~mutate(.x, forecast = .y)) %>%
+  dplyr::bind_rows() %>%
+  mutate(week = lubridate::week(lubridate::date_decimal(Time)))
+
+# run forecasts on a grid
+H1N1_Ne_forecast <- BNPR_forecast(H1N1_tree, last_time = H1N1_last_time, formula = BNPR_PS_formula, pred = 0, pref = T)
+H1N1_Ne_data <- with(H1N1_Ne_forecast, 
+                     data.frame(time = H1N1_last_time - result$summary.random$time$ID,
+                                week = weeks,
+                                H1N1_Ne = effpopmean,
+                                lwr = effpop025,
+                                upr = effpop975))
+H1N1_Ne_data$year <- floor(H1N1_Ne_data$time)
+p_H1N1_Ne_forecast <- visualize_flu_season(H1N1_Ne_data, time_series_names = "H1N1_Ne", 
+                                  subset_seasons = selected_seasons, ncol = 5, season_label = F,
+                                  error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F),
+                                  add_forecasts = H1N1_forecasts)
+p_H1N1_Ne_forecast
+```
+
+
+
 
 ```{r}
 rw1_formula <- y ~ -1 + f(time, model = "rw1", constr = F) 

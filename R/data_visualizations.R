@@ -72,7 +72,7 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
                         forecast = add_forecasts$forecast)
     input$season <- purrr::pmap_chr(input[, c("year", "week")],
                                     ~ ifelse(..2 <= 21, paste_dash(..1 - 1, ..1), paste_dash(..1, ..1 + 1)))
-    View(input)
+    #View(input)
     flu_season$forecast <- "0"
 
     flu_season <- rbind(flu_season, input)
@@ -86,11 +86,11 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
 
   if (!is.null(add_forecasts)) {
     p <- ggplot(data = flu_season, aes(x = week, y = time_series, group = forecast, color = is_forecast)) +
-      scale_color_manual(values = c("black", "olivedrab3"))
+      scale_color_manual(values = c("black", "turquoise"))
   }
   else p <- ggplot(data = flu_season, aes(x = week, y = time_series, group = season))
-  if (!is.null(error_band_names)) p <- p + geom_ribbon(aes(ymin = quant025, ymax = quant975), fill = "lightgray", size = 0, alpha = 0.7)
-  p <- p + geom_line()
+  if (!is.null(error_band_names)) p <- p + geom_ribbon(aes(ymin = quant025, ymax = quant975), fill = "lightgray", color = "white", alpha = 0.7)
+  p <- p + geom_line(size = 0.7)
 
   if (!is.null(correlate_ts)) {
     annot <- flu_season %>%

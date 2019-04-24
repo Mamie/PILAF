@@ -68,7 +68,7 @@ plot_trajectory <- function(df, ylimits, breaks, root_time, vline = NULL) {
   winter_seasons <- data.frame(xmin = xmin, xmax = xmax) %>%
     mutate(ymin = min(ylimits), ymax = max(ylimits)) %>%
     filter(xmin < max(df$Time) & xmax > min(df$Time))
-  print(winter_seasons)
+  # print(winter_seasons)
   p <- ggplot(data = df) +
     geom_rect(data = winter_seasons, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = 'steelblue', alpha = 0.2) +
     geom_ribbon(aes(x = Time, ymin = Lower, ymax = Upper), fill = "lightgray", alpha = 0.9) +

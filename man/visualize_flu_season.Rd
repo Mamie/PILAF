@@ -8,7 +8,7 @@ visualize_flu_season(..., time_series_names, datalist = NULL,
   subset_seasons = NULL, ncol = 1, no_y_axis = TRUE,
   season_label = T, title = NULL, scales = "fixed", log_y = T,
   error_band_names = NULL, correlate_ts = NULL, label_x = NULL,
-  label_y = NULL)
+  label_y = NULL, add_forecasts = NULL)
 }
 \arguments{
 \item{time_series_names}{The column name for the time series (same in length as data + datalist)}
@@ -36,6 +36,8 @@ visualize_flu_season(..., time_series_names, datalist = NULL,
 \item{label_x}{x coordinate of correlation annotation}
 
 \item{label_y}{y coordinate of correlation annotation}
+
+\item{add_forecasts}{A data frame containing the forecast values (output df from forecast_starting)}
 
 \item{data}{A data frame contain three columns (year, week, the time series);
 the column names for year and week must be "year" and "week"}

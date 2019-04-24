@@ -4,7 +4,7 @@
 \alias{forecast_starting}
 \title{Forecast starting at given time}
 \usage{
-forecast_starting(tree, last_time, week_start, year_start, formula,
+forecast_starting(tree, last_time, week_start, year_start, formula, label,
   pred = 4, pref = TRUE)
 }
 \arguments{
@@ -12,11 +12,13 @@ forecast_starting(tree, last_time, week_start, year_start, formula,
 
 \item{last_time}{The last sampling time in the tree}
 
-\item{week_start}{The week of last timepoint for training}
+\item{week_start}{The week of first forecast timepoint}
 
-\item{year_start}{The year of last timepoint for training}
+\item{year_start}{The year of first forecast timepoint}
 
 \item{formula}{The formula for BNPR forecast}
+
+\item{label}{A character string as label for the time series}
 
 \item{pred}{The number of weeks to forecast}
 

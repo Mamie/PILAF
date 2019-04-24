@@ -99,30 +99,32 @@ BNPR_forecast <- function (data, last_time, formula, lengthout = 100, pref = FAL
 }
 
 lastmon <- function(x) 7 * floor(as.numeric(x-1+4)/7) + as.Date(1-4, origin="1970-01-01")
+
 time2grid <- function(time) {
   time <- sort(time)
   diff <- abs(time[2] - time[1]) / 2
   return(c(time - diff, time[length(time)] + diff))
 }
+
 create_grid <- function(samp_times, coal_times, last_time, pred){
   grid_week <- list()
   samp_times_real <- last_time - samp_times
   coal_times_real <- last_time - coal_times
   min_time <- min(coal_times_real)
-  max_time <- max(samp_times_real)
+  #max_time <- max(samp_times_real)
   min_date <- as.character(lubridate::date_decimal(min_time))
-  max_date <- as.character(lubridate::date_decimal(max_time))
+  max_date <- as.character(lubridate::date_decimal(last_time))
   min_mon_date <- lastmon(as.Date(min_date))
   max_mon_date <- lastmon(as.Date(max_date))
 
-  train_time <- seq(min_mon_date, max_mon_date, by = 7)
+  train_time <- lubridate::round_date(seq(min_mon_date, max_mon_date, by = 7))
   train_week <- rev(as.numeric(strftime(train_time, format = "%V")))
   train_grid_0 <- rev(last_time - lubridate::decimal_date(time2grid(train_time)))
   if (pred == 0) {
     test_time_0 <- NULL
     test_week <- NULL
   } else {
-    test_time <- seq(max_mon_date + 7, max_mon_date + 7 * pred, by = 7)
+    test_time <- lubridate::round_date(seq(max_mon_date + 7, max_mon_date + 7 * pred, by = 7))
     test_week <- rev(as.numeric(strftime(test_time, format = "%V")))
     test_time_0 <- rev(last_time - lubridate::decimal_date(test_time))
   }
@@ -272,8 +274,8 @@ truncate_data <- function(tree, truncation_time){
 #' Forecast starting at given time
 #' @param tree A phylo object
 #' @param last_time The last sampling time in the tree
-#' @param week_start The week of last timepoint for training
-#' @param year_start The year of last timepoint for training
+#' @param week_start The week of first forecast timepoint
+#' @param year_start The year of first forecast timepoint
 #' @param formula The formula for BNPR forecast
 #' @param label A character string as label for the time series
 #' @param pred The number of weeks to forecast
@@ -282,13 +284,12 @@ truncate_data <- function(tree, truncation_time){
 #' @export
 forecast_starting <- function(tree, last_time, week_start, year_start,
                               formula, label, pred = 4, pref = TRUE) {
-  truncation_time <- lubridate::decimal_date(as.Date(paste0(year_start, "-01-01")) + lubridate::dweeks(week_start))
+  truncation_time <- lubridate::decimal_date(lubridate::round_date(as.Date(paste0(year_start, "-01-01")) + lubridate::ddays(week_start * 7)))
   tree_trunc <- truncate_data(tree, last_time - truncation_time)
-
   forecast_res <- BNPR_forecast(tree_trunc, last_time = truncation_time,
                                 formula = formula, pred = pred, pref = pref)
   forecast_res$truncation_time <- truncation_time
-  print(forecast_res$truncation_time)
+  #print(forecast_res$truncation_time)
   forecast_df <- BNPR_to_df(forecast_res, label = label, truncation_time)
   return(list(res = forecast_res, df = forecast_df, pred = pred))
 }

@@ -21,6 +21,10 @@ ar2crw1_formula <- y ~ -1 + f(time, model = "ar", order = 2) +
 pred <- 20
 H3N2_Ne_forecast <- BNPR_forecast(H3N2_tree, last_time = H3N2_last_time, formula = ar2crw1_formula, pred = pred)
 BNPR <- BNPR(H3N2_tree)
+plot_BNPR(BNPR)
+BNPR_PS<-BNPR_PS(H3N2_tree)
+plot_BNPR(BNPR_PS)
+
 ```
 
 The next figure compares estimation with the AR(2)+CRW(1) (black curve) to BNPR (red curve)
@@ -72,7 +76,11 @@ In both cases H1N1 and H3N2, effective population size estimated with preferenti
 
 ```{r}
 BNPR_PS_formula <- Y ~ -1 + beta0 +
-        f(time, model="rw1", hyper = hyper, constr = FALSE) +
+        f(time, model="ar", order=2,hyper = hyper, constr = FALSE) +
+        f(time2, w, copy="time", fixed=FALSE, param=c(0, beta1_prec))
+
+BNPR_PS_formula <- Y ~ -1 + beta0 +
+        f(time, model="rw1",hyper = hyper, constr = FALSE) +
         f(time2, w, copy="time", fixed=FALSE, param=c(0, beta1_prec))
 
 BNPR_PS_formula <- Y ~ -1 + beta0 +
@@ -86,6 +94,15 @@ plot_trajectory(forecast_2015week46$df,
                 seq(2013, 2019), 
                 H3N2_last_time - max(phylodyn::summarize_phylo(H3N2_tree)$coal_times), 
                 vline = forecast_2015week46$res$truncation_time - forecast_2015week46$res$result$summary.random$time$ID[forecast_2015week46$pred + 1])
+
+plot(forecast_2015week46$df$Time,forecast_2015week46$res$effpop,type="l",col="black")
+points(H3N2_last_time-BNPR_PS$summary$time,BNPR_PS$effpop,type="l",col="red")
+##These two curves should match but they don't. Why?
+
+
+plot(H3N2_last_time-BNPR_PS$summary$time,BNPR_PS$effpop,type="l",col="red")
+points(BNPR_PS$summary$time,BNPR_PS$effpop,type="l",col="red")
+
 ```
 
 Forecast given intervals

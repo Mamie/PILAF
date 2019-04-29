@@ -24,7 +24,6 @@ BNPR <- BNPR(H3N2_tree)
 plot_BNPR(BNPR)
 BNPR_PS<-BNPR_PS(H3N2_tree)
 plot_BNPR(BNPR_PS)
-
 ```
 
 The next figure compares estimation with the AR(2)+CRW(1) (black curve) to BNPR (red curve)

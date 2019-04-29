@@ -36,4 +36,3 @@ test_that("Test creating grid for given timepoint of interest", {
   expect_equal(grid, c(0.5, 1.5, 2.5, 3.5, 4.5))
 })
 
-

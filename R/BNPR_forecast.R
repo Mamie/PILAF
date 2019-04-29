@@ -160,7 +160,7 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
     stop("First coalescent time occurs before first sampling time")
   if (max(samp_times) > max(coal_times))
     stop("Last sampling time occurs after last coalescent time")
-  browser()
+  #browser()
 
   grid_week <- create_grid(samp_times, coal_times, last_time, pred = pred)
   grid <- grid_week$train$grid
@@ -265,19 +265,33 @@ joint_stats <- function (coal_data, samp_data, pred = 0,
 #' @export
 truncate_data <- function(tree, truncation_time){
   tree_data <- phylodyn::summarize_phylo(tree)
-  samps_before_trunc <- tree_data$samp_times > truncation_time
-  tree_data$samp_times <- tree_data$samp_times[samps_before_trunc]
-  coals_before_trunc <- tree_data$coal_times > min(tree_data$samp_times)
-  totalcoals <- length(tree_data$coal_times[!coals_before_trunc])
-  tree_data$coal_times <- tree_data$coal_times[coals_before_trunc]
-  totalsampls <- sum(tree_data$n_sampled[!samps_before_trunc])
+  samps_keep <- tree_data$samp_times >= truncation_time
+  tree_data$samp_times <- tree_data$samp_times[samps_keep]
 
-  tree_data$n_sampled <- tree_data$n_sampled[samps_before_trunc]
-  tree_data$n_sampled[1] <- tree_data$n_sampled[1] + totalsampls - totalcoals
+  coals_keep <- tree_data$coal_times > min(tree_data$samp_times)
+  tree_data$coal_times <- tree_data$coal_times[coals_keep]
+
+  numcoals_removed <- sum(!coals_keep)
+  numsamps_removed <- sum(tree_data$n_sampled[!samps_keep])
+
+  tree_data$n_sampled <- tree_data$n_sampled[samps_keep]
+  tree_data$n_sampled[1] <- tree_data$n_sampled[1] + numsamps_removed - numcoals_removed
 
   tree_data$samp_times <- tree_data$samp_times - truncation_time
   tree_data$coal_times <- tree_data$coal_times - truncation_time
+
   return(tree_data)
+}
+
+#' Compute the date of the Monday of the week for truncation
+#'
+#' @param year The year of the truncation time
+#' @param week The week of the truncation time
+#' @export
+compute_truncation_time <- function(year, week) {
+  date <- lubridate::ymd(paste0(year, "-01-01"))
+  lubridate::week(date) <- week
+  return(lastmon(date))
 }
 
 #' Forecast starting at given time
@@ -293,7 +307,8 @@ truncate_data <- function(tree, truncation_time){
 #' @export
 forecast_starting <- function(tree, last_time, week_start, year_start,
                               formula, label, pred = 4, pref = TRUE) {
-  truncation_time <- lubridate::decimal_date(lubridate::round_date(as.Date(paste0(year_start, "-01-01")) + lubridate::ddays(week_start * 7)))
+  browser()
+  truncation_time <- lubridate::decimal_date(compute_truncation_time(year_start, week_start))
   tree_trunc <- truncate_data(tree, last_time - truncation_time)
   forecast_res <- BNPR_forecast(tree_trunc, last_time = truncation_time,
                                 formula = formula, pred = pred, pref = pref)

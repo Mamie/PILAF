@@ -7,11 +7,7 @@ H3N2_tree <- ape::read.nexus(system.file("extdata/H3N2/MCC.tree",
                                          package = "PILAF"))
 H3N2_last_time <- 2019.0739726027398
 H3N2_root_time <- H3N2_last_time - max(phylodyn::summarize_phylo(H3N2_tree)$coal_times)
-ar2crw1_formula <- y ~ -1 + f(time, model = "ar", order = 2) +
-  f(week, model = "rw1", cyclic = T, constr = F)
 pred <- 20
-H3N2_Ne_forecast <- BNPR_forecast(H3N2_tree, last_time = H3N2_last_time, formula = ar2crw1_formula, pred = pred)
-
 BNPR_PS_formula <- Y ~ -1 + beta0 +
   f(time, model="rw1",hyper = hyper, constr = FALSE) +
   f(time2, w, copy="time", fixed=FALSE, param=c(0, beta1_prec))
@@ -30,3 +26,14 @@ ggplot(data = outs) +
                                effpop = H3N2_Ne_forecast$effpop),
              aes(x = time, y = effpop))
 
+# forecast starting debug
+year_start <- 2015
+week_start <- 45
+forecast_2015week46 <- forecast_starting(H3N2_tree, last_time = H3N2_last_time, week_start, year_start, label = "H3N2 BNPR PS", formula = BNPR_PS_formula, pred = 5)
+
+truncation_time <- lubridate::decimal_date(compute_truncation_time(year_start, week_start))
+tree_trunc <- truncate_data(H3N2_tree, H3N2_last_time - truncation_time)
+BNPR_PS_trunc <- BNPR_PS(tree_trunc)
+
+plot(forecast_2015week46$df$Time, forecast_2015week46$res$effpop,type="l",col="black")
+points(truncation_time - BNPR_PS_trunc$summary$time, BNPR_PS_trunc$effpop, type="l", col="red")

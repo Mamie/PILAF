@@ -9,7 +9,7 @@ BNPR_forecast <- function (data, last_time, formula, lengthout = 100, pref = FAL
           prec_beta = 0.01, beta1_prec = 0.001, fns = NULL, log_fns = TRUE,
           simplify = TRUE, derivative = FALSE, forward = TRUE, pred = 4)
 {
-  browser()
+  # browser()
   if (class(data) == "phylo") {
     phy <- phylodyn::summarize_phylo(data)
   }
@@ -115,24 +115,25 @@ time2grid <- function(time) {
 #' @return A list containing the training and testing time and week
 #' @export
 create_grid <- function(samp_times, coal_times, last_time, pred){
+  # browser()
   grid_week <- list()
   samp_times_real <- last_time - samp_times
   coal_times_real <- last_time - coal_times
   min_time <- min(coal_times_real)
   #max_time <- max(samp_times_real)
-  min_date <- as.character(lubridate::date_decimal(min_time))
-  max_date <- as.character(lubridate::date_decimal(last_time))
+  min_date <- as.character(lubridate::round_date(lubridate::date_decimal(min_time)))
+  max_date <- as.character(lubridate::round_date(lubridate::date_decimal(last_time)))
   min_mon_date <- lastmon(as.Date(min_date))
   max_mon_date <- lastmon(as.Date(max_date))
 
-  train_time <- lubridate::round_date(seq(min_mon_date, max_mon_date, by = 7))
+  train_time <- seq(min_mon_date, max_mon_date, by = 7)
   train_week <- rev(as.numeric(strftime(train_time, format = "%V")))
-  train_grid_0 <- rev(last_time - lubridate::decimal_date(time2grid(train_time)))
+  train_grid_0 <- rev(last_time - lubridate::decimal_date(train_time))
   if (pred == 0) {
     test_time_0 <- NULL
     test_week <- NULL
   } else {
-    test_time <- lubridate::round_date(seq(max_mon_date + 7, max_mon_date + 7 * pred, by = 7))
+    test_time <- seq(max_mon_date + 7, max_mon_date + 7 * pred, by = 7)
     test_week <- rev(as.numeric(strftime(test_time, format = "%V")))
     test_time_0 <- rev(last_time - lubridate::decimal_date(test_time))
   }
@@ -159,6 +160,7 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
     stop("First coalescent time occurs before first sampling time")
   if (max(samp_times) > max(coal_times))
     stop("Last sampling time occurs after last coalescent time")
+  browser()
 
   grid_week <- create_grid(samp_times, coal_times, last_time, pred = pred)
   grid <- grid_week$train$grid

@@ -75,6 +75,10 @@ BNPR_PS_formula <- Y ~ -1 + beta0 +
         f(time, model="rw1", hyper = hyper, constr = FALSE) +
         f(time2, w, copy="time", fixed=FALSE, param=c(0, beta1_prec))
 
+BNPR_PS_formula <- Y ~ -1 + beta0 +
+    f(time, model="ar", order = 2, hyper = hyper, constr = FALSE) +
+    f(time2, w, copy="time", fixed=FALSE, param=c(0, beta1_prec)) 
+
 forecast_2015week46 <- forecast_starting(H3N2_tree, last_time = H3N2_last_time, week_start = 45, 
                   year_start = 2015, label = "H3N2 BNPR PS", formula = BNPR_PS_formula, pred = 5)
 plot_trajectory(forecast_2015week46$df, 
@@ -107,7 +111,7 @@ forecasts <- purrr::pmap(tasks,
                                             pred = ..3)$df[seq(..3),])
 
 H3N2_forecasts <- purrr::imap(forecasts, ~mutate(.x, forecast = .y)) %>%
-  dplyr::bind_rows() 
+  dplyr::bind_rows()
 H3N2_forecasts$week <- purrr::map_dbl(H3N2_forecasts$Time, ~ lubridate::week(lubridate::round_date(lubridate::date_decimal(.x))))
 ```
 

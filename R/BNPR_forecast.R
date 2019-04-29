@@ -9,7 +9,7 @@ BNPR_forecast <- function (data, last_time, formula, lengthout = 100, pref = FAL
           prec_beta = 0.01, beta1_prec = 0.001, fns = NULL, log_fns = TRUE,
           simplify = TRUE, derivative = FALSE, forward = TRUE, pred = 4)
 {
-  #browser()
+  browser()
   if (class(data) == "phylo") {
     phy <- phylodyn::summarize_phylo(data)
   }
@@ -106,6 +106,14 @@ time2grid <- function(time) {
   return(c(time - diff, time[length(time)] + diff))
 }
 
+#' Create grid of time and week
+#'
+#' @param samp_times Sampling times; the last sampling time is set to 0
+#' @param coal_times Coalescent times; the same reference as samp_times
+#' @param last_time The last time point
+#' @param pred Integer; the number of week to forecast ahead
+#' @return A list containing the training and testing time and week
+#' @export
 create_grid <- function(samp_times, coal_times, last_time, pred){
   grid_week <- list()
   samp_times_real <- last_time - samp_times

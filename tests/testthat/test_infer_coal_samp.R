@@ -30,3 +30,10 @@ test_that("Test for other dates in a week", {
   expect_equal(res$test$time, last_time - lubridate::decimal_date(as.Date("2019-05-06")))
 })
 
+test_that("Test creating grid for given timepoint of interest", {
+  test <- c(1, 2, 3, 4)
+  grid <- time2grid(test)
+  expect_equal(grid, c(0.5, 1.5, 2.5, 3.5, 4.5))
+})
+
+

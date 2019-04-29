@@ -170,7 +170,7 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
 
   if (is.null(n_sampled))
     n_sampled <- rep(1, length(samp_times))
-  coal_data <- phylodyn:::coal_stats(grid = grid, samp_times = samp_times,
+  coal_data <- phylodyn:::coal_stats(grid = time2grid(grid), samp_times = samp_times,
                           n_sampled = n_sampled, coal_times = coal_times)
   coal_data <- with(coal_data, phylodyn:::condense_stats(time = time,
                                                 event = event, E = E))
@@ -193,8 +193,8 @@ infer_coal_samp_pred <- function (samp_times, coal_times, last_time, n_sampled =
   }
   else if (use_samp) {
     if (events_only)
-      samp_data <- samp_stats(grid = grid, samp_times = samp_times)
-    else samp_data <- samp_stats(grid = grid, samp_times = samp_times, n_sampled = n_sampled)
+      samp_data <- samp_stats(grid = time2grid(grid), samp_times = samp_times)
+    else samp_data <- samp_stats(grid = time2grid(grid), samp_times = samp_times, n_sampled = n_sampled)
     data <- joint_stats(coal_data = coal_data, samp_data = samp_data, pred = pred, time_pred = time_pred, week_pred = week_pred)
     #View(data)
     family <- c("poisson", "poisson")
@@ -245,15 +245,14 @@ joint_stats <- function (coal_data, samp_data, pred = 0,
   n1 <- length(coal_data$time)
   n2 <- length(samp_data$time)
   beta0 <- c(rep(0, n1 + pred), rep(1, n2))
-  E_log <- c(coal_data$E_log, rep(NA, pred),
-             samp_data$E_log)
-  Y <- matrix(c(coal_data$event, rep(NA, pred), rep(NA, n2),
+  E_log <- c(rep(NA, pred), coal_data$E_log, samp_data$E_log)
+  Y <- matrix(c(rep(NA, pred), coal_data$event, rep(NA, n2),
                 rep(NA, n1 + pred), samp_data$count),
               nrow = n1 + n2 + pred, byrow = FALSE)
   w <- c(rep(1, n1 + pred), rep(-1, n2))
-  time <- c(coal_data$time, time_pred, rep(NA, n2))
+  time <- c(time_pred, coal_data$time, rep(NA, n2))
   time2 <- c(rep(NA, n1 + pred), samp_data$time)
-  week <- c(coal_data$week, week_pred, rep(NA, n2))
+  week <- c(week_pred, coal_data$week, rep(NA, n2))
   week2 <- c(rep(NA, n1 + pred), coal_data$week)
   return(list(Y = Y, beta0 = beta0, time = time, time2 = time2,
               week = week, week2 = week2, w = w, E_log = E_log))

@@ -5,7 +5,8 @@
 \title{Forecast starting at given time}
 \usage{
 forecast_starting(tree, last_time, week_start, year_start, formula, label,
-  pred = 4, pref = TRUE)
+  pred = 4, pref = TRUE, n = 1, include_trunc = T,
+  thresh = 0.019)
 }
 \arguments{
 \item{tree}{A phylo object}
@@ -23,6 +24,12 @@ forecast_starting(tree, last_time, week_start, year_start, formula, label,
 \item{pred}{The number of weeks to forecast}
 
 \item{pref}{Whether using preferential sampling}
+
+\item{n}{The number of samples near the truncation time}
+
+\item{include_trunc}{Whether to include the truncation timepoint}
+
+\item{thresh}{Maximum distance from truncation time of the n samples}
 }
 \value{
 A INLA object for forecast

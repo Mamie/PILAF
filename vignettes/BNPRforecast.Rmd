@@ -101,12 +101,14 @@ Forecast given intervals
 # forecast tasks
 seasons <- seq(2014, 2018)
 week_start <- c(45, 1, 10)
-preds <- rep(5, 3)
+pred <- 5
+preds <- rep(pred, 3)
+
 tasks <- expand.grid(year = seasons, wk_start = week_start) %>%
   arrange(year, wk_start) %>%
   filter(!(year == 2014 & wk_start < 40)) %>%
   rbind(c(2019, 1)) %>%
-  mutate(pred = 5)
+  mutate(pred = pred)
 
 forecast_res <- purrr::pmap(tasks, 
                          ~forecast_starting(H3N2_tree, 
@@ -115,11 +117,19 @@ forecast_res <- purrr::pmap(tasks,
                                             year_start = ..1, 
                                             label = "H3N2_Ne", 
                                             formula = BNPR_PS_formula, 
-                                            pred = ..3))
+                                            pred = ..3,
+                                            include_trunc = F))
+
+reference_res <- purrr::pmap(tasks, ~truncate_BNPR_PS(week_start = ..2, year_start = ..1, H3N2_tree, H3N2_last_time, 
+                                                      include_trunc = F))
+
 tasks$start <- purrr::pmap(tasks, ~ifelse(..2 < 21, ..1 - 1, ..1))
 
 H3N2_forecasts <- purrr::pmap(list(res = forecast_res, name = 1:length(forecast_res),
-                                   year = tasks$start), ~mutate(..1$df, forecast = ..2) %>% filter(Time > ..3 + 40/52)) %>%
+                                   year = tasks$start, ref = reference_res), 
+                                ~rbind(..1$df[1:pred, ], BNPR_to_df(..4$bnpr, "H3N2_Ne", ..4$trunc_time)) %>% 
+                                mutate(forecast = ..2) %>%
+                                filter(Time > lubridate::decimal_date(compute_truncation_time(..3, 40)))) %>%
   dplyr::bind_rows()
 H3N2_forecasts$week <- purrr::map_dbl(H3N2_forecasts$Time, ~ lubridate::week(lubridate::round_date(lubridate::date_decimal(.x))))
 ```
@@ -141,9 +151,9 @@ p_H3N2_Ne_forecast <- visualize_flu_season(H3N2_Ne_data, time_series_names = "H3
                                   subset_seasons = selected_seasons, ncol = 5, season_label = F,
                                   error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F),
                                   add_forecasts = H3N2_forecasts) +
-  geom_vline(aes(xintercept = 5), linetype = "dashed", alpha = 0.3) + # week 45
-  geom_vline(aes(xintercept = 14), linetype = "dashed", alpha = 0.3) + # week 1
-  geom_vline(aes(xintercept = 23), linetype = "dashed", alpha = 0.3) # week 10
+  geom_vline(aes(xintercept = 6), linetype = "dashed", alpha = 0.3) + # week 45
+  geom_vline(aes(xintercept = 15), linetype = "dashed", alpha = 0.3) + # week 1
+  geom_vline(aes(xintercept = 24), linetype = "dashed", alpha = 0.3) # week 10
   # levels are c(40:53, 1:21)
 p_H3N2_Ne_forecast
 ```
@@ -163,13 +173,21 @@ forecasts <- purrr::pmap(tasks,
                                             year_start = ..1, 
                                             label = "H1N1_Ne", 
                                             formula = BNPR_PS_formula, 
-                                            pred = ..3))
+                                            pred = ..3,
+                                            include_trunc = F))
 
-H1N1_forecasts <- purrr::pmap(list(res = forecasts, name = 1:length(forecast_res),
-                                   year = tasks$start), ~mutate(..1$df, forecast = ..2) %>% filter(Time > ..3 + 40/52)) %>%
+reference_res <- purrr::pmap(tasks, ~truncate_BNPR_PS(week_start = ..2, year_start = ..1, H1N1_tree, H1N1_last_time, include_trunc = F))
+
+H1N1_forecasts <- purrr::pmap(list(res = forecasts, name = 1:length(forecasts),
+                                   year = tasks$start, ref = reference_res), 
+                                ~rbind(..1$df[1:pred, ], 
+                                       BNPR_to_df(..4$bnpr, "H1N1_Ne", ..4$trunc_time) %>%
+                                         filter(Time > lubridate::decimal_date(compute_truncation_time(..3, 40)) - 0.02 & Time < as.numeric(..1$df[pred, "Time"]) - 0.02)) %>% 
+                                mutate(forecast = ..2)) %>%
   dplyr::bind_rows()
 H1N1_forecasts$week <- purrr::map_dbl(H1N1_forecasts$Time, ~lubridate::week(lubridate::round_date(lubridate::date_decimal(.x))))
 H1N1_Ne_forecast <- BNPR_forecast(H1N1_tree, last_time = H1N1_last_time, formula = BNPR_PS_formula, pred = 0, pref = T)
+
 H1N1_Ne_data <- with(H1N1_Ne_forecast, 
                      data.frame(time = H1N1_last_time - result$summary.random$time$ID,
                                 week = weeks,
@@ -181,9 +199,9 @@ p_H1N1_Ne_forecast <- visualize_flu_season(H1N1_Ne_data, time_series_names = "H1
                                   subset_seasons = selected_seasons, ncol = 5, season_label = F,
                                   error_band_names = data.frame(lwr = "lwr", upr = "upr", stringsAsFactors = F),
                                   add_forecasts = H1N1_forecasts) +
-  geom_vline(aes(xintercept = 5), linetype = "dashed", alpha = 0.3) + # week 45
-  geom_vline(aes(xintercept = 14), linetype = "dashed", alpha = 0.3) + # week 1
-  geom_vline(aes(xintercept = 23), linetype = "dashed", alpha = 0.3) # week 10
+  geom_vline(aes(xintercept = 6), linetype = "dashed", alpha = 0.3) + # week 45
+  geom_vline(aes(xintercept = 15), linetype = "dashed", alpha = 0.3) + # week 1
+  geom_vline(aes(xintercept = 24), linetype = "dashed", alpha = 0.3) # week 10
 p_H1N1_Ne_forecast
 ```
 
@@ -197,5 +215,5 @@ p <- cowplot::plot_grid(p_H3N2_Ne_forecast + ylab("H3N2 BNPR PS") + theme_no_x +
                    p_H1N1_Ne_forecast + ylab("H1N1 BNPR PS"), 
                    ncol = 1,
                    align = "v")
-ggsave(p, file = "../../projectingvirus/manuscript/Figures/data/BNPR_PS_forecast.pdf", width = 9, height = 5)
+ggsave(p, file = "../../projectingvirus/manuscript/Figures/data/BNPR_PS_forecast2.pdf", width = 9, height = 5)
 ```

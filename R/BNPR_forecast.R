@@ -258,13 +258,32 @@ joint_stats <- function (coal_data, samp_data, pred = 0,
               week = week, week2 = week2, w = w, E_log = E_log))
 }
 
+find_nearest_time <- function(ref, time, n = 1, thresh = 0.01) {
+  dist <- abs(time - ref)
+  res <- ref[order(dist)[1:n]]
+  if(sum(abs(res - time) > thresh) > 0) {
+    stop(paste0("The nearest timepoints are > ", thresh, " from ", time))
+  }
+  return(res)
+}
+
 #' Truncates a phylogentic tree
 #'
 #' @param tree a phylo object
 #' @param truncation_time The time of last sampling point
+#' @param include_trunc If to include the truncation time in the data
+#' @param n The number of samples near the truncation time
+#' @param thresh Maximum distance from truncation time of the n samples
 #' @export
-truncate_data <- function(tree, truncation_time){
+truncate_data <- function(tree, truncation_time, include_trunc = F, n = 1, thresh = 0.1){
+  # browser()
   tree_data <- phylodyn::summarize_phylo(tree)
+  if (include_trunc) {
+    # find the nearest sample at the truncation time
+    nearest_times <- find_nearest_time(tree_data$samp_times, truncation_time, n = n, thresh = thresh)
+    truncation_time <- min(nearest_times)
+  }
+
   samps_keep <- tree_data$samp_times >= truncation_time
   tree_data$samp_times <- tree_data$samp_times[samps_keep]
 
@@ -280,7 +299,7 @@ truncate_data <- function(tree, truncation_time){
   tree_data$samp_times <- tree_data$samp_times - truncation_time
   tree_data$coal_times <- tree_data$coal_times - truncation_time
 
-  return(tree_data)
+  return(list(tree = tree_data, truncation_time = truncation_time))
 }
 
 #' Compute the date of the Monday of the week for truncation
@@ -303,17 +322,39 @@ compute_truncation_time <- function(year, week) {
 #' @param label A character string as label for the time series
 #' @param pred The number of weeks to forecast
 #' @param pref Whether using preferential sampling
+#' @param include_trunc Whether to include the truncation timepoint
+#' @param n The number of samples near the truncation time
+#' @param thresh Maximum distance from truncation time of the n samples
 #' @return A INLA object for forecast
 #' @export
 forecast_starting <- function(tree, last_time, week_start, year_start,
-                              formula, label, pred = 4, pref = TRUE) {
-  # browser()
+                              formula, label, pred = 4, pref = TRUE, n = 1, include_trunc = T, thresh = 0.019) {
+  #browser()
   truncation_time <- lubridate::decimal_date(compute_truncation_time(year_start, week_start))
-  tree_trunc <- truncate_data(tree, last_time - truncation_time)
-  forecast_res <- BNPR_forecast(tree_trunc, last_time = truncation_time,
+  tree_trunc <- truncate_data(tree, last_time - truncation_time, n = n, include_trunc = include_trunc, thresh = thresh)
+  forecast_res <- BNPR_forecast(tree_trunc$tree, last_time = last_time - tree_trunc$truncation_time,
                                 formula = formula, pred = pred, pref = pref)
-  forecast_res$truncation_time <- truncation_time
+  forecast_res$truncation_time <- last_time - tree_trunc$truncation_time
   #print(forecast_res$truncation_time)
-  forecast_df <- BNPR_to_df(forecast_res, label = label, truncation_time)
+  forecast_df <- BNPR_to_df(forecast_res, label = label, last_time - tree_trunc$truncation_time)
   return(list(res = forecast_res, df = forecast_df, pred = pred))
+}
+
+#' Fit BNPR_PS with truncated data
+#'
+#' @param year_start The year of the truncation time
+#' @param week_start The week of the truncation time
+#' @param tree The phylo object
+#' @param last_time The last sampling time
+#' @param include_trunc Whether to include the truncation timepoint
+#' @param n The number of samples near the truncation time
+#' @param thresh Maximum distance from truncation time of the n samples
+#' @param ... arguments to BNPR_PS
+#' @export
+truncate_BNPR_PS <- function(year_start, week_start, tree, last_time, n = 1, include_trunc = T, thresh = 0.019, ...) {
+ # browser()
+  truncation_time <- lubridate::decimal_date(compute_truncation_time(year_start, week_start))
+  tree_trunc <- truncate_data(tree, last_time - truncation_time, n = n, include_trunc = include_trunc, thresh = thresh)
+  BNPR_PS_trunc <- phylodyn::BNPR_PS(tree_trunc$tree, ...)
+  return(list(bnpr = BNPR_PS_trunc, trunc_time = last_time - tree_trunc$truncation_time))
 }

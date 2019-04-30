@@ -37,3 +37,12 @@ BNPR_PS_trunc <- BNPR_PS(tree_trunc)
 
 plot(forecast_2015week46$df$Time, forecast_2015week46$res$effpop,type="l",col="black")
 points(truncation_time - BNPR_PS_trunc$summary$time, BNPR_PS_trunc$effpop, type="l", col="red")
+
+# truncate BNPR PS debug
+test <- truncate_BNPR_PS(2014, 45, H1N1_tree, H1N1_last_time) # sampling times 2014 - 2014.268, coal times 2013.206 - 2014.265
+BNPR_to_df(test$bnpr, "H3N2_Ne", test$trunc_time)$Time # 2013.211 - 2014.263
+
+trunc_tree <- truncate_data(H3N2_tree, H1N1_last_time - test$trunc_time)
+range(test$trunc_time - c(trunc_tree$samp_times, trunc_tree$coal_times))
+range(test$trunc_time - test$bnpr$result$summary.random$time$ID)
+# plot problem

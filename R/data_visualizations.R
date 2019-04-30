@@ -59,9 +59,8 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
 
   flu_season$season <- purrr::pmap_chr(flu_season[, c("year", "week")],
                                         ~ ifelse(..2 <= 21, paste_dash(..1 - 1, ..1), paste_dash(..1, ..1 + 1)))
-  #flu_season$week <- factor(flu_season$week, levels = c(40:53, 1:21))
 
-  #browser()
+  browser()
   if (!is.null(add_forecasts)) {
     input <- data.frame(year = floor(add_forecasts$Time),
                         week = add_forecasts$week,
@@ -72,7 +71,6 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
                         forecast = add_forecasts$forecast)
     input$season <- purrr::pmap_chr(input[, c("year", "week")],
                                     ~ ifelse(..2 <= 21, paste_dash(..1 - 1, ..1), paste_dash(..1, ..1 + 1)))
-    #View(input)
     input <- input %>%
       filter(week >= 40 | week <= 21)
     flu_season$forecast <- "0"

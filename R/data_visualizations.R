@@ -61,7 +61,7 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
                                         ~ ifelse(..2 <= 21, paste_dash(..1 - 1, ..1), paste_dash(..1, ..1 + 1)))
   #flu_season$week <- factor(flu_season$week, levels = c(40:53, 1:21))
 
-
+  #browser()
   if (!is.null(add_forecasts)) {
     input <- data.frame(year = floor(add_forecasts$Time),
                         week = add_forecasts$week,
@@ -73,6 +73,8 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
     input$season <- purrr::pmap_chr(input[, c("year", "week")],
                                     ~ ifelse(..2 <= 21, paste_dash(..1 - 1, ..1), paste_dash(..1, ..1 + 1)))
     #View(input)
+    input <- input %>%
+      filter(week >= 40 | week <= 21)
     flu_season$forecast <- "0"
 
     flu_season <- rbind(flu_season, input)
@@ -83,14 +85,14 @@ visualize_flu_season <- function(..., time_series_names, datalist = NULL,
   flu_season$week <- factor(flu_season$week, levels = c(40:53, 1:21))
   if (!is.null(subset_seasons))
     flu_season <- dplyr::filter(flu_season, season %in% subset_seasons)
-
   if (!is.null(add_forecasts)) {
-    p <- ggplot(data = flu_season, aes(x = week, y = time_series, group = forecast, color = is_forecast)) +
-      scale_color_manual(values = c("black", "turquoise"))
+    p <- ggplot(data = flu_season, aes(x = week, y = time_series, group = forecast, color = forecast, fill = forecast)) +
+      scale_color_manual(values = c("black", viridis::viridis(length(unique(flu_season$forecast)) - 1))) +
+      scale_fill_manual(values = c("black", viridis::viridis(length(unique(flu_season$forecast)) - 1)))
   }
   else p <- ggplot(data = flu_season, aes(x = week, y = time_series, group = season))
-  if (!is.null(error_band_names)) p <- p + geom_ribbon(aes(ymin = quant025, ymax = quant975), fill = "lightgray", color = "white", alpha = 0.7)
-  p <- p + geom_line(size = 0.7)
+  if (!is.null(error_band_names)) p <- p + geom_ribbon(aes(ymin = quant025, ymax = quant975), alpha = 0.4, size = 0) # fill = "lightgray", color = 'white'
+  p <- p + geom_line(size = 0.7, alpha = 0.7)
 
   if (!is.null(correlate_ts)) {
     annot <- flu_season %>%

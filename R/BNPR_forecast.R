@@ -307,7 +307,7 @@ compute_truncation_time <- function(year, week) {
 #' @export
 forecast_starting <- function(tree, last_time, week_start, year_start,
                               formula, label, pred = 4, pref = TRUE) {
-  browser()
+  # browser()
   truncation_time <- lubridate::decimal_date(compute_truncation_time(year_start, week_start))
   tree_trunc <- truncate_data(tree, last_time - truncation_time)
   forecast_res <- BNPR_forecast(tree_trunc, last_time = truncation_time,

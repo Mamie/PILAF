@@ -258,8 +258,10 @@ joint_stats <- function (coal_data, samp_data, pred = 0,
               week = week, week2 = week2, w = w, E_log = E_log))
 }
 
-find_nearest_time <- function(ref, time, n = 1, thresh = 0.01) {
-  dist <- abs(time - ref)
+find_nearest_later_time <- function(ref, time, n = 2, thresh = 0.01) {
+  dist <- time - ref
+  ref <- ref[dist >= 0]
+  dist <- dist[dist >= 0]
   res <- ref[order(dist)[1:n]]
   if(sum(abs(res - time) > thresh) > 0) {
     stop(paste0("The nearest timepoints are > ", thresh, " from ", time))
@@ -275,12 +277,12 @@ find_nearest_time <- function(ref, time, n = 1, thresh = 0.01) {
 #' @param n The number of samples near the truncation time
 #' @param thresh Maximum distance from truncation time of the n samples
 #' @export
-truncate_data <- function(tree, truncation_time, include_trunc = F, n = 1, thresh = 0.1){
+truncate_data <- function(tree, truncation_time, include_trunc = F, n = 2, thresh = 0.01){
   # browser()
   tree_data <- phylodyn::summarize_phylo(tree)
   if (include_trunc) {
-    # find the nearest sample at the truncation time
-    nearest_times <- find_nearest_time(tree_data$samp_times, truncation_time, n = n, thresh = thresh)
+    # find the nearest sample greater than the truncation time
+    nearest_times <- find_nearest_later_time(tree_data$samp_times, truncation_time, n = n, thresh = thresh)
     truncation_time <- min(nearest_times)
   }
 

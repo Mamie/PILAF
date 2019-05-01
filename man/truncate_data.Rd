@@ -4,8 +4,8 @@
 \alias{truncate_data}
 \title{Truncates a phylogentic tree}
 \usage{
-truncate_data(tree, truncation_time, include_trunc = F, n = 1,
-  thresh = 0.1)
+truncate_data(tree, truncation_time, include_trunc = F, n = 2,
+  thresh = 0.01)
 }
 \arguments{
 \item{tree}{a phylo object}

@@ -7,7 +7,7 @@ test_that("Test for truncation", {
                                            package = "PILAF"))
   H3N2_phylo <- phylodyn::summarize_phylo(H3N2_tree)
   truncation_time <- .08
-  H3N2_truncated <- truncate_data(H3N2_tree, truncation_time, include_trunc = T)
+  H3N2_truncated <- truncate_data(H3N2_tree, truncation_time, include_trunc = F)
   truncation_time <- H3N2_truncated$truncation_time
   H3N2_truncated <- H3N2_truncated$tree
   keep_idx <- which(H3N2_phylo$samp_times >= truncation_time)
@@ -19,6 +19,12 @@ test_that("Test for truncation", {
 test_that("Test for computation of truncation time", {
   date <- as.character(compute_truncation_time(2019, 16))
   expect_equal(date, "2019-04-15")
+})
+
+test_that("Find nearest later time to a reference", {
+  ref <- c(-0.8, 0, 0.3, 0.8, 1.3, 1.5)
+  expect_error(find_nearest_later_time(ref, 2, n = 2, thresh = 0.01))
+  expect_equal(find_nearest_later_time(ref, 0, n = 2, thresh = 1), c(0, -0.8))
 })
 
 test_that("BNPR truncation", {

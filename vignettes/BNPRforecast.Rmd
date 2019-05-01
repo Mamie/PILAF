@@ -51,8 +51,8 @@ This will be the same as above but we will truncate our tree.
 
 ```{r}
 truncation_time <- .08 # about 4 weeks
-H3N2_truncated <- truncate_data(H3N2_tree, truncation_time)
-H3N2_Ne_forecast <- BNPR_forecast(H3N2_truncated, last_time = H3N2_last_time - truncation_time, formula = ar2crw1_formula, pred = pred)
+H3N2_truncated <- truncate_data(H3N2_tree, truncation_time, include_trunc = F)
+H3N2_Ne_forecast <- BNPR_forecast(H3N2_truncated$tree, last_time = H3N2_last_time - H3N2_truncated$truncation_time, formula = ar2crw1_formula, pred = pred)
 
 p_ar2crw1_data <- with(H3N2_Ne_forecast, data.frame(Time = H3N2_last_time-truncation_time - result$summary.random$time$ID,
                                   Median = effpopmean, 
@@ -78,13 +78,17 @@ BNPR_PS_formula <- Y ~ -1 + beta0 +
         f(time, model="rw1",hyper = hyper, constr = FALSE) +
         f(time2, w, copy="time", fixed=FALSE, param=c(0, beta1_prec))
 
+BNPR_PS_formula <- Y ~ -1 + beta0 +
+        f(time, model="ar", order = 2, hyper = hyper, constr = FALSE) +
+        f(time2, w, copy="time", fixed=FALSE, param=c(0, beta1_prec))
+
 year_start <- 2015
 week_start <- 45
 forecast_2015week46 <- forecast_starting(H3N2_tree, last_time = H3N2_last_time, week_start, year_start, label = "H3N2 BNPR PS", formula = BNPR_PS_formula, pred = 5)
 
 truncation_time <- lubridate::decimal_date(compute_truncation_time(year_start, week_start))
-tree_trunc <- truncate_data(H3N2_tree, H3N2_last_time - truncation_time)
-BNPR_PS_trunc <- BNPR_PS(tree_trunc)
+tree_trunc <- truncate_data(H3N2_tree, H3N2_last_time - truncation_time, include_trunc = T, n = 2, thresh = 0.1)
+BNPR_PS_trunc <- BNPR_PS(tree_trunc$tree)
 
 plot_trajectory(forecast_2015week46$df, 
                 range(c(forecast_2015week46$df$Lower, forecast_2015week46$df$Upper)), 
@@ -120,16 +124,22 @@ forecast_res <- purrr::pmap(tasks,
                                             pred = ..3,
                                             include_trunc = F))
 
-reference_res <- purrr::pmap(tasks, ~truncate_BNPR_PS(week_start = ..2, year_start = ..1, H3N2_tree, H3N2_last_time, 
-                                                      include_trunc = F))
-
 tasks$start <- purrr::pmap(tasks, ~ifelse(..2 < 21, ..1 - 1, ..1))
+
+# reference_res <- purrr::pmap(tasks, ~truncate_BNPR_PS(week_start = ..2, year_start = ..1, H3N2_tree, H3N2_last_time, include_trunc = T, n = 2, thresh = 0.2))
+# H3N2_forecasts <- purrr::pmap(list(res = forecast_res, name = 1:length(forecast_res),
+#                                    year = tasks$start, ref = reference_res), 
+#                                 ~rbind(..1$df[1:pred, ], 
+#                                        BNPR_to_df(..4$bnpr, "H3N2_Ne", ..4$trunc_time) %>%
+#                                          filter(Time > lubridate::decimal_date(compute_truncation_time(..3, 40)) & Time < as.numeric(..1$df[pred, "Time"]))) %>% 
+#                                 mutate(forecast = ..2) %>%
+#                                 filter(Time > lubridate::decimal_date(compute_truncation_time(..3, 40)))) %>%
+#   dplyr::bind_rows()
+# H3N2_forecasts$week <- purrr::map_dbl(H3N2_forecasts$Time, ~ lubridate::week(lubridate::round_date(lubridate::date_decimal(.x))))
 
 H3N2_forecasts <- purrr::pmap(list(res = forecast_res, name = 1:length(forecast_res),
                                    year = tasks$start, ref = reference_res), 
-                                ~rbind(..1$df[1:pred, ], BNPR_to_df(..4$bnpr, "H3N2_Ne", ..4$trunc_time)) %>% 
-                                mutate(forecast = ..2) %>%
-                                filter(Time > lubridate::decimal_date(compute_truncation_time(..3, 40)))) %>%
+                                ~mutate(..1$df, forecast = ..2) %>% filter(Time > lubridate::decimal_date(compute_truncation_time(..3, 39)))) %>%
   dplyr::bind_rows()
 H3N2_forecasts$week <- purrr::map_dbl(H3N2_forecasts$Time, ~ lubridate::week(lubridate::round_date(lubridate::date_decimal(.x))))
 ```
@@ -176,16 +186,22 @@ forecasts <- purrr::pmap(tasks,
                                             pred = ..3,
                                             include_trunc = F))
 
-reference_res <- purrr::pmap(tasks, ~truncate_BNPR_PS(week_start = ..2, year_start = ..1, H1N1_tree, H1N1_last_time, include_trunc = F))
+# reference_res <- purrr::pmap(tasks, ~truncate_BNPR_PS(week_start = ..2, year_start = ..1, H1N1_tree, H1N1_last_time, include_trunc = T, n = 1, thresh = 1))
+# H1N1_forecasts <- purrr::pmap(list(res = forecasts, name = 1:length(forecasts),
+#                                    year = tasks$start, ref = reference_res), 
+#                                 ~rbind(..1$df[1:pred, ], 
+#                                        BNPR_to_df(..4$bnpr, "H1N1_Ne", ..4$trunc_time) %>%
+#                                          filter(Time > lubridate::decimal_date(compute_truncation_time(..3, 40)) & Time < as.numeric(..1$df[pred, "Time"]))) %>% 
+#                                 mutate(forecast = ..2)) %>%
+#   dplyr::bind_rows()
+# H1N1_forecasts$week <- purrr::map_dbl(H1N1_forecasts$Time, ~lubridate::week(lubridate::round_date(lubridate::date_decimal(.x))))
 
 H1N1_forecasts <- purrr::pmap(list(res = forecasts, name = 1:length(forecasts),
                                    year = tasks$start, ref = reference_res), 
-                                ~rbind(..1$df[1:pred, ], 
-                                       BNPR_to_df(..4$bnpr, "H1N1_Ne", ..4$trunc_time) %>%
-                                         filter(Time > lubridate::decimal_date(compute_truncation_time(..3, 40)) - 0.02 & Time < as.numeric(..1$df[pred, "Time"]) - 0.02)) %>% 
-                                mutate(forecast = ..2)) %>%
+                                ~mutate(..1$df, forecast = ..2) %>% filter(Time > lubridate::decimal_date(compute_truncation_time(..3, 39)))) %>%
   dplyr::bind_rows()
 H1N1_forecasts$week <- purrr::map_dbl(H1N1_forecasts$Time, ~lubridate::week(lubridate::round_date(lubridate::date_decimal(.x))))
+
 H1N1_Ne_forecast <- BNPR_forecast(H1N1_tree, last_time = H1N1_last_time, formula = BNPR_PS_formula, pred = 0, pref = T)
 
 H1N1_Ne_data <- with(H1N1_Ne_forecast, 
@@ -215,5 +231,5 @@ p <- cowplot::plot_grid(p_H3N2_Ne_forecast + ylab("H3N2 BNPR PS") + theme_no_x +
                    p_H1N1_Ne_forecast + ylab("H1N1 BNPR PS"), 
                    ncol = 1,
                    align = "v")
-ggsave(p, file = "../../projectingvirus/manuscript/Figures/data/BNPR_PS_forecast2.pdf", width = 9, height = 5)
+ggsave(p, file = "../../projectingvirus/manuscript/Figures/data/BNPR_PS_forecast_AR2.pdf", width = 9, height = 5)
 ```

@@ -75,10 +75,6 @@ In both cases H1N1 and H3N2, effective population size estimated with preferenti
 
 ```{r}
 BNPR_PS_formula <- Y ~ -1 + beta0 +
-        f(time, model="rw1",hyper = hyper, constr = FALSE) +
-        f(time2, w, copy="time", fixed=FALSE, param=c(0, beta1_prec))
-
-BNPR_PS_formula <- Y ~ -1 + beta0 +
         f(time, model="ar", order = 2, hyper = hyper, constr = FALSE) +
         f(time2, w, copy="time", fixed=FALSE, param=c(0, beta1_prec))
 
@@ -105,8 +101,7 @@ Forecast given intervals
 # forecast tasks
 seasons <- seq(2014, 2018)
 week_start <- c(45, 1, 10)
-pred <- 5
-preds <- rep(pred, 3)
+pred <- 4
 
 tasks <- expand.grid(year = seasons, wk_start = week_start) %>%
   arrange(year, wk_start) %>%
@@ -138,7 +133,7 @@ tasks$start <- purrr::pmap(tasks, ~ifelse(..2 < 21, ..1 - 1, ..1))
 # H3N2_forecasts$week <- purrr::map_dbl(H3N2_forecasts$Time, ~ lubridate::week(lubridate::round_date(lubridate::date_decimal(.x))))
 
 H3N2_forecasts <- purrr::pmap(list(res = forecast_res, name = 1:length(forecast_res),
-                                   year = tasks$start, ref = reference_res), 
+                                   year = tasks$start), 
                                 ~mutate(..1$df, forecast = ..2) %>% filter(Time > lubridate::decimal_date(compute_truncation_time(..3, 39)))) %>%
   dplyr::bind_rows()
 H3N2_forecasts$week <- purrr::map_dbl(H3N2_forecasts$Time, ~ lubridate::week(lubridate::round_date(lubridate::date_decimal(.x))))
@@ -197,7 +192,7 @@ forecasts <- purrr::pmap(tasks,
 # H1N1_forecasts$week <- purrr::map_dbl(H1N1_forecasts$Time, ~lubridate::week(lubridate::round_date(lubridate::date_decimal(.x))))
 
 H1N1_forecasts <- purrr::pmap(list(res = forecasts, name = 1:length(forecasts),
-                                   year = tasks$start, ref = reference_res), 
+                                   year = tasks$start), 
                                 ~mutate(..1$df, forecast = ..2) %>% filter(Time > lubridate::decimal_date(compute_truncation_time(..3, 39)))) %>%
   dplyr::bind_rows()
 H1N1_forecasts$week <- purrr::map_dbl(H1N1_forecasts$Time, ~lubridate::week(lubridate::round_date(lubridate::date_decimal(.x))))

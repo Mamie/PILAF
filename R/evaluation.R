@@ -83,14 +83,18 @@ LOSO_forecast <- function(data, task_list, method = 'count', formula = NULL) {
 
 
 mean_relative_error <- function(x, truth) {
-  return(mean(abs(x - (truth + 1))/(truth + 1))) # to prevent when results are 1
+  return(mean(abs(x - truth)/truth))
 }
 
 mean_width <- function(lwr, upr, truth) {
-  return(mean((upr - lwr)/(truth + 1)))
+  return(mean((upr - lwr)/truth))
 }
 
-
+#' Mean coverage
+#' @param lwr 95 % BCI lower bound of forecast
+#' @param upr 95 % BCI upper bound of forecast
+#' @param truth Real values
+#' @export
 mean_coverage <- function(lwr, upr, truth) {
   return(mean(truth < upr & truth > lwr))
 }
@@ -194,4 +198,22 @@ find_peak_week <- function(posterior_sample, task_entry, season_range) {
   season_range_seq <- seq(season_range$time_end, season_range$time_start)
   ILI <- sapply(season_range_seq, function(x) time_latent_map[[x]])
   return(data.frame(peak_week = season_range_seq[which.max(ILI)[1]], peak_ILI = max(ILI)))
+}
+
+#' Mean absolute scaled error
+#'
+#' @param x Forecast values
+#' @param truth Real values
+#' @export
+MASE <- function(x, truth) {
+  mean(abs(x - truth) / mean(x[-1] - x[-length(x)]))
+}
+
+#' Symmetric mean absolute percentage error
+#'
+#' @param x Forecast values
+#' @param truth Real values
+#' @export
+SMAPE <- function(x, truth) {
+  mean(2 * abs(x - truth) / (abs(x) + abs(truth))) * 100
 }
